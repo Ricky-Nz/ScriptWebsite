@@ -2,12 +2,23 @@
  * Created by ruiqili on 19/9/15.
  */
 import { combineReducers } from 'redux';
-import user from './users-reducer';
-import folders from './folders-reducer';
+import { useState, scriptState, folderState, packageState, parameterState, reportState } from './state-reducer';
+import { scripts, folders, packages, parameters, reports } from './arraydata-reducer';
+import { user } from './user-reducer';
 
 const rootReducer = combineReducers({
-    user,
-    folders
+    useState,
+    scriptState,
+    folderState,
+    packageState,
+    parameterState,
+    reportState,
+    scripts,
+    folders,
+    packages,
+    parameters,
+    reports,
+    user
 });
 
 export default rootReducer;

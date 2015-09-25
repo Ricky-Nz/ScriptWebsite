@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import _ from 'underscore';
 
 export function extratProps (source, Element) {
 	let result = {};
@@ -16,3 +17,33 @@ export function combinePropTypes (...elements) {
 
 	return Object.assign({}, ...elements.map(element => element.propTypes), ownProps);
 }
+
+export function arrayAppend (datas, target) {
+	return [...datas, target];
+}
+
+export function arrayUpdate (datas, target) {
+	const index = _.findIndex(datas, data => data.id === target.id);
+	return [...datas.slice(0, index), target, ...datas.slice(index + 1)];
+}
+
+export function arrayDelete (datas, targetId) {
+	const index = _.findIndex(datas, data => data.id === targetId);
+	return [...datas.slice(0, index), ...datas.slice(index + 1)];
+}
+
+export function stateChange (state, stateName, action) {
+	return Object.assign({}, state, { [stateName]: !action.finished, error: action.error,
+				newAction: action.finished ? true : state.newAction });
+}
+
+export function paginationStateChange (state, stateName, action) {
+	if (action.finished) {
+		return Object.assign({}, state, { [stateName]: !action.finished, error: action.error,
+					newAction: true, total: action.result.total, skip: action.result.skip });
+	} else {
+		return Object.assign({}, state, { [stateName]: !action.finished, error: null });
+	}
+}
+
+
