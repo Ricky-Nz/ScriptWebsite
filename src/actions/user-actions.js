@@ -3,37 +3,39 @@
  */
 import { CALL_API } from '../middlewares/backendApiMiddleware';
 
-export const USER_LOGIN_STARTED = 'USER_LOGIN_STARTED';
-export const USER_LOGIN_FINISHED = 'USER_LOGIN_FINISHED';
-export const USER_REGISTER_STARTED = 'USER_REGISTER_STARTED';
-export const USER_REGISTER_FINISHED = 'USER_REGISTER_FINISHED';
+export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
+export const REGISTER = 'REGISTER';
 
-export function userSignUp(username, password) {
+export function register(email, password) {
     return {
         [CALL_API]: {
-            method: 'GET',
-            url: '/register',
-            body: {
-                username: username,
-                password: password
-            },
-            start: USER_REGISTER_STARTED,
-            finish: USER_REGISTER_FINISHED
+            method: 'POST',
+            url: '/Testers',
+            body: { email, password },
+            action: REGISTER
         }
     };
 }
 
-export function userLogIn(username, password) {
+export function login(email, password) {
     return {
         [CALL_API]: {
             method: 'POST',
-            url: '/login',
-            body: {
-                username: username,
-                password: password
-            },
-            start: USER_LOGIN_STARTED,
-            finish: USER_LOGIN_FINISHED
+            url: '/Testers/login',
+            body: { email, password },
+            action: LOGIN
+        }
+    }
+}
+
+export function logout () {
+    return {
+        [CALL_API]: {
+            method: 'POST',
+            url: '/Testers/logout',
+            token: true,
+            action: LOGOUT
         }
     }
 }

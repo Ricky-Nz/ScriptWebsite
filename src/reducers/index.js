@@ -2,11 +2,11 @@
  * Created by ruiqili on 19/9/15.
  */
 import { combineReducers } from 'redux';
-import app from './appstate-reducer';
+import user from './users-reducer';
 import folders from './folders-reducer';
 
 const rootReducer = combineReducers({
-    app,
+    user,
     folders
 });
 

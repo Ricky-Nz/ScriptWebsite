@@ -13,7 +13,7 @@ class LoginPanel extends Component {
         };
     }
     _onLoginClicked() {
-        this.props.onLogIn(this.state);
+        this.props.onLogIn(this.state.username, this.state.password);
     }
     _onRegisterClicked() {
         this.props.onSignUp(this.state);
@@ -21,14 +21,19 @@ class LoginPanel extends Component {
     _renderBottomabr() {
         const bottomBar = {
             display: 'flex',
-            flexDirection: 'row-reverse',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
             marginTop: 10
         };
         const actionBtn = {
             marginLeft: 10
         };
+        const errorMsg = {
+            color: 'red'
+        };
 
-        if (this.props.isLogingIn) {
+        if (this.props.loggingIn) {
             return (
                 <div style={bottomBar}>
                     <CircularProgress mode="indeterminate" size={0.5} />
@@ -37,11 +42,14 @@ class LoginPanel extends Component {
         } else {
             return (
                 <div style={bottomBar}>
-                    <RaisedButton label="Login" primary={true}
-                        style={actionBtn} onClick={this._onLoginClicked.bind(this)}
-                        disabled={!this.state.username || !this.state.password} />
-                    <RaisedButton label="Sign up" primary={true}
-                        onClick={this._onRegisterClicked.bind(this)} />
+                    <div style={errorMsg}>{this.props.error}</div>
+                    <div style={bottomBar}>
+                        <RaisedButton label="Sign up" primary={true}
+                            onClick={this._onRegisterClicked.bind(this)} />
+                        <RaisedButton label="Login" primary={true}
+                            style={actionBtn} onClick={this._onLoginClicked.bind(this)}
+                            disabled={!this.state.username || !this.state.password} />
+                    </div>
                 </div>
             );
         }
@@ -68,9 +76,9 @@ class LoginPanel extends Component {
 LoginPanel.propTypes = {
     onSignUp: PropTypes.func.isRequired,
     onLogIn: PropTypes.func.isRequired,
-    username: PropTypes.string,
-    password: PropTypes.string,
-    isLogingIn: PropTypes.bool
+    loggingIn: PropTypes.bool,
+    error: PropTypes.string
 };
 
 export default LoginPanel;
+

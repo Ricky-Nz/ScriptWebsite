@@ -1,19 +1,31 @@
-import { FOLDER_CREATE_STARTED, FOLDER_CREATE_FINISHED ,FOLDER_UPDATE_STARTED, FOLDER_UPDATE_FINISHED, FOLDER_DELETE_STARTED, FOLDER_DELETE_FINISHED, FOLDER_LIST_STARTED, FOLDER_LIST_FINISHED } from '../actions/folder-actions';
+import { CREATE_FOLDER, UPDATE_FOLDER, DELETE_FOLDER, LOAD_FOLDERS, CREATE_SCRIPT, GET_SCRIPT, UPDATE_SCRIPT, DELETE_SCRIPT, LOAD_SCRIPTS } from '../actions/folder-actions';
 import _ from 'underscore';
 
-export default function (folders = [], action) {
-	// ignore error case
-	if (action.errorMsg) return folders;
-
+export default function (folder = {}, action) {
 	switch(action.type) {
-		case FOLDER_CREATE_FINISHED:
-			return [...folders, action.data];
-		case FOLDER_UPDATE_FINISHED:
-			const index = _.findIndex(folders, folder => folder.id === action.data.id);
-			return [...folders.slice(0, index), action.data, ...folders.slice(index + 1)];
-		case FOLDER_DELETE_FINISHED:
-			const index = _.findIndex(folders, folder => folder.id === action.data);
+		case CREATE_FOLDER: {
+			if (!action.finished) return Object.assign({}, folder, { creatingFolder: true, error: null });
+			if (action.error) return Object.assign({}, folder, { creatingFolder: false, error: error });
+
+			return Object.assign({}, folder, { creatingFolder: false, folders: [...folder.folders, action.result] });
+		}
+		case UPDATE_FOLDER: {
+			if (!action.finished) return Object.assign({}, folder, { updatingFolder: true, error: null });
+			if (action.error) return Object.assign({}, folder, { updatingFolder: false, error: error });
+
+			const index = _.findIndex(folder.folders, folder => folder.id === action.result.id);
+			return [...folder.folders.slice(0, folder.folders), action.result, ...folder.folders.slice(index + 1)];
+		}
+		case DELETE_FOLDER: {
+			if (!action.finished) return Object.assign({}, folder, { deletingFolder: true, error: null });
+			if (action.error) return Object.assign({}, folder, { deletingFolder: false, error: error });
+
+			const index = _.findIndex(folder.folders, folder => folder.id === action.result);
 			return [...folders.slice(0, index), ...folders.slice(index + 1)];
+		}
+		case FOLDER_LOAD_FINISHED: {
+			return action.data ? action.data.data : folders;
+		}
 		default:
 			return folders;
 	}

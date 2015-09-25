@@ -11,17 +11,11 @@ import { userSignUp, userLogIn } from '../actions/user-actions';
 import mui from 'material-ui';
 let ThemeManager = new mui.Styles.ThemeManager();
 
-const userSelector = (state) => {
-    if (state.user) return state.user;
-
-    return {};
-};
+const appStateSelector = state => state.app;
 
 const stateSelector = createSelector(
-    userSelector,
-    user => {
-        return user;
-    }
+    appStateSelector,
+    app => ({ app })
 );
 
 class LoginPage extends Component {
@@ -30,11 +24,17 @@ class LoginPage extends Component {
             muiTheme: ThemeManager.getCurrentTheme()
         };
     }
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.app.access_token && nextProps.app.userId) {
+            this.props.history.replaceState(null, '/dashboard/scripts');
+        }
+    }
     render() {
         return (
             <div>
                 <LoginPanel
-                    isLogingIn={this.props.isLogingIn}
+                    error={this.props.app.error}
+                    loggingIn={this.props.app.loggingIn}
                     onSignUp={() => {
                         
                     }}

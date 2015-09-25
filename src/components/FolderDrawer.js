@@ -1,46 +1,48 @@
 import React, { Component, PropTypes } from 'react';
-import { LeftNav, MenuItem } from 'material-ui';
+import { LeftNav, List, ListItem, FontIcon, IconMenu, IconButton } from 'material-ui';
 import FolderCreater from './FolderCreater';
 import { extratProps, combinePropTypes } from '../utils';
+import MenuItem from 'material-ui/lib/menus/menu-item';
 
 class FolderDrawer extends Component {
 	componentDidMount() {
-		this.props.loadFolders();
+		this.props.onLoadFolders();
 	}
 	_onFolderSelcted(e, index, menuItem) {
 		this.props.onSelectFolder(index);
 	}
-	getDrawerHeader() {
+	_renderContent() {
+
+	}
+	render() {
 		const drawerTitleStyle = {
 			padding: '0px 10px'
 		};
+		let menuItems = this.props.folders.map(folder => {
+			return (<ListItem primaryText={folder.title} secondaryText={folder.date}
+						leftIcon={<FontIcon className="material-icons">folder</FontIcon>} />);
+		});
 
 		return (
-			<FolderCreater style={drawerTitleStyle}
-				{...extratProps(this.props, FolderCreater)}/>
-		);
-	}
-	render() {
-		let menuItems = [{ type: MenuItem.Types.SUBHEADER, text: 'Folders' }];
-		if (this.props.folders) {
-			this.props.folders.forEach(folder => {
-				menuItems.push({ text: folder.name, payload: folder.id });
-			});
-		}
-
-		return (
-			<LeftNav ref="leftNav" header={this.getDrawerHeader()} menuItems={menuItems} selectedIndex={this.props.selectedIndex}
-				style={this.props.style} onChange={this._onFolderSelcted.bind(this)}/>
+			<LeftNav style={this.props.style} ref="leftNav" menuItems={[]} header={
+				<div>
+					<FolderCreater style={drawerTitleStyle}
+						{...extratProps(this.props, FolderCreater)}/>
+					<List>
+						{menuItems}
+					</List>
+				</div>
+			} />
 		);
 	}
 }
 
-FolderDrawer.propTypes = combinePropTypes({
+FolderDrawer.propTypes = combinePropTypes(FolderCreater, {
 	folders: PropTypes.array,
-	loadFolders: PropTypes.func,
+	onLoadFolders: PropTypes.func,
 	onSelectFolder: PropTypes.func,
 	loadingFolders: PropTypes.bool,
-	selectedIndex: PropTypes.number
+	selectFolderIndex: PropTypes.number
 });
 
 export default FolderDrawer;

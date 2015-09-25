@@ -45,7 +45,7 @@ class FolderCreater extends Component {
 FolderCreater.propTypes = {
 	errorText: PropTypes.string,
 	creating: PropTypes.bool,
-	createFolder: PropTypes.func
+	onCreateFolder: PropTypes.func
 };
 
 export default FolderCreater;
