@@ -6,53 +6,37 @@ import { LoginPanel } from '../components';
 // Redux
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { userSignUp, userLogIn } from '../actions/user-actions';
-// Material UI
-import mui from 'material-ui';
-let ThemeManager = new mui.Styles.ThemeManager();
-
-const appStateSelector = state => state.app;
-
-const stateSelector = createSelector(
-    appStateSelector,
-    app => ({ app })
-);
+import { login } from '../actions/user-actions';
 
 class LoginPage extends Component {
-    getChildContext() {
-        return {
-            muiTheme: ThemeManager.getCurrentTheme()
-        };
-    }
     componentWillReceiveProps(nextProps) {
-        if (nextProps.app.access_token && nextProps.app.userId) {
-            this.props.history.replaceState(null, '/dashboard/scripts');
+        if (nextProps.access_token) {
+            this.props.history.replaceState(null, '/dashboard');
         }
     }
     render() {
         return (
             <div>
                 <LoginPanel
-                    error={this.props.app.error}
-                    loggingIn={this.props.app.loggingIn}
+                    error={this.props.error}
+                    loggingIn={this.props.loggingIn}
                     onSignUp={() => {
                         
                     }}
                     onLogIn={(username, password) => {
-                        this.props.dispatch(userLogIn(username, password));
+                        this.props.dispatch(login(username, password));
                     }}/>
             </div>
         );
     }
 }
 
-LoginPage.childContextTypes = {
-    muiTheme: PropTypes.object
-}
-
-LoginPage.propTypes = {
-    isLogingIn: PropTypes.bool
-};
+const stateSelector = createSelector(
+    state => state.user.access_token,
+    state => state.userState.loggingIn,
+    state => state.userState.error,
+    (access_token, loggingIn, error) => ({ access_token, loggingIn, error })
+);
 
 export default connect(stateSelector)(LoginPage);
 

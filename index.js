@@ -5,12 +5,10 @@ import 'babel-core/polyfill';
 
 // React
 import React from 'react';
-import App from './src/containers/App';
-import LoginPage from './src/containers/LoginPage';
-import DashboardPage from './src/containers/DashboardPage';
+import { App, LoginPage } from './src/containers';
 
 // React router
-import { Router, Route } from 'react-router';
+import { Router, IndexRoute, Route } from 'react-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 
 // Redux
@@ -53,8 +51,8 @@ React.render(
         {() =>
             <Router history={history}>
                 <Route path='/' component={App}>
+                    <IndexRoute component={LoginPage}/>
                     <Route path='login' component={LoginPage}/>
-                    <Route path='dashboard/:section' component={DashboardPage}/>
                 </Route>
             </Router>
         }

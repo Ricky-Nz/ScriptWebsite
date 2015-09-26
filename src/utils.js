@@ -33,8 +33,7 @@ export function arrayDelete (datas, targetId) {
 }
 
 export function stateChange (state, stateName, action) {
-	return Object.assign({}, state, { [stateName]: !action.finished, error: action.error,
-				newAction: action.finished ? true : state.newAction });
+	return Object.assign({}, state, { [stateName]: !action.finished, error: action.error });
 }
 
 export function paginationStateChange (state, stateName, action) {

@@ -5,35 +5,31 @@
 // import 'isomorphic-fetch';
 import agent from 'superagent';
 import _ from 'underscore';
+import errorTranslator from './error-translator';
 
 export const CALL_API = Symbol('Call Backend API');
 
 export default store => next => action => {
     if (!action[CALL_API]) return next(action);
 
-    let appState = store.getState().app;
+    let user = store.getState().user;
     let apiCall = action[CALL_API];
     let request = agent(apiCall.method, 'http://localhost:3000/api' + apiCall.url)
-    	.send(apiCall.body)
-        .query(apiCall.query)
-        .attach(apiCall.file)
     	.accept('json')
         .timeout(10000);
 
-    if (apiCall.field) {
-        _.map(apiCall.field, (value, key) => request.field(key, value));
-    }
-
-    if (apiCall.token) {
-    	request.query({ access_token: appState.access_token });
-    }
+    if (apiCall.body) request.send(apiCall.body);
+    if (apiCall.query) request.query(apiCall.query);
+    if (apiCall.token) request.query({ access_token: user.access_token });
+    if (apiCall.file) request.attach(apiCall.file);
+    if (apiCall.field) _.map(apiCall.field, (value, key) => request.field(key, value));
 
     next({ type: apiCall.action, finished: false });
 	request.end((error, res) => {
 		next({
 			type: apiCall.action,
             finished: true,
-			error: error ? error.message : null,
+			error: errorTranslator(error),
 			result: res ? res.body : null
 		});
 	});

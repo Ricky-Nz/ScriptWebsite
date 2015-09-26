@@ -25,13 +25,13 @@ export function reports (datas = [], action) {
 	return arrayReducer(datas, action, CREATE_REPORT, UPDATE_REPORT, DELETE_REPORT, LOAD_REPORTS);
 }
 
-function arrayReducer (datas, action, create, update, delete, query) {
+function arrayReducer (datas, action, create, update, del, query) {
 	if (!action.finished || action.error) return datas;
 
 	switch(action.type) {
 		case create: return arrayAppend(datas, action.result);
 		case update: return arrayUpdate(datas, action.result);
-		case delete: return arrayDelete(datas, action.result);
+		case del: return arrayDelete(datas, action.result);
 		case query: return action.result.datas;
 		default:
 			return datas;

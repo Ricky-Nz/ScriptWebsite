@@ -1,13 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import mui, { Snackbar } from 'material-ui';
+import { Snackbar } from 'material-ui';
 import { AppTitlebar, ScriptsSection, ParametersSection, PackagesSection, ReportsSection } from '../components';
 // Redux
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import { clearError, selectFolder } from '../actions/app-actions';
 import { createFolder, updateFolder, deleteFolder, listFolders } from '../actions/folder-actions';
-
-let ThemeManager = new mui.Styles.ThemeManager();
 
 const appStateSelector = state => state.app;
 const foldersSelector = (state, props) => {
@@ -35,11 +33,6 @@ const stateSelector = createSelector(
 );
 
 class DashboardPage extends Component {
-	getChildContext() {
-        return {
-            muiTheme: ThemeManager.getCurrentTheme()
-        };
-    }
     _onSectionSelected(value) {
     	if (this.props.params.section === value) return;
 
@@ -85,10 +78,6 @@ class DashboardPage extends Component {
 			</div>
 		);
 	}
-}
-
-DashboardPage.childContextTypes = {
-    muiTheme: PropTypes.object
 }
 
 export default connect(stateSelector)(DashboardPage);

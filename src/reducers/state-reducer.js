@@ -4,9 +4,21 @@ import { CREATE_FOLDER, UPDATE_FOLDER, DELETE_FOLDER, LOAD_FOLDERS } from '../ac
 import { CREATE_PACKAGE, UPDATE_PACKAGE, DELETE_PACKAGE, LOAD_PACKAGES } from '../actions/package-actions';
 import { CREATE_PARAMETER, UPDATE_PARAMETER, DELETE_PARAMETER, LOAD_PARAMETERS } from '../actions/parameter-actions';
 import { CREATE_REPORT, UPDATE_REPORT, DELETE_REPORT, LOAD_REPORTS } from '../actions/report-actions';
+import { CLEAR_ERROR } from '../actions/app-actions';
 import { stateChange, paginationStateChange } from '../utils';
 
-export function useState (state = {}, action) {
+export function errorState (state = {}, action) {
+	switch(action.type) {
+		case CLEAR_ERROR:
+			return Object.assign({}, state, { newAction: false });
+		default: {
+			if (!action.finished) return state;
+			return Object.assign({}, state, { error: action.error, newAction: true })
+		}
+	}
+}
+
+export function userState (state = {}, action) {
 	switch(action.type) {
 		case LOGIN: return stateChange(state, 'loggingIn', action);
 		case LOGOUT: return stateChange(state, 'loggingOut', action);
@@ -40,11 +52,11 @@ export function reportState (state = {}, action) {
 	return stateReducer(state, action, CREATE_REPORT, UPDATE_REPORT, DELETE_REPORT, LOAD_REPORTS);
 }
 
-function stateReducer (state, action, create, update, delete, load) {
+function stateReducer (state, action, create, update, del, load) {
 	switch(action.type) {
 		case create: return stateChange(state, 'creating', action);
 		case update: return stateChange(state, 'updating', action);
-		case delete: return stateChange(state, 'deleting', action);
+		case del: return stateChange(state, 'deleting', action);
 		case load: return paginationStateChange(state, 'loading', action);
 		default:
 			return state;

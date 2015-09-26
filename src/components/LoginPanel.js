@@ -61,10 +61,10 @@ class LoginPanel extends Component {
 
         return (
             <Paper style={container}>
-                <TextField ref="username" fullWidth="true" hintText="enter username"
+                <TextField ref="username" fullWidth={true} hintText="enter username"
                     floatingLabelText="Username" type="text"
                     onChange={() => this.setState({username: this.refs.username.getValue()})} />
-                <TextField ref="password" fullWidth="true" hintText="enter password"
+                <TextField ref="password" fullWidth={true} hintText="enter password"
                     floatingLabelText="Password" type="password"
                     onChange={() => this.setState({password: this.refs.password.getValue()})} />
                 {this._renderBottomabr()}

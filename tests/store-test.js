@@ -1,7 +1,9 @@
-var objectA = {a: 1, b: 2, c:3};
-var _ = require('underscore');
+var agent = require('superagent');
 
-_.map(objectA, function (arg1, arg2) {
-	console.log(arg1);
-	console.log(arg2);
-})
+var request = agent('POST', 'http://localhost:3000/api/Testers/login')
+	.send({email: 'sdfsdf', password: 'sdfsdf'})
+	.accept('json')
+    .timeout(10000)
+    .end(function (err, response) {
+    	console.log(response);
+    });
