@@ -8,8 +8,8 @@ class LoginPanel extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: this.props.username,
-            password: this.props.password
+            username: 'ruiqi.newzealand@gmail.com',
+            password: '1234'
         };
     }
     _onLoginClicked() {

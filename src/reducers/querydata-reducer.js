@@ -3,7 +3,6 @@ import { CREATE_FOLDER, UPDATE_FOLDER, DELETE_FOLDER, LOAD_FOLDERS } from '../ac
 import { CREATE_PACKAGE, UPDATE_PACKAGE, DELETE_PACKAGE, LOAD_PACKAGES } from '../actions/package-actions';
 import { CREATE_PARAMETER, UPDATE_PARAMETER, DELETE_PARAMETER, LOAD_PARAMETERS } from '../actions/parameter-actions';
 import { CREATE_REPORT, UPDATE_REPORT, DELETE_REPORT, LOAD_REPORTS } from '../actions/report-actions';
-import { arrayAppend, arrayUpdate, arrayDelete } from '../utils';
 
 export function scripts (datas = [], action) {
 	return arrayReducer(datas, action, CREATE_SCRIPT, UPDATE_SCRIPT, DELETE_SCRIPT, LOAD_SCRIPTS);
@@ -29,10 +28,18 @@ function arrayReducer (datas, action, create, update, del, query) {
 	if (!action.finished || action.error) return datas;
 
 	switch(action.type) {
-		case create: return arrayAppend(datas, action.result);
-		case update: return arrayUpdate(datas, action.result);
-		case del: return arrayDelete(datas, action.result);
-		case query: return action.result.datas;
+		case create:
+			return [action.result, ...datas];
+		case update: {
+			const index = _.findIndex(datas, data => data.id === action.result.id);
+			return [...datas.slice(0, index), action.result, ...datas.slice(index + 1)];
+		}
+		case del: {
+			const index = _.findIndex(datas, data => data.id === action.result);
+			return [...datas.slice(0, index), ...datas.slice(index + 1)];
+		}
+		case query:
+			return action.result.data;
 		default:
 			return datas;
 	}

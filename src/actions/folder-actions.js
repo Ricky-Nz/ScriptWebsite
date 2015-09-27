@@ -5,24 +5,24 @@ export const UPDATE_FOLDER = 'UPDATE_FOLDER';
 export const DELETE_FOLDER = 'DELETE_FOLDER';
 export const LOAD_FOLDERS = 'LOAD_FOLDERS';
 
-export function createFolder (title) {
+export function createFolder (item) {
 	return {
 		[CALL_API]: {
 			method: 'post',
 			url: '/Folders',
-			body: { title },
+			body: item,
 			token: true,
 			action: CREATE_FOLDER
 		}
 	};
 }
 
-export function updateFolder (id, title) {
+export function updateFolder (id, item) {
 	return {
 		[CALL_API]: {
 			method: 'put',
 			url: `/Folders/${id}`,
-			body: { title },
+			body: item,
 			token: true,
 			action: UPDATE_FOLDER
 		}
@@ -40,11 +40,11 @@ export function deleteFolder (id) {
 	};
 }
 
-export function loadFolders (userId, skip) {
+export function loadFolders (skip) {
 	return {
 		[CALL_API]: {
 			method: 'get',
-			url: `/Testers/${userId}/folders`,
+			url: '/Testers/:userId/folders',
 			token: true,
 			query: { filter: JSON.stringify({ skip: skip, limit: 10 }) },
 			action: LOAD_FOLDERS

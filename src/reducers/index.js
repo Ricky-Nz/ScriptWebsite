@@ -2,24 +2,31 @@
  * Created by ruiqili on 19/9/15.
  */
 import { combineReducers } from 'redux';
-import { errorState, userState, scriptState, folderState, packageState, parameterState, reportState } from './state-reducer';
-import { scripts, folders, packages, parameters, reports } from './arraydata-reducer';
+import { errorState, userState, scriptState, folderState, packageState, parameterState, reportState } from './querystate-reducer';
+import { scripts, folders, packages, parameters, reports } from './querydata-reducer';
 import { user } from './user-reducer';
+import dialog from './dialogstate-reducer';
+import dashboard from './dashboard-reducer';
 
 const rootReducer = combineReducers({
-    errorState,
-    userState,
-    scriptState,
-    folderState,
-    packageState,
-    parameterState,
-    reportState,
+    dashboard,
+    dialog,
+
     scripts,
     folders,
     packages,
     parameters,
     reports,
-    user
+
+    user,
+    errorState,
+    userState,
+
+    scriptState,
+    folderState,
+    packageState,
+    parameterState,
+    reportState
 });
 
 export default rootReducer;

@@ -28,11 +28,11 @@ export function deleteReport (id) {
 	};
 }
 
-export function loadReports (userId, skip) {
+export function loadReports (skip) {
 	return {
 		[CALL_API]: {
 			method: 'get',
-			url: `/Testers/${userId}/reports`,
+			url: '/Testers/:userId/reports',
 			token: true,
 			query: { filter: JSON.stringify({ skip: skip, limit: 10 }) },
 			action: LOAD_ERPORTS

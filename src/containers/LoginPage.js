@@ -1,14 +1,15 @@
 /**
  * Created by ruiqili on 19/9/15.
  */
-import React, { Component, PropTypes } from 'react';
-import { LoginPanel } from '../components';
+import React, { PropTypes } from 'react';
+import { Styles } from 'material-ui';
+import { ThemeComponent, LoginPanel } from '../components';
 // Redux
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import { login } from '../actions/user-actions';
 
-class LoginPage extends Component {
+class LoginPage extends ThemeComponent {
     componentWillReceiveProps(nextProps) {
         if (nextProps.access_token) {
             this.props.history.replaceState(null, '/dashboard');

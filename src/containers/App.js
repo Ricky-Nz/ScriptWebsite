@@ -1,24 +1,23 @@
 /**
  * Created by ruiqili on 19/9/15.
  */
-import React, { Component, PropTypes } from 'react';
-import { Snackbar } from 'material-ui';
+import React, { PropTypes } from 'react';
+import { Snackbar, Styles } from 'material-ui';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { clearError } from '../actions/app-actions';
+import { ThemeComponent } from '../components';
 
-class App extends Component {
+class App extends ThemeComponent {
     componentWillReceiveProps(nextProps) {
-    	if (nextProps.newAction && nextProps.error) {
+    	if (nextProps.error !== this.props.error && nextProps.error.message) {
             this.refs.toast.show();
-            this.props.dispatch(clearError());
     	}
     }
     render() {
         return (
             <div>
             	{this.props.children}
-				<Snackbar ref='toast' message={this.props.error ? this.props.error : ''}
+				<Snackbar ref='toast' message={this.props.error.message ? this.props.error.message : ''}
 					autoHideDuration={3000} openOnMount={false}
 					action='Dismiss' onActionTouchTap={() => this.refs.toast.dismiss()}/>
             </div>
@@ -27,9 +26,8 @@ class App extends Component {
 }
 
 const propsSelector = createSelector(
-	state => state.errorState.error,
-    state => state.errorState.newAction,
-	(error, newAction) => ({ error, newAction })
+	state => state.errorState,
+	error => ({ error })
 );
 
 export default connect(propsSelector)(App);
