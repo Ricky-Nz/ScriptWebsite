@@ -1,41 +1,116 @@
 import React, { PropTypes } from 'react';
-import { ThemeComponent, AppTitlebar, EditorDialog, FabButton } from '../components';
-import { fixedRB } from '../styles';
+import { ThemeComponent, AppTitlebar, EditorDialog, FabButton, SearchBar, AutoLoadMoreList } from '../components';
+import { fixedRB, verCenter } from '../styles';
+import { Paper } from 'material-ui';
+import { Row, Col } from 'react-bootstrap';
 // Redux
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { showCreateParameterDialog, showCreateFolderDialog, showCreatePackageDialog, showCreateReportDialog, dismissDialog } from '../actions/dialog-actions';
-import { createFolder, updateFolder } from '../actions/folder-actions';
-import { createParameter, updateParameter } from '../actions/parameter-actions';
-import { createPackage } from '../actions/package-actions';
-import { createReport } from '../actions/report-actions';
+import { sectionConfigs } from '../utils';
+import { showCreateParameterDialog, showEditParameterDialog, showCreateFolderDialog, showEditFolderDialog,
+		showCreatePackageDialog, showCreateReportDialog, dismissDialog } from '../actions/dialog-actions';
+import { createFolder, updateFolder, deleteFolder, searchFolders, loadFolders,
+		createParameter, updateParameter, deleteParameter, searchParameters, loadParameters,
+		createPackage, deletePackage, searchPackages, loadPackages,
+		createReport, deleteReport, searchReports, loadReports } from '../actions/crud-actions';
+
+const [FOLDERS, PARAMETERS, PACKAGES, REPORTS] = ['folders', 'parameters', 'packages', 'reports'];
 
 class DashboardPage extends ThemeComponent {
     componentDidMount() {
     	if (!this.props.access_token) {
             return this.props.history.replaceState(null, '/login');
+        } else if (!sectionConfigs[this.props.params.section]) {
+        	return this.props.history.replaceState(null, '/dashboard/folders');
         }
+
+        this._onLoadSectionDatas(this.props.params.section);
+    }
+    componentWillReceiveProps(nextProps) {
+    	if (!sectionConfigs[nextProps.params.section]) {
+        	return this.props.history.replaceState(null, '/dashboard/folders');
+        }
+
+    	if (this.props.params.section != nextProps.params.section) {
+    		this._onLoadSectionDatas(nextProps.params.section);
+    	}
+    }
+    renderMainList(sectionConfig) {
+		const sectionState = this.props.sectionState;
+
+		let listDatas;
+		let listHeader;
+		let loading;
+		if (sectionState.searchText) {
+			listDatas = this.props.searchResults;
+			if (sectionState.searching) {
+				listHeader = `Searching for "${sectionState.searchText}"`;
+			} else {
+				listHeader = listDatas && listDatas.length > 0 ?
+					`${listDatas.length} results` : `Result not found for "${sectionState.searchText}"`;
+			}
+			loading = sectionState.searching;
+		} else {
+			listDatas = this.props.sectionDatas;
+			listHeader = sectionConfig.listHeader;
+			loading = sectionState.loading;
+		}
+
+		let itemActions = [
+			{ title: 'Delete', icon: 'delete', action: this._onListItemDelete.bind(this) }
+		];
+		if (this.props.params.section == FOLDERS || this.props.params.section == PARAMETERS) {
+			itemActions.unshift({ title: 'Edit', icon: 'create', action: this._onListItemEdit.bind(this) });
+		}
+
+		return (
+			<Paper style={{maxHeight: 500, overflow: 'auto'}}>
+				<SearchBar searching={sectionState.searching}
+					hint={sectionConfig.searchbarHint}
+					onSearch={this._onSearchSectionData.bind(this)}/>
+				<AutoLoadMoreList
+					datas={listDatas}
+					header={listHeader}
+					loading={loading}
+					itemActions={itemActions}
+					primaryKey={sectionConfig.listPrimaryKey}
+					secondaryKey={sectionConfig.listSecondaryKey}
+					leftIcon={sectionConfig.listIcon}/>
+				<br/>
+			</Paper>
+		);
+    }
+    renderSectionPanel() {
+		const sectionConfig = sectionConfigs[this.props.params.section];
+
+		return (
+			<Row style={{paddingTop: 66, height: '100%'}}>
+				<Col {...sectionConfig.display}>
+					{this.renderMainList(sectionConfig)}
+				</Col>
+			</Row>
+		);
     }
 	render() {
-		if (!this.props.access_token) {
+		if (!this.props.access_token || !sectionConfigs[this.props.params.section]) {
 			return (
 				<div>Redirecting...</div>
 			);
 		}
 
 		return (
-			<div>
+			<div style={{position: 'relative'}}>
 				<AppTitlebar
 					style={{ position: 'fixed' }}
-					selectItem={this.props.dashboard.selected}
+					selectItem={this.props.params.section}
 					onSectionSelected={this._onSectionSelected.bind(this)}/>
-				<br/><br/><br/>
-				{this.props.children}
+				{this.renderSectionPanel()}
 				<FabButton
 					style={fixedRB}
 					icon='add'
 					onClick={this._onFabBtnClicked.bind(this)}/>
 				<EditorDialog
+					itemId={this.props.dialog.id}
 					title={this.props.dialog.title}
 					showDialog={this.props.dialog.showDialog}
 					updating={this.props.dialog.updating}
@@ -50,44 +125,104 @@ class DashboardPage extends ThemeComponent {
 		this.props.history.replaceState(null, `/dashboard/${section}`)
 	}
 	_onFabBtnClicked() {
-		switch(this.props.dashboard.selected) {
-			case 'folders':
+		switch(this.props.params.section) {
+			case FOLDERS:
 				this.props.dispatch(showCreateFolderDialog());
 				break;
-			case 'parameters':
+			case PARAMETERS:
 				this.props.dispatch(showCreateParameterDialog());
 				break;
-			case 'packages':
+			case PACKAGES:
 				this.props.dispatch(showCreatePackageDialog());
 				break;
-			case 'reports':
+			case REPORTS:
 				this.props.dispatch(showCreateReportDialog());
 				break;
 		}
 	}
 	_onDialogSubmit(id, fields, attachment) {
-		switch(this.props.dashboard.selected) {
-			case 'folders':
+		switch(this.props.params.section) {
+			case FOLDERS:
 				this.props.dispatch(id ? updateFolder(id, fields) : createFolder(fields));
 				break;
-			case 'parameters':
+			case PARAMETERS:
 				this.props.dispatch(id ? updateParameter(id, fields) : createParameter(fields));
 				break;
-			case 'packages':
+			case PACKAGES:
 				this.props.dispatch(createPackage(fields, attachment));
 				break;
-			case 'reports':
+			case REPORTS:
 				this.props.dispatch(createReport(fields, attachment));
+				break;
+		}
+	}
+	_onLoadSectionDatas(section) {
+		switch(section) {
+			case FOLDERS:
+				this.props.dispatch(loadFolders());
+				break;
+			case PARAMETERS:
+				this.props.dispatch(loadParameters());
+				break;
+			case PACKAGES:
+				this.props.dispatch(loadPackages());
+				break;
+			case REPORTS:
+				this.props.dispatch(loadReports());
+				break;
+		}
+	}
+	_onSearchSectionData(text) {
+		switch(this.props.params.section) {
+			case FOLDERS:
+				this.props.dispatch(searchFolders(text));
+				break;
+			case PARAMETERS:
+				this.props.dispatch(searchParameters(text));
+				break;
+			case PACKAGES:
+				this.props.dispatch(searchPackages(text));
+				break;
+			case REPORTS:
+				this.props.dispatch(searchReports(text));
+				break;
+		}
+	}
+	_onListItemEdit(item) {
+		switch(this.props.params.section) {
+			case FOLDERS:
+				this.props.dispatch(showEditFolderDialog(item));
+				break;
+			case PARAMETERS:
+				this.props.dispatch(showEditParameterDialog(item));
+				break;
+		}
+	}
+	_onListItemDelete(item) {
+		switch(this.props.params.section) {
+			case FOLDERS:
+				this.props.dispatch(deleteFolder(item.id));
+				break;
+			case PARAMETERS:
+				this.props.dispatch(deleteParameter(item.id));
+				break;
+			case PACKAGES:
+				this.props.dispatch(deletePackage(item.id));
+				break;
+			case REPORTS:
+				this.props.dispatch(deleteReport(item.id));
 				break;
 		}
 	}
 }
 
 const propsSelector = createSelector(
-	state => state.user.access_token,
-	state => state.dashboard,
+	state => state.app.access_token,
 	state => state.dialog,
-    (access_token, dashboard, dialog) => ({ access_token, dashboard, dialog })
+	(state, props) => state[props.params.section],
+	(state, props) => state[`${props.params.section}Panel`],
+	state => state.searchResults,
+    (access_token, dialog, sectionDatas, sectionState, searchResults) => ({ access_token, dialog, sectionDatas, sectionState, searchResults })
 );
 
 export default connect(propsSelector)(DashboardPage);

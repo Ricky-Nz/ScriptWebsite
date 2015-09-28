@@ -9,7 +9,7 @@ import { ThemeComponent } from '../components';
 
 class App extends ThemeComponent {
     componentWillReceiveProps(nextProps) {
-    	if (nextProps.error !== this.props.error && nextProps.error.message) {
+    	if (nextProps.error !== this.props.error && nextProps.error) {
             this.refs.toast.show();
     	}
     }
@@ -17,7 +17,7 @@ class App extends ThemeComponent {
         return (
             <div>
             	{this.props.children}
-				<Snackbar ref='toast' message={this.props.error.message ? this.props.error.message : ''}
+				<Snackbar ref='toast' message={this.props.error ? this.props.error : ''}
 					autoHideDuration={3000} openOnMount={false}
 					action='Dismiss' onActionTouchTap={() => this.refs.toast.dismiss()}/>
             </div>
@@ -26,7 +26,7 @@ class App extends ThemeComponent {
 }
 
 const propsSelector = createSelector(
-	state => state.errorState,
+	state => state.app.error,
 	error => ({ error })
 );
 

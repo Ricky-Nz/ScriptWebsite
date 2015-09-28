@@ -16,8 +16,8 @@ class EditorDialog extends Component {
 	componentWillReceiveProps(nextProps) {
 		if (nextProps.showDialog) {
 			let state = {};
-			if (this.props.fields) {
-				this.props.fields.forEach(field => state[field.ref] = field.value);
+			if (nextProps.fields) {
+				nextProps.fields.forEach(field => state[field.ref] = field.value);
 			}
 			this.setState(state);
 			this.refs.dialog.show();

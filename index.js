@@ -5,7 +5,7 @@ import 'babel-core/polyfill';
 
 // React
 import React from 'react';
-import { App, LoginPage, DashboardPage, FoldersPage, ScriptPage, ParametersPage, PackagesPage, ReportsPage } from './src/containers';
+import { App, LoginPage, DashboardPage } from './src/containers';
 
 // React router
 import { Router, IndexRoute, Route } from 'react-router';
@@ -52,18 +52,10 @@ React.render(
                 <Route path='/' component={App}>
                     <IndexRoute component={LoginPage}/>
                     <Route path='login' component={LoginPage}/>
-                    <Route path='dashboard' component={DashboardPage}>
-                        <IndexRoute component={FoldersPage}/>
-                        <Route path='folders' component={FoldersPage}/>
-                        <Route path='parameters' component={ParametersPage}/>
-                        <Route path='packages' component={PackagesPage}/>
-                        <Route path='reports' component={ReportsPage}/>
-                        <Route path='script/:scriptId' component={ScriptPage}/>
-                    </Route>
+                    <Route path='dashboard/:section' component={DashboardPage}/>
                 </Route>
             </Router>
         }
-    </Provider>,
-    document.getElementById('root')
+    </Provider>, document.body
 );
 

@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Paper, TextField, CircularProgress } from 'material-ui';
-import { padding, horCenter } from '../styles';
+import { TextField } from 'material-ui';
 
 class SearchBar extends Component {
 	constructor(props) {
@@ -8,16 +7,11 @@ class SearchBar extends Component {
 		this.state = {};
 	}
 	render() {
-		const editField = {
-			margin: '5px 0px'
-		};
-
 		return (
-			<Paper style={{...this.props.style, ...horCenter, ...padding}}>
-                <TextField style={editField} ref='search' fullWidth={true} hintText={this.props.hint}
+			<div style={{padding: '5px 20px', ...this.props.style}}>
+                <TextField ref='search' fullWidth={true} hintText={this.props.hint}
                     floatingLabelText={this.props.label} type='text' onChange={this._onTextChanged.bind(this)} />
-                {this.props.searching ? <CircularProgress mode="indeterminate" size={0.4} /> : null}
-			</Paper>
+			</div>
 		);
 	}
 	_onTextChanged() {
@@ -36,8 +30,7 @@ class SearchBar extends Component {
 SearchBar.propTypes = {
 	hint: PropTypes.string.isRequired,
 	label: PropTypes.string.isRequired,
-	onSearch: PropTypes.func.isRequired,
-	searching: PropTypes.bool.isRequired
+	onSearch: PropTypes.func.isRequired
 };
 
 export default SearchBar;

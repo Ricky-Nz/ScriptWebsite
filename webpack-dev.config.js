@@ -30,7 +30,7 @@ module.exports = {
 		publicPath: '/static/',
 		hot: true,        //Live-reload
 		historyApiFallback: true,
-		host : '0.0.0.0',
+		host : 'localhost',
 		port: 8080,        //Port Number
 		stats: {
 			colors: true

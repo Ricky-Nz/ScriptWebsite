@@ -12,7 +12,7 @@ import { login } from '../actions/user-actions';
 class LoginPage extends ThemeComponent {
     componentWillReceiveProps(nextProps) {
         if (nextProps.access_token) {
-            this.props.history.replaceState(null, '/dashboard');
+            this.props.history.replaceState(null, '/dashboard/folders');
         }
     }
     render() {
@@ -33,9 +33,9 @@ class LoginPage extends ThemeComponent {
 }
 
 const stateSelector = createSelector(
-    state => state.user.access_token,
-    state => state.userState.loggingIn,
-    state => state.userState.error,
+    state => state.app.access_token,
+    state => state.app.loggingIn,
+    state => state.app.error,
     (access_token, loggingIn, error) => ({ access_token, loggingIn, error })
 );
 

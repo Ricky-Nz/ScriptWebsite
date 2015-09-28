@@ -9,7 +9,6 @@ import FolderDrawer from './FolderDrawer';
 import EditorDialog from './EditorDialog';
 import FabButton from './FabButton';
 import SearchBar from './SearchBar';
-import SearchList from './SearchList';
 import AutoLoadMoreList from './AutoLoadMoreList';
 
 export {
@@ -21,6 +20,5 @@ export {
     EditorDialog,
     FabButton,
     SearchBar,
-    SearchList,
     AutoLoadMoreList
 };

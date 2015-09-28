@@ -12,6 +12,21 @@ export function showCreateParameterDialog () {
 	};
 }
 
+export function showEditParameterDialog (item) {
+	let fields = [
+		{ref: 'key', hint: 'parameter key', label: 'Key', type: 'text', required: true},
+		{ref: 'value', hint: 'parameter value', label: 'Value', type: 'text', required: false}
+	];
+	fields.forEach(field => field.value = item[field.ref]);
+
+	return {
+		type: SHOW_DIALOG,
+		title: 'Edit Parameter',
+		id: item.id,
+		fields: fields
+	};
+}
+
 export function showCreateFolderDialog () {
 	return {
 		type: SHOW_DIALOG,
@@ -19,6 +34,20 @@ export function showCreateFolderDialog () {
 		fields: [
 			{ref: 'title', hint: 'folder title', label: 'Title', type: 'text', required: true}
 		]
+	};
+}
+
+export function showEditFolderDialog (item) {
+	let fields = [
+		{ref: 'title', hint: 'folder title', label: 'Title', type: 'text', required: true}
+	];
+	fields.forEach(field => field.value = item[field.ref]);
+
+	return {
+		type: SHOW_DIALOG,
+		title: 'Edit Folder',
+		id: item.id,
+		fields: fields
 	};
 }
 
