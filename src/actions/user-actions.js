@@ -6,6 +6,7 @@ import { CALL_API } from '../middlewares/backendApiMiddleware';
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const REGISTER = 'REGISTER';
+export const TOGGLE_LOGIN_PANEL = 'TOGGLE_LOGIN_PANEL';
 
 export function register(email, password) {
     return {

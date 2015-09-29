@@ -1,9 +1,10 @@
-import { SHOW_DIALOG, DISMISS_DIALOG } from '../actions/dialog-actions';
+import { TOGGLE_DIALOG } from '../actions/dialog-actions';
 import { LOGIN, LOGOUT, REGISTER } from '../actions/user-actions';
 import { CREATE_FOLDER, UPDATE_FOLDER, LOAD_FOLDERS, SEARCH_FOLDERS,
 		CREATE_PARAMETER, UPDATE_PARAMETER, LOAD_PARAMETERS, SEARCH_PARAMETERS,
 		CREATE_PACKAGE, LOAD_PACKAGES, SEARCH_PACKAGES,
 		CREATE_REPORT, LOAD_REPORTS, SEARCH_REPORTS } from '../actions/crud-actions';
+import _ from 'underscore';
 
 export function app (state = {}, action) {
 	switch(action.type) {
@@ -43,18 +44,18 @@ export function app (state = {}, action) {
 
 export function dialog (state = {}, action) {
 	switch(action.type) {
-		case SHOW_DIALOG:
-			return Object.assign({}, state, { id: action.id, title: action.title, fields: action.fields, showDialog: true });
-		case DISMISS_DIALOG:
-			return Object.assign({}, state, { showDialog: false });
+		case TOGGLE_DIALOG:
+			return Object.assign({}, state, _.omit(action, 'type'));
+		case LOGIN:
+		case REGISTER:
 		case CREATE_FOLDER:
 		case CREATE_PARAMETER:
 		case CREATE_PACKAGE:
 		case CREATE_REPORT:
 		case UPDATE_FOLDER:
 		case UPDATE_PARAMETER:
-			return Object.assign({}, state, { updating: !action.finished, error: action.error },
-						action.finished && !action.error ? { showDialog: false} : null);
+			return Object.assign({}, state, { processing: !action.finished, error: action.error },
+						action.finished && !action.error ? { show: false} : null);
 		default:
 			return state;
 	}

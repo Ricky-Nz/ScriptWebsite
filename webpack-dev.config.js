@@ -18,19 +18,21 @@ module.exports = {
 		new webpack.HotModuleReplacementPlugin()
 	],
 	module: {
-		loaders: [{
-			test: /\.js$/,
-			loaders: ['babel'],
-			exclude: /node_modules/,
-			include: __dirname
-		}]
+		loaders: [
+			{
+				test: /\.js$/,
+				loaders: ['babel'],
+				exclude: /node_modules/,
+				include: __dirname
+			}
+		]
 	},
 	//Server Configuration options
 	devServer: {
 		publicPath: '/static/',
 		hot: true,        //Live-reload
 		historyApiFallback: true,
-		host : 'localhost',
+		host : '0.0.0.0',
 		port: 8080,        //Port Number
 		stats: {
 			colors: true

@@ -26,3 +26,8 @@ export const absoluteRT = {
 export const padding = {
 	padding: '0px 20px' 
 };
+
+export const errorStyle = {
+	color: 'red',
+	minHeight: 20
+};

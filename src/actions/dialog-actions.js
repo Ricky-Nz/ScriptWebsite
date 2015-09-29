@@ -1,5 +1,20 @@
-export const SHOW_DIALOG = 'SHOW_DIALOG';
-export const DISMISS_DIALOG = 'DISMISS_DIALOG';
+export const TOGGLE_DIALOG = 'TOGGLE_DIALOG';
+
+export function openLoginDialog () {
+    return {
+    	show: true,
+        type: TOGGLE_DIALOG,
+        title: 'User Login',
+        size: 'small',
+        submitText: 'Login',
+        fields: [
+            { ref: 'email', icon: 'user', label: 'Username', initialValue: 'ruiqi.newzealand@gmail.com',
+            	placeholder: 'login id', type: 'email', required: true },
+            { ref: 'password', icon:'key', label: 'Password', initialValue: '1234',
+            	placeholder: 'login password', type: 'password', required: true },
+        ]
+    };
+}
 
 export function showCreateParameterDialog () {
 	return {
@@ -76,6 +91,7 @@ export function showCreateReportDialog () {
 
 export function dismissDialog () {
 	return {
-		type: DISMISS_DIALOG
+		show: false,
+		type: TOGGLE_DIALOG
 	};
 }

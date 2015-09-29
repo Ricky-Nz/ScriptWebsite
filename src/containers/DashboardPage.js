@@ -1,12 +1,11 @@
-import React, { PropTypes } from 'react';
-import { ThemeComponent, AppTitlebar, EditorDialog, FabButton, SearchBar, AutoLoadMoreList } from '../components';
-import { fixedRB, verCenter } from '../styles';
-import { Paper } from 'material-ui';
-import { Row, Col } from 'react-bootstrap';
+import React, { Component, PropTypes } from 'react';
+import { GnTitlebar } from '../components';
+import { fixedRB, verCenter } from '../components/styles';
+import { Panel, Row, Col } from 'react-bootstrap';
 // Redux
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { sectionConfigs } from '../utils';
+import { sectionConfigs } from '../config';
 import { showCreateParameterDialog, showEditParameterDialog, showCreateFolderDialog, showEditFolderDialog,
 		showCreatePackageDialog, showCreateReportDialog, dismissDialog } from '../actions/dialog-actions';
 import { createFolder, updateFolder, deleteFolder, searchFolders, loadFolders,
@@ -16,7 +15,7 @@ import { createFolder, updateFolder, deleteFolder, searchFolders, loadFolders,
 
 const [FOLDERS, PARAMETERS, PACKAGES, REPORTS] = ['folders', 'parameters', 'packages', 'reports'];
 
-class DashboardPage extends ThemeComponent {
+class DashboardPage extends Component {
     componentDidMount() {
     	if (!this.props.access_token) {
             return this.props.history.replaceState(null, '/login');
@@ -35,58 +34,25 @@ class DashboardPage extends ThemeComponent {
     		this._onLoadSectionDatas(nextProps.params.section);
     	}
     }
-    renderMainList(sectionConfig) {
-		const sectionState = this.props.sectionState;
-
-		let listDatas;
-		let listHeader;
-		let loading;
-		if (sectionState.searchText) {
-			listDatas = this.props.searchResults;
-			if (sectionState.searching) {
-				listHeader = `Searching for "${sectionState.searchText}"`;
-			} else {
-				listHeader = listDatas && listDatas.length > 0 ?
-					`${listDatas.length} results` : `Result not found for "${sectionState.searchText}"`;
-			}
-			loading = sectionState.searching;
-		} else {
-			listDatas = this.props.sectionDatas;
-			listHeader = sectionConfig.listHeader;
-			loading = sectionState.loading;
-		}
-
-		let itemActions = [
-			{ title: 'Delete', icon: 'delete', action: this._onListItemDelete.bind(this) }
-		];
-		if (this.props.params.section == FOLDERS || this.props.params.section == PARAMETERS) {
-			itemActions.unshift({ title: 'Edit', icon: 'create', action: this._onListItemEdit.bind(this) });
-		}
-
-		return (
-			<Paper style={{maxHeight: 500, overflow: 'auto'}}>
-				<SearchBar searching={sectionState.searching}
-					hint={sectionConfig.searchbarHint}
-					onSearch={this._onSearchSectionData.bind(this)}/>
-				<AutoLoadMoreList
-					datas={listDatas}
-					header={listHeader}
-					loading={loading}
-					itemActions={itemActions}
-					primaryKey={sectionConfig.listPrimaryKey}
-					secondaryKey={sectionConfig.listSecondaryKey}
-					leftIcon={sectionConfig.listIcon}/>
-				<br/>
-			</Paper>
-		);
-    }
     renderSectionPanel() {
-		const sectionConfig = sectionConfigs[this.props.params.section];
 
 		return (
 			<Row style={{paddingTop: 66, height: '100%'}}>
 				<Col {...sectionConfig.display}>
-					{this.renderMainList(sectionConfig)}
+					<Panel>
+						<SearchBar searching={sectionState.searching}
+							hint={sectionConfig.searchbarHint}
+							onSearch={this._onSearchSectionData.bind(this)}/>
+						<AutoLoadMoreList
+							datas={listDatas}
+							header={listHeader}
+							loading={loading}
+							itemActions={itemActions}
+							primaryKey={sectionConfig.listPrimaryKey}
+							secondaryKey={sectionConfig.listSecondaryKey}
+							leftIcon={sectionConfig.listIcon}/>
+						<br/>
+					</Panel>
 				</Col>
 			</Row>
 		);
@@ -99,26 +65,34 @@ class DashboardPage extends ThemeComponent {
 		}
 
 		return (
-			<div style={{position: 'relative'}}>
-				<AppTitlebar
-					style={{ position: 'fixed' }}
-					selectItem={this.props.params.section}
-					onSectionSelected={this._onSectionSelected.bind(this)}/>
-				{this.renderSectionPanel()}
-				<FabButton
-					style={fixedRB}
-					icon='add'
-					onClick={this._onFabBtnClicked.bind(this)}/>
-				<EditorDialog
-					itemId={this.props.dialog.id}
-					title={this.props.dialog.title}
-					showDialog={this.props.dialog.showDialog}
-					updating={this.props.dialog.updating}
-					fields={this.props.dialog.fields}
-					onSubmit={this._onDialogSubmit.bind(this)}
-					onCancel={() => this.props.dispatch(dismissDialog())}/>
+			<div>
+				<GnTitlebar brand='Granny Test Automation'
+					sections={[
+						{ ref: 'folders', label: 'Script' },
+						{ ref: 'parameters', label: 'Parameter' },
+						{ ref: 'packages', label: 'Package' },
+						{ ref: 'reports', label: 'Report' },
+						{ ref: 'guide', label: 'Guide' }
+					]}
+					menuTitle='Menu'
+					menus={[
+						{ ref: 'logout', label: 'Logout' },
+					]}
+					onSectionSelected={this.onSectionSelected.bind(this)}
+					onMenuSelected={this.onMenuSelected.bind(this)}/>
 			</div>
 		);
+	}
+
+	onSectionSelected(section) {
+		this.props.history.replaceState(null, `/dashboard/${section}`);
+	}
+	onMenuSelected(menu) {
+		switch(menu) {
+			case 'logout':
+				this.props.dispatch(logout());
+				break;
+		}
 	}
 
 	_onSectionSelected(section) {

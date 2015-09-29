@@ -1,15 +1,16 @@
 /**
  * Created by ruiqili on 19/9/15.
  */
-import React, { PropTypes } from 'react';
-import { Styles } from 'material-ui';
-import { ThemeComponent, LoginPanel } from '../components';
+import React, { Component, PropTypes } from 'react';
+import { FormDialog } from '../components';
+import { GnIconButton } from '../components/elements';
 // Redux
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import { login } from '../actions/user-actions';
+import { openLoginDialog, dismissDialog } from '../actions/dialog-actions';
 
-class LoginPage extends ThemeComponent {
+class LoginPage extends Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.access_token) {
             this.props.history.replaceState(null, '/dashboard/folders');
@@ -17,28 +18,26 @@ class LoginPage extends ThemeComponent {
     }
     render() {
         return (
-            <div>
-                <LoginPanel
-                    error={this.props.error}
-                    loggingIn={this.props.loggingIn}
-                    onSignUp={() => {
-                        
-                    }}
-                    onLogIn={(username, password) => {
-                        this.props.dispatch(login(username, password));
-                    }}/>
+            <div style={{height: '100%', backgroundColor: '#66cdaa', padding: 15}}>
+                <GnIconButton icon='user' label='Login' onClick={this.onLoginClicked.bind(this)}/>
+                <FormDialog {...this.props.dialog}
+                    onHide={() => this.props.dispatch(dismissDialog())}
+                    onSubmit={this.onDialogSubmit.bind(this)}/>
             </div>
         );
+    }
+    onLoginClicked() {
+        this.props.dispatch(openLoginDialog());
+    }
+    onDialogSubmit(data) {
+        this.props.dispatch(login(data.email, data.password));
     }
 }
 
 const stateSelector = createSelector(
+    state => state.dialog,
     state => state.app.access_token,
-    state => state.app.loggingIn,
-    state => state.app.error,
-    (access_token, loggingIn, error) => ({ access_token, loggingIn, error })
+    (dialog, access_token) => ({ dialog, access_token })
 );
 
 export default connect(stateSelector)(LoginPage);
-
-
