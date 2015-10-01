@@ -41,7 +41,7 @@ class FormDialog extends Component {
 
     onSubmitClicked() {
         if (this.props.fields) {
-            let allValidate = _.every(this.props.fields, field => this.refs[field.ref].isValidete());
+            let allValidate = _.every(this.props.fields, field => this.refs[field.ref].validete());
             if (allValidate) {
                 let fields = {};
                 let attachment;

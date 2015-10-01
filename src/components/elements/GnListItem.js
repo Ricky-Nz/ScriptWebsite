@@ -14,28 +14,28 @@ class GnListItem extends Component {
 		};
 
 		return (
-			<ListGroupItem href={this.props.href ? this.props.href : '#'}
-				style={this.props.style} active={this.props.selected}
-				onClick={this.props.onItemClicked ? () => (
-					this.props.onItemClicked(this.props.index)
-				) : null}>
-				<div style={horVCenter}>
+			<ListGroupItem href='#' style={Object.assign({}, this.props.style, { border: 'none' })}
+				onClick={this.props.onItemClicked}>
+				<div>
 					{this.props.icon ? <GnIcon icon={this.props.icon}/> : null}
 					<div style={smHorPadding}>
 						<div style={primaryStyle}>{this.props.primary}</div>
 						<div style={secondaryStyle}>{this.props.secondary}</div>
 					</div>
-					{this.renderMenu()}
+				<GnIcon icon='list'/>
 				</div>
 			</ListGroupItem>
 		);
 	}
 	renderMenu() {
 		if (this.props.menus) {
-			const menuItems = this.props.menus.map((menu, index) => (
-				menu.divider ? <MenuItem key={index} divider /> :
-					<MenuItem key={index} eventKey={menu.ref}>{menu.label}</MenuItem>
-			));
+			const menuItems = this.props.menus.map((menu, index) => {
+				if (menu.divider) {
+					return <MenuItem key={index} divider />;
+				} else {
+					return <MenuItem key={index} eventKey={menu.ref}>{menu.label}</MenuItem>;
+				}
+			});
 
 			return (
 				<Dropdown bsSize='xs' pullRight onSelect={this.props.onMenuSelected}>
@@ -43,7 +43,11 @@ class GnListItem extends Component {
 						<GnIcon icon='list'/>
 					</Dropdown.Toggle>
 					<Dropdown.Menu>
-						{menuItems}
+						<MenuItem eventKey="1">Action</MenuItem>
+        <MenuItem eventKey="2">Another action</MenuItem>
+        <MenuItem eventKey="3" active>Active Item</MenuItem>
+        <MenuItem divider />
+        <MenuItem eventKey="4">Separated link</MenuItem>
 					</Dropdown.Menu>
 				</Dropdown>
 			);
@@ -52,11 +56,9 @@ class GnListItem extends Component {
 }
 
 GnListItem.propTypes = {
-	index: PropTypes.number.isRequired,
 	icon: PropTypes.string,
 	primary: PropTypes.string.isRequired,
 	secondary: PropTypes.string,
-	selected: PropTypes.bool,
 	menus: PropTypes.arrayOf({
 		ref: PropTypes.string.isRequired,
 		label: PropTypes.string.isRequired,

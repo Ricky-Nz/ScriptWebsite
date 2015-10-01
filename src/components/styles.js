@@ -29,6 +29,8 @@ export const horCenter = {
 	alignItems: 'center'
 };
 
+export const horCenterPadding = Object.assign({padding: 10}, horCenter);
+
 export const verCenter = {
 	display: 'flex',
 	flexDirection: 'column',

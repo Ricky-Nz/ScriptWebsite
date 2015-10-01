@@ -64,17 +64,20 @@ export function dialogSubmit (fields, id, attachment, label) {
 	}
 }
 
-export function querySectionData (section, selection) {
-	switch(section) {
-		case 'folders':
-			return queryItems('/testers/:userId/folders', selection, LOAD_FOLDERS);
-		case 'parameters':
-			return queryItems('/testers/:userId/parameters', selection, LOAD_PARAMETERS);
-		case 'packages':
-			return queryItems('/testers/:userId/packages', selection, LOAD_PACKAGES);
-		case 'reports':
-			return queryItems('/testers/:userId/reports', selection, LOAD_REPORTS);
-	}
+export function queryFolders (selection) {
+	return queryItems('/testers/:userId/folders', selection, LOAD_FOLDERS);
+}
+
+export function queryParameters (selection) {
+	return queryItems('/testers/:userId/parameters', selection, LOAD_PARAMETERS);
+}
+
+export function queryPackages (selection) {
+	return queryItems('/testers/:userId/packages', selection, LOAD_PACKAGES);
+}
+
+export function queryReports (selection) {
+	return queryItems('/testers/:userId/reports', selection, LOAD_REPORTS);
 }
 
 export function queryScripts (folderId, selection) {

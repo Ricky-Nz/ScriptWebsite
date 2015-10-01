@@ -22,7 +22,7 @@ class GnTitlebar extends Component {
 		));
 
 		return (
-			<Nav navbar onSelect={key => this.props.onSectionSelected(key)}>
+			<Nav navbar onSelect={this.props.onSectionSelected}>
 				{sectionItems}
 			</Nav>
 		);
@@ -63,8 +63,8 @@ GnTitlebar.propTypes = {
 		label: PropTypes.string.isRequired,
 		divider: PropTypes.bool
 	}),
-	onSectionSelected: PropTypes.func,
-	onMenuSelected: PropTypes.func
+	onMenuSelected: PropTypes.func,
+	onSectionSelected: PropTypes.func
 };
 
 export default GnTitlebar;

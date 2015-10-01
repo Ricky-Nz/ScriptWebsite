@@ -6,7 +6,7 @@ import { extratProps, combinePropTypes } from './componentUtils';
 class GnIconButton extends Component {
 	render() {
 		return (
-            <Button {...this.props} onClick={this.props.onClick}>
+            <Button {...this.props}>
                 <GnIcon {...extratProps(this.props, GnIcon)}/>
                 <span style={{marginLeft: 5}}>{this.props.label}</span>
             </Button>

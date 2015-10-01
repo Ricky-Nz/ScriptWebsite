@@ -16,69 +16,56 @@ export function showLoginDialog () {
     };
 }
 
-const [FOLDERS, PARAMETERS, PACKAGES, REPORTS] = ['folders', 'parameters', 'packages', 'reports'];
-
 export function showFormDialog (section, item) {
+	let dialogConfig = {
+		label: section,
+    	show: true,
+        type: TOGGLE_DIALOG,
+        submitText: 'Submit',
+        itemId: item ? item.id : null,
+        size: 'medium'
+	};
+
 	switch(section) {
-		case FOLDERS:
-			return {
-				label: section,
-		    	show: true,
-		        type: TOGGLE_DIALOG,
+		case 'folders':
+			Object.assign(dialogConfig, {
 		        title: `${item ? 'Edit' : 'New'} Folder`,
-		        itemId: item ? item.id : null,
-		        size: 'medium',
-		        submitText: 'Submit',
 		        fields: [
 		        	{ ref: 'title', icon: 'file-text-o', label: 'Title', placeholder: 'folder title', type: 'text', required: true}
 		        ]
-		    };
-			break;
-		case PARAMETERS:
-			return {
-				label: section,
-		    	show: true,
-		        type: TOGGLE_DIALOG,
+		    });
+		    break;
+		case 'parameters':
+			Object.assign(dialogConfig, {
 		        title: `${item ? 'Edit' : 'New'} Parameter`,
-		        itemId: item ? item.id : null,
-		        size: 'medium',
-		        submitText: 'Submit',
 		        fields: [
 		        	{ ref: 'key', icon: 'edit', label: 'Key', placeholder: 'parameter key', type: 'text', required: true},
 		        	{ ref: 'value', icon: 'edit', label: 'Value', placeholder: 'parameter value', type: 'text'}
 		        ]
-		    };
-			break;
-		case PACKAGES:
-			return {
-				label: section,
-		    	show: true,
-		        type: TOGGLE_DIALOG,
+		    });
+		    break;
+		case 'packages':
+			Object.assign(dialogConfig, {
 		        title: 'Upload Package',
-		        size: 'medium',
-		        submitText: 'Submit',
 		        fields: [
 		        	{ ref: 'title', icon: 'edit', label: 'Title', placeholder: 'package title', type: 'text', required: true},
 		        	{ ref: 'description', icon: 'edit', label: 'Description', placeholder: 'package description', type: 'text'},
 		        	{ ref: 'file', icon: 'paperclip', label: 'Attachment', type: 'file', required: true}
 		        ]
-		    };
-			break;
-		case REPORTS:
-			return {
-				label: section,
-		    	show: true,
-		        type: TOGGLE_DIALOG,
+		    });
+		    break;
+		case 'reports':
+			Object.assign(dialogConfig, {
 		        title: 'Upload Report',
-		        size: 'medium',
-		        submitText: 'Submit',
 		        fields: [
 		        	{ ref: 'title', icon: 'edit', label: 'Title', placeholder: 'folder title', type: 'text', required: true},
 		        	{ ref: 'file', icon: 'paperclip', label: 'Attachment', type: 'file', required: true}
 		        ]
-		    };
-			break;
+		    });
+		    break;
 	}
+
+	return dialogConfig;
 }
 
 export function dismissDialog () {
