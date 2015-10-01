@@ -4,7 +4,7 @@ import { Navbar, CollapsibleNav, NavDropdown, Nav, NavItem, MenuItem } from 'rea
 class GnTitlebar extends Component {
 	render() {
 		return (
-			<Navbar brand={<a href={this.props.brandHref}>{this.props.brand}</a>} toggleNavKey='collapsable-menu'>
+			<Navbar style={{margin: 0}} brand={<a href='/'>{this.props.brand}</a>} toggleNavKey='collapsable-menu'>
 				<CollapsibleNav eventKey='collapsable-menu'>
 					{this.renderLeftNavbar()}
 					{this.renderRightNavbar()}

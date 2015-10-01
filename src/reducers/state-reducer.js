@@ -1,9 +1,9 @@
 import { TOGGLE_DIALOG } from '../actions/dialog-actions';
 import { LOGIN, LOGOUT, REGISTER } from '../actions/user-actions';
-import { CREATE_FOLDER, UPDATE_FOLDER, LOAD_FOLDERS, SEARCH_FOLDERS,
-		CREATE_PARAMETER, UPDATE_PARAMETER, LOAD_PARAMETERS, SEARCH_PARAMETERS,
-		CREATE_PACKAGE, LOAD_PACKAGES, SEARCH_PACKAGES,
-		CREATE_REPORT, LOAD_REPORTS, SEARCH_REPORTS } from '../actions/crud-actions';
+import { CREATE_FOLDER, UPDATE_FOLDER, LOAD_FOLDERS,
+		CREATE_PARAMETER, UPDATE_PARAMETER, LOAD_PARAMETERS,
+		CREATE_PACKAGE, LOAD_PACKAGES,
+		CREATE_REPORT, LOAD_REPORTS, LOAD_SCRIPTS } from '../actions/crud-actions';
 import _ from 'underscore';
 
 export function app (state = {}, action) {
@@ -61,25 +61,12 @@ export function dialog (state = {}, action) {
 	}
 }
 
-export function foldersPanel (state = {}, action) {
-	return queryResultReducer(state, action, LOAD_FOLDERS, SEARCH_FOLDERS);
-}
-
-export function parametersPanel (state = {}, action) {
-	return queryResultReducer(state, action, LOAD_PARAMETERS, SEARCH_PARAMETERS);
-}
-
-export function packagesPanel (state = {}, action) {
-	return queryResultReducer(state, action, LOAD_PACKAGES, SEARCH_PACKAGES);
-}
-
-export function reportsPanel (state = {}, action) {
-	return queryResultReducer(state, action, LOAD_REPORTS, SEARCH_REPORTS);
-}
-
-function queryResultReducer (state, action, LOAD_ACTION, SEARCH_ACTION) {
+export function mainState (state = {}, action) {
 	switch(action.type) {
-		case LOAD_ACTION: {
+		case LOAD_FOLDERS:
+		case LOAD_PARAMETERS:
+		case LOAD_PACKAGES:
+		case LOAD_REPORTS: {
 			if (action.finished) {
 				return Object.assign({}, state, {
 							loading: false,
@@ -92,16 +79,23 @@ function queryResultReducer (state, action, LOAD_ACTION, SEARCH_ACTION) {
 							error: null });
 			}
 		}
-		case SEARCH_ACTION: {
+		default:
+			return state;
+	}
+}
+
+export function secondaryState (state = {}, action) {
+	switch(action.type) {
+		case LOAD_SCRIPTS: {
 			if (action.finished) {
 				return Object.assign({}, state, {
-							searching: false,
-							searchText: action.args,
-							error: action.error});
+							loading: false,
+							error: action.error,
+							total: action.result.total,
+							skip: action.result.skip });
 			} else {
 				return Object.assign({}, state, {
-							searching: true,
-							searchText: action.args,
+							loading: true,
 							error: null });
 			}
 		}
@@ -109,7 +103,4 @@ function queryResultReducer (state, action, LOAD_ACTION, SEARCH_ACTION) {
 			return state;
 	}
 }
-
-
-
 

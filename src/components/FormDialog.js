@@ -43,24 +43,33 @@ class FormDialog extends Component {
         if (this.props.fields) {
             let allValidate = _.every(this.props.fields, field => this.refs[field.ref].isValidete());
             if (allValidate) {
-                let resultItem = {};
-                this.props.fields.forEach(item => resultItem[item.ref] = this.refs[item.ref].getValue());
-                this.props.onSubmit(resultItem);
+                let fields = {};
+                let attachment;
+                this.props.fields.forEach(item => {
+                    if (item.type == 'file') {
+                        attachment = this.refs[item.ref].getValue();
+                    } else {
+                        fields[item.ref] = this.refs[item.ref].getValue();
+                    }
+                });
+                this.props.onSubmit(fields, this.props.itemId, attachment, this.props.label);
             }
         } else {
-            this.props.onSubmit();
+            this.props.onSubmit(this.props.label);
         }
     }
 }
 
 FormDialog.propTypes = {
-    title: PropTypes.string.isRequired,
-    show: PropTypes.bool.isRequired,
+    label: PropTypes.string,
+    itemId: PropTypes.string,
+    title: PropTypes.string,
+    show: PropTypes.bool,
     size: PropTypes.oneOf(['small', 'medium', 'large']),
     fields: PropTypes.arrayOf(
                 Object.assign({ ref: PropTypes.string.isRequired }, GnInput.propTypes)
             ),
-    submitText: PropTypes.string.isRequired,
+    submitText: PropTypes.string,
     error: PropTypes.string,
     processing: PropTypes.bool,
     onHide: PropTypes.func.isRequired,
@@ -68,7 +77,8 @@ FormDialog.propTypes = {
 };
 
 FormDialog.defaultProps = {
-    size: 'medium'
+    size: 'medium',
+    submitText: 'Submit'
 };
 
 export default FormDialog;

@@ -39,5 +39,5 @@ export default store => next => action => {
                 args: apiCall.args
             });
         });
-    }, 1000);
+    }, 500);
 }

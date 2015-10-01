@@ -1,6 +1,6 @@
 export const TOGGLE_DIALOG = 'TOGGLE_DIALOG';
 
-export function openLoginDialog () {
+export function showLoginDialog () {
     return {
     	show: true,
         type: TOGGLE_DIALOG,
@@ -16,77 +16,69 @@ export function openLoginDialog () {
     };
 }
 
-export function showCreateParameterDialog () {
-	return {
-		type: SHOW_DIALOG,
-		title: 'New Parameter',
-		fields: [
-			{ref: 'key', hint: 'parameter key', label: 'Key', type: 'text', required: true},
-			{ref: 'value', hint: 'parameter value', label: 'Value', type: 'text', required: false}
-		]
-	};
-}
+const [FOLDERS, PARAMETERS, PACKAGES, REPORTS] = ['folders', 'parameters', 'packages', 'reports'];
 
-export function showEditParameterDialog (item) {
-	let fields = [
-		{ref: 'key', hint: 'parameter key', label: 'Key', type: 'text', required: true},
-		{ref: 'value', hint: 'parameter value', label: 'Value', type: 'text', required: false}
-	];
-	fields.forEach(field => field.value = item[field.ref]);
-
-	return {
-		type: SHOW_DIALOG,
-		title: 'Edit Parameter',
-		id: item.id,
-		fields: fields
-	};
-}
-
-export function showCreateFolderDialog () {
-	return {
-		type: SHOW_DIALOG,
-		title: 'New Folder',
-		fields: [
-			{ref: 'title', hint: 'folder title', label: 'Title', type: 'text', required: true}
-		]
-	};
-}
-
-export function showEditFolderDialog (item) {
-	let fields = [
-		{ref: 'title', hint: 'folder title', label: 'Title', type: 'text', required: true}
-	];
-	fields.forEach(field => field.value = item[field.ref]);
-
-	return {
-		type: SHOW_DIALOG,
-		title: 'Edit Folder',
-		id: item.id,
-		fields: fields
-	};
-}
-
-export function showCreatePackageDialog () {
-	return {
-		type: SHOW_DIALOG,
-		title: 'New Package',
-		fields: [
-			{ref: 'title', hint: 'package title', label: 'Title', type: 'text', required: true},
-			{ref: 'description', hint: 'package description', label: 'Description', type: 'text', required: false},
-			{ref: 'file', type: 'file', required: true}
-		]
-	};
-}
-
-export function showCreateReportDialog () {
-	return {
-		type: SHOW_DIALOG,
-		title: 'New Report',
-		fields: [
-			{ref: 'title', hint: 'report title', label: 'Title', type: 'text', required: true},
-			{ref: 'file', type: 'file', required: true}
-		]
-	};
+export function showFormDialog (section, item) {
+	switch(section) {
+		case FOLDERS:
+			return {
+				label: section,
+		    	show: true,
+		        type: TOGGLE_DIALOG,
+		        title: `${item ? 'Edit' : 'New'} Folder`,
+		        itemId: item ? item.id : null,
+		        size: 'medium',
+		        submitText: 'Submit',
+		        fields: [
+		        	{ ref: 'title', icon: 'file-text-o', label: 'Title', placeholder: 'folder title', type: 'text', required: true}
+		        ]
+		    };
+			break;
+		case PARAMETERS:
+			return {
+				label: section,
+		    	show: true,
+		        type: TOGGLE_DIALOG,
+		        title: `${item ? 'Edit' : 'New'} Parameter`,
+		        itemId: item ? item.id : null,
+		        size: 'medium',
+		        submitText: 'Submit',
+		        fields: [
+		        	{ ref: 'key', icon: 'edit', label: 'Key', placeholder: 'parameter key', type: 'text', required: true},
+		        	{ ref: 'value', icon: 'edit', label: 'Value', placeholder: 'parameter value', type: 'text'}
+		        ]
+		    };
+			break;
+		case PACKAGES:
+			return {
+				label: section,
+		    	show: true,
+		        type: TOGGLE_DIALOG,
+		        title: 'Upload Package',
+		        size: 'medium',
+		        submitText: 'Submit',
+		        fields: [
+		        	{ ref: 'title', icon: 'edit', label: 'Title', placeholder: 'package title', type: 'text', required: true},
+		        	{ ref: 'description', icon: 'edit', label: 'Description', placeholder: 'package description', type: 'text'},
+		        	{ ref: 'file', icon: 'paperclip', label: 'Attachment', type: 'file', required: true}
+		        ]
+		    };
+			break;
+		case REPORTS:
+			return {
+				label: section,
+		    	show: true,
+		        type: TOGGLE_DIALOG,
+		        title: 'Upload Report',
+		        size: 'medium',
+		        submitText: 'Submit',
+		        fields: [
+		        	{ ref: 'title', icon: 'edit', label: 'Title', placeholder: 'folder title', type: 'text', required: true},
+		        	{ ref: 'file', icon: 'paperclip', label: 'Attachment', type: 'file', required: true}
+		        ]
+		    };
+			break;
+	}
 }
 
 export function dismissDialog () {

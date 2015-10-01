@@ -1,14 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { Input } from 'react-bootstrap';
 
-class SearchBar extends Component {
+class GnSearchBar extends Component {
 	render() {
 		return (
-			<Input type='text' label={this.props.label}
+			<Input ref='input' type='text' label={this.props.label}
 				placeholder={this.props.placeholder} onChange={this.onTextChange.bind(this)} />
 		);
 	}
-	onTextChange(e) {
+	onTextChange() {
 		if (this.state && this.state.timer) {
 			clearTimeout(this.state.timer);
 		}
@@ -16,25 +16,28 @@ class SearchBar extends Component {
 		if (this.props.delay > 0) {
 			this.setState({
 				timer: setTimeout(() => {
-					this.props.onSearch(e.target.value);
+					this.props.onSearch(this.refs.input.getValue());
 				}, this.props.delay)
 			});
 		} else {
-			this.props.onSearch(e.target.value);
+			this.props.onSearch(this.refs.input.getValue());
 		}
+	}
+	getValue() {
+		return this.refs.input.getValue();
 	}
 }
 
-SearchBar.propTypes = {
+GnSearchBar.propTypes = {
 	placeholder: PropTypes.string,
 	label: PropTypes.string,
 	onSearch: PropTypes.func.isRequired,
 	delay: PropTypes.number
 };
 
-SearchBar.defaultProps = {
+GnSearchBar.defaultProps = {
 	delay: 500
 }
 
-export default SearchBar;
+export default GnSearchBar;
 

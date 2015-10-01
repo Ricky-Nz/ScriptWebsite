@@ -8,7 +8,7 @@ import { GnIconButton } from '../components/elements';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import { login } from '../actions/user-actions';
-import { openLoginDialog, dismissDialog } from '../actions/dialog-actions';
+import { showLoginDialog, dismissDialog } from '../actions/dialog-actions';
 
 class LoginPage extends Component {
     componentWillReceiveProps(nextProps) {
@@ -19,18 +19,12 @@ class LoginPage extends Component {
     render() {
         return (
             <div style={{height: '100%', backgroundColor: '#66cdaa', padding: 15}}>
-                <GnIconButton icon='user' label='Login' onClick={this.onLoginClicked.bind(this)}/>
+                <GnIconButton icon='user' label='Login' onClick={() => this.props.dispatch(showLoginDialog())}/>
                 <FormDialog {...this.props.dialog}
                     onHide={() => this.props.dispatch(dismissDialog())}
-                    onSubmit={this.onDialogSubmit.bind(this)}/>
+                    onSubmit={user => this.props.dispatch(login(user.email, user.password))}/>
             </div>
         );
-    }
-    onLoginClicked() {
-        this.props.dispatch(openLoginDialog());
-    }
-    onDialogSubmit(data) {
-        this.props.dispatch(login(data.email, data.password));
     }
 }
 

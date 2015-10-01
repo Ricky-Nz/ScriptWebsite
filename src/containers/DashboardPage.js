@@ -1,67 +1,40 @@
 import React, { Component, PropTypes } from 'react';
-import { GnTitlebar } from '../components';
-import { fixedRB, verCenter } from '../components/styles';
+import { GnTitlebar } from '../components/elements';
+import { SearchableList, FormDialog } from '../components';
 import { Panel, Row, Col } from 'react-bootstrap';
 // Redux
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { sectionConfigs } from '../config';
-import { showCreateParameterDialog, showEditParameterDialog, showCreateFolderDialog, showEditFolderDialog,
-		showCreatePackageDialog, showCreateReportDialog, dismissDialog } from '../actions/dialog-actions';
-import { createFolder, updateFolder, deleteFolder, searchFolders, loadFolders,
-		createParameter, updateParameter, deleteParameter, searchParameters, loadParameters,
-		createPackage, deletePackage, searchPackages, loadPackages,
-		createReport, deleteReport, searchReports, loadReports } from '../actions/crud-actions';
+import { showFormDialog, dismissDialog } from '../actions/dialog-actions';
+import { dialogSubmit, querySectionData, queryScripts } from '../actions/crud-actions';
 
-const [FOLDERS, PARAMETERS, PACKAGES, REPORTS] = ['folders', 'parameters', 'packages', 'reports'];
+const panelConfigs = {
+	folders: {
+		mainPanel: { xs: 6, sm: 5, md: 4 },
+		secondaryPanel: { xs: 6, sm: 7, md: 8 },
+		secondaryLabel: 'scripts'
+	},
+	parameters: {
+		mainPanel: { xs: 12, sm: 10, smOffset: 1, md: 8, mdOffset: 2, lg: 6, lgOffset: 3 }
+	},
+	packages: {
+		mainPanel: { xs: 12, sm: 10, smOffset: 1, md: 8, mdOffset: 2, lg: 6, lgOffset: 3 }
+	},
+	reports: {
+		mainPanel: { xs: 12, sm: 10, smOffset: 1, md: 8, mdOffset: 2, lg: 6, lgOffset: 3 }
+	}
+};
 
 class DashboardPage extends Component {
     componentDidMount() {
     	if (!this.props.access_token) {
             return this.props.history.replaceState(null, '/login');
-        } else if (!sectionConfigs[this.props.params.section]) {
-        	return this.props.history.replaceState(null, '/dashboard/folders');
         }
-
-        this._onLoadSectionDatas(this.props.params.section);
-    }
-    componentWillReceiveProps(nextProps) {
-    	if (!sectionConfigs[nextProps.params.section]) {
-        	return this.props.history.replaceState(null, '/dashboard/folders');
-        }
-
-    	if (this.props.params.section != nextProps.params.section) {
-    		this._onLoadSectionDatas(nextProps.params.section);
-    	}
-    }
-    renderSectionPanel() {
-
-		return (
-			<Row style={{paddingTop: 66, height: '100%'}}>
-				<Col {...sectionConfig.display}>
-					<Panel>
-						<SearchBar searching={sectionState.searching}
-							hint={sectionConfig.searchbarHint}
-							onSearch={this._onSearchSectionData.bind(this)}/>
-						<AutoLoadMoreList
-							datas={listDatas}
-							header={listHeader}
-							loading={loading}
-							itemActions={itemActions}
-							primaryKey={sectionConfig.listPrimaryKey}
-							secondaryKey={sectionConfig.listSecondaryKey}
-							leftIcon={sectionConfig.listIcon}/>
-						<br/>
-					</Panel>
-				</Col>
-			</Row>
-		);
     }
 	render() {
-		if (!this.props.access_token || !sectionConfigs[this.props.params.section]) {
-			return (
-				<div>Redirecting...</div>
-			);
+		const config = panelConfigs[this.props.params.section];
+		if (!this.props.access_token || !config) {
+			return null;
 		}
 
 		return (
@@ -78,125 +51,66 @@ class DashboardPage extends Component {
 					menus={[
 						{ ref: 'logout', label: 'Logout' },
 					]}
-					onSectionSelected={this.onSectionSelected.bind(this)}
-					onMenuSelected={this.onMenuSelected.bind(this)}/>
+					onSectionSelected={section => this.props.history.replaceState(null, `/dashboard/${section}`)}
+					onMenuSelected={() => this.props.dispatch(logout())}/>
+				<Row>
+					{config.mainPanel ?
+						<Col {...config.mainPanel}>
+							<SearchableList
+								label={this.props.params.section}
+								datas={this.props.mainDatas}
+								loading={this.props.mainState.loading}
+								skip={this.props.mainState.skip}
+								total={this.props.mainState.total}
+								selectIndex={this.props.location.query ? this.props.location.query.folder : null}
+								onLoadData={(label, selection) => this.props.dispatch(querySectionData(label, selection))}
+								onCreateItem={label => this.props.dispatch(showFormDialog(label))}
+								onItemClicked={(label, index, item) => {
+									if (label == 'folders') {
+										this.props.history.replaceState(null, `/dashboard/folders?select=${index}`);
+									}
+								}}/>
+						</Col> : null
+					}
+					{config.secondaryPanel && this.props.location.query.select >= 0 ?
+						<Col {...config.secondaryPanel}>
+							<SearchableList
+								label={config.secondaryLabel}
+								args={this.props.location.query.select}
+								datas={this.props.secondaryDatas}
+								loading={this.props.secondaryDatas.loading}
+								skip={this.props.secondaryState.skip}
+								total={this.props.secondaryState.total}
+								onLoadData={(label, selection, args) => {
+									if (label == 'scripts') {
+										this.props.dispatch(queryScripts(this.props.mainDatas[args].id, selection));
+									}
+								}}
+								onCreateItem={label => console.log(label)}
+								onItemClicked={(label, index, item) => {
+									console.log(item);
+								}}/>
+						</Col> : null
+					}
+				</Row>
+				<FormDialog {...this.props.dialog}
+                    onHide={() => this.props.dispatch(dismissDialog())}
+                    onSubmit={(itemId, fields, attachment, label) =>
+                    	this.props.dispatch(dialogSubmit(itemId, fields, attachment, label))}/>
 			</div>
 		);
-	}
-
-	onSectionSelected(section) {
-		this.props.history.replaceState(null, `/dashboard/${section}`);
-	}
-	onMenuSelected(menu) {
-		switch(menu) {
-			case 'logout':
-				this.props.dispatch(logout());
-				break;
-		}
-	}
-
-	_onSectionSelected(section) {
-		this.props.history.replaceState(null, `/dashboard/${section}`)
-	}
-	_onFabBtnClicked() {
-		switch(this.props.params.section) {
-			case FOLDERS:
-				this.props.dispatch(showCreateFolderDialog());
-				break;
-			case PARAMETERS:
-				this.props.dispatch(showCreateParameterDialog());
-				break;
-			case PACKAGES:
-				this.props.dispatch(showCreatePackageDialog());
-				break;
-			case REPORTS:
-				this.props.dispatch(showCreateReportDialog());
-				break;
-		}
-	}
-	_onDialogSubmit(id, fields, attachment) {
-		switch(this.props.params.section) {
-			case FOLDERS:
-				this.props.dispatch(id ? updateFolder(id, fields) : createFolder(fields));
-				break;
-			case PARAMETERS:
-				this.props.dispatch(id ? updateParameter(id, fields) : createParameter(fields));
-				break;
-			case PACKAGES:
-				this.props.dispatch(createPackage(fields, attachment));
-				break;
-			case REPORTS:
-				this.props.dispatch(createReport(fields, attachment));
-				break;
-		}
-	}
-	_onLoadSectionDatas(section) {
-		switch(section) {
-			case FOLDERS:
-				this.props.dispatch(loadFolders());
-				break;
-			case PARAMETERS:
-				this.props.dispatch(loadParameters());
-				break;
-			case PACKAGES:
-				this.props.dispatch(loadPackages());
-				break;
-			case REPORTS:
-				this.props.dispatch(loadReports());
-				break;
-		}
-	}
-	_onSearchSectionData(text) {
-		switch(this.props.params.section) {
-			case FOLDERS:
-				this.props.dispatch(searchFolders(text));
-				break;
-			case PARAMETERS:
-				this.props.dispatch(searchParameters(text));
-				break;
-			case PACKAGES:
-				this.props.dispatch(searchPackages(text));
-				break;
-			case REPORTS:
-				this.props.dispatch(searchReports(text));
-				break;
-		}
-	}
-	_onListItemEdit(item) {
-		switch(this.props.params.section) {
-			case FOLDERS:
-				this.props.dispatch(showEditFolderDialog(item));
-				break;
-			case PARAMETERS:
-				this.props.dispatch(showEditParameterDialog(item));
-				break;
-		}
-	}
-	_onListItemDelete(item) {
-		switch(this.props.params.section) {
-			case FOLDERS:
-				this.props.dispatch(deleteFolder(item.id));
-				break;
-			case PARAMETERS:
-				this.props.dispatch(deleteParameter(item.id));
-				break;
-			case PACKAGES:
-				this.props.dispatch(deletePackage(item.id));
-				break;
-			case REPORTS:
-				this.props.dispatch(deleteReport(item.id));
-				break;
-		}
 	}
 }
 
 const propsSelector = createSelector(
 	state => state.app.access_token,
 	state => state.dialog,
-	(state, props) => state[props.params.section],
-	(state, props) => state[`${props.params.section}Panel`],
-	state => state.searchResults,
-    (access_token, dialog, sectionDatas, sectionState, searchResults) => ({ access_token, dialog, sectionDatas, sectionState, searchResults })
+	state => state.mainDatas,
+	state => state.mainState,
+	state => state.secondaryDatas,
+	state => state.secondaryState,
+    (access_token, dialog, mainDatas, mainState, secondaryDatas, secondaryState) =>
+    	({ access_token, dialog, mainDatas, mainState, secondaryDatas, secondaryState })
 );
 
 export default connect(propsSelector)(DashboardPage);

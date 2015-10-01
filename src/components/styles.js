@@ -1,3 +1,27 @@
+export const smHorPadding = {
+	padding: '0px 10px'
+};
+
+export const horVCenterRight = {
+	display: 'flex',
+	flexDirection: 'row',
+	alignItems: 'center',
+	justifyContent: 'flex-end'
+};
+
+export const horVCenterSpaceBetween = {
+	display: 'flex',
+	flexDirection: 'row',
+	alignItems: 'center',
+	justifyContent: 'space-between'
+};
+
+export const horVCenter = {
+	display: 'flex',
+	flexDirection: 'row',
+	alignItems: 'center'
+};
+
 export const horCenter = {
 	display: 'flex',
 	flexDirection: 'row',
@@ -31,3 +55,4 @@ export const errorStyle = {
 	color: 'red',
 	minHeight: 20
 };
+

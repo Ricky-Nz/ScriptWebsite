@@ -1,7 +1,7 @@
 import _ from 'underscore';
 
 export function extratProps (source, Element) {
-	return _.pick(source, {..._.keys(Element.propTypes)});
+	return _.pick(source, (value, key) => _.has(Element.propTypes, key))
 }
 
 export function combinePropTypes (...elements) {
