@@ -3,8 +3,10 @@
  */
 import FormDialog from './FormDialog';
 import SearchableList from './SearchableList';
+import ScriptPanel from './ScriptPanel';
 
 export default {
     FormDialog,
-    SearchableList
+    SearchableList,
+    ScriptPanel
 };

@@ -8,15 +8,16 @@ import { showFormDialog } from '../actions/dialog-actions';
 import { queryParameters } from '../actions/crud-actions';
 
 class DashboardParameter extends Component {
+	componentDidMount() {
+		this.props.dispatch(queryParameters());
+	}
 	render() {
 		const config = {
 			searchbarPlaceholder: 'search for parameter key or value ',
 			listHeader: 'Golabel Parameters',
 			itemIcon: 'code',
-			itemMenu: [
-				{ref: 'edit', label: 'Edit'},
-				{ref: 'delete', label: 'Delete'}
-			],
+			showEditBtn: true,
+			showDeleteBtn: true,
 			primaryKey: 'key',
 			secondaryKey: 'value',
 			searchable: ['key', 'value']

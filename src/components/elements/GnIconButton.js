@@ -7,16 +7,16 @@ class GnIconButton extends Component {
 	render() {
 		return (
             <Button {...this.props}>
-                <GnIcon {...extratProps(this.props, GnIcon)}/>
-                <span style={{marginLeft: 5}}>{this.props.label}</span>
+                {this.props.active ? <GnIcon icon='spinner' active/> : <GnIcon {...extratProps(this.props, GnIcon)}/>}
+                {this.props.label ? <span style={{marginLeft: 5}}>{this.props.label}</span> : null}
             </Button>
 		);
 	}
 }
 
 GnIconButton.propTypes = combinePropTypes(GnIcon, {
-	onClick: PropTypes.func,
-	label: PropTypes.string.isRequired
+	label: PropTypes.string,
+	active: PropTypes.bool
 });
 
 export default GnIconButton;

@@ -1,9 +1,9 @@
 import { TOGGLE_DIALOG } from '../actions/dialog-actions';
 import { LOGIN, LOGOUT, REGISTER } from '../actions/user-actions';
-import { CREATE_FOLDER, UPDATE_FOLDER, LOAD_FOLDERS,
-		CREATE_PARAMETER, UPDATE_PARAMETER, LOAD_PARAMETERS,
-		CREATE_PACKAGE, LOAD_PACKAGES,
-		CREATE_REPORT, LOAD_REPORTS, LOAD_SCRIPTS } from '../actions/crud-actions';
+import { CREATE_FOLDER, UPDATE_FOLDER, DELETE_FOLDER, LOAD_FOLDERS,
+		CREATE_PARAMETER, UPDATE_PARAMETER, DELETE_PARAMETER, LOAD_PARAMETERS,
+		CREATE_PACKAGE, DELETE_PACKAGE, LOAD_PACKAGES,
+		CREATE_REPORT, DELETE_REPORT, LOAD_REPORTS, LOAD_SCRIPTS } from '../actions/crud-actions';
 import _ from 'underscore';
 
 export function app (state = {}, action) {
@@ -45,7 +45,7 @@ export function app (state = {}, action) {
 export function dialog (state = {}, action) {
 	switch(action.type) {
 		case TOGGLE_DIALOG:
-			return Object.assign({}, state, _.omit(action, 'type'));
+			return Object.assign({}, _.omit(action, 'type'));
 		case LOGIN:
 		case REGISTER:
 		case CREATE_FOLDER:
@@ -54,6 +54,10 @@ export function dialog (state = {}, action) {
 		case CREATE_REPORT:
 		case UPDATE_FOLDER:
 		case UPDATE_PARAMETER:
+		case DELETE_FOLDER:
+		case DELETE_PARAMETER:
+		case DELETE_PACKAGE:
+		case DELETE_REPORT:
 			return Object.assign({}, state, { processing: !action.finished, error: action.error },
 						action.finished && !action.error ? { show: false} : null);
 		default:

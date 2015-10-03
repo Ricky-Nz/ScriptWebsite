@@ -8,14 +8,16 @@ import { showFormDialog } from '../actions/dialog-actions';
 import { queryPackages } from '../actions/crud-actions';
 
 class DashboardPackage extends Component {
+	componentDidMount() {
+		this.props.dispatch(queryPackages());
+	}
 	render() {
 		const config = {
 			searchbarPlaceholder: 'search for package title or descriptions',
 			listHeader: 'Installation Packages',
 			itemIcon: 'android',
-			itemMenu: [
-				{ref: 'delete', label: 'Delete'}
-			],
+			showEditBtn: false,
+			showDeleteBtn: true,
 			primaryKey: 'title',
 			secondaryKey: 'description',
 			searchable: ['title', 'description']

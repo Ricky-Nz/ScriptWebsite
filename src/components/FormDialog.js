@@ -25,7 +25,7 @@ class FormDialog extends Component {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={this.props.onHide}>Cancel</Button>
-                    <GnSpinnerButton bsStyle="primary" active={this.props.processing}
+                    <GnSpinnerButton bsStyle={this.props.submitStyle} active={this.props.processing}
                         label={this.props.submitText} onClick={this.onSubmitClicked.bind(this)}/>
                 </Modal.Footer>
             </Modal>
@@ -36,7 +36,7 @@ class FormDialog extends Component {
             return null;
         }
 
-        return this.props.fields.map(field => <GnInput ref={field.ref} {...field} />);
+        return this.props.fields.map((field, index) => <GnInput key={index} ref={field.ref} {...field} />);
     }
 
     onSubmitClicked() {
@@ -55,7 +55,7 @@ class FormDialog extends Component {
                 this.props.onSubmit(fields, this.props.itemId, attachment, this.props.label);
             }
         } else {
-            this.props.onSubmit(this.props.label);
+            this.props.onSubmit(null, this.props.itemId, null, this.props.label);
         }
     }
 }
@@ -64,12 +64,12 @@ FormDialog.propTypes = {
     label: PropTypes.string,
     itemId: PropTypes.string,
     title: PropTypes.string,
+    message: PropTypes.string,
     show: PropTypes.bool,
     size: PropTypes.oneOf(['small', 'medium', 'large']),
-    fields: PropTypes.arrayOf(
-                Object.assign({ ref: PropTypes.string.isRequired }, GnInput.propTypes)
-            ),
+    fields: PropTypes.array,
     submitText: PropTypes.string,
+    submitStyle: PropTypes.string,
     error: PropTypes.string,
     processing: PropTypes.bool,
     onHide: PropTypes.func.isRequired,
@@ -78,7 +78,8 @@ FormDialog.propTypes = {
 
 FormDialog.defaultProps = {
     size: 'medium',
-    submitText: 'Submit'
+    submitText: 'Submit',
+    submitStyle: 'primary'
 };
 
 export default FormDialog;

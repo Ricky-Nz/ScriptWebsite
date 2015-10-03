@@ -5,38 +5,38 @@ import { horVCenterSpaceBetween } from './styles';
 import _ from 'underscore';
 
 class SearchableList extends Component {
-	componentDidMount() {
-		this.loadData();
-	}
 	render() {
 		const config = this.props.config;
 		return (
 			<Panel style={this.props.style}>
 				<GnSearchbar ref='searchbar' placeholder={config.searchbarPlaceholder}
-					onSearch={searchText => this.loadData(searchText)}/>
+					onSearch={searchText => this.loadData(this.props, searchText)}/>
 				<GnList
 					header={config.listHeader}
 					itemIcon={config.itemIcon}
-					menus={config.itemMenu}
+					showEditBtn={config.showEditBtn}
+					showDeleteBtn={config.showDeleteBtn}
 					primaryKey={config.primaryKey}
 					secondaryKey={config.secondaryKey}
 					datas={this.props.datas}
 					loaded={this.props.skip}
 					total={this.props.total}
 					onCreateItem={this.props.onCreateItem}
-					onLoadMore={() => this.loadData(this.refs.searchbar.getValue(), true)}
+					onLoadMore={() => this.loadData(this.props, this.refs.searchbar.getValue(), true)}
 					loading={this.props.loading}
-					onItemClicked={this.props.onItemClicked}/>
+					onItemClicked={this.props.onItemClicked}
+					onEditItem={this.props.onEditItem}
+					onDeleteItem={this.props.onDeleteItem}/>
 			</Panel>
 		);
 	}
-	loadData(searchText, loadmore) {
-		let query = { limit: 10 };
+	loadData(props, searchText, loadmore) {
+		let query = {};
 		if (searchText) {
-			Object.aassign(query, { where: { or: this.props.searchable.map(key => ({[key]: {regexp: searchText}}))} })
+			Object.assign(query, { where: { or: props.config.searchable.map(key => ({[key]: {regexp: searchText}}))} })
 		}
 		if (loadmore) {
-			Object.assign(query, { skip: this.props.skip });
+			Object.assign(query, { skip: props.skip });
 		}
 
 		this.props.onLoadData(query);
@@ -48,10 +48,8 @@ SearchableList.propTypes = {
 		searchbarPlaceholder: PropTypes.string,
 		listHeader: PropTypes.string,
 		itemIcon: PropTypes.string,
-		itemMenu: PropTypes.arrayOf({
-			ref: PropTypes.string.isRequired,
-			label: PropTypes.string.isRequired
-		}),
+		showEditBtn: PropTypes.bool,
+		showDeleteBtn: PropTypes.bool,
 		primaryKey: PropTypes.string.isRequired,
 		secondaryKey: PropTypes.string,
 		searchable: PropTypes.array.isRequired
@@ -63,6 +61,8 @@ SearchableList.propTypes = {
 	onCreateItem: PropTypes.func.isRequired,
 	onLoadData: PropTypes.func.isRequired,
 	onItemClicked: PropTypes.func,
+	onEditItem: PropTypes.func,
+	onDeleteItem: PropTypes.func,
 	loading: PropTypes.bool
 };
 

@@ -8,7 +8,7 @@ class GnInput extends Component {
 		this.state = { value: props.initialValue };
 	}
 	componentWillReceiveProps(nextprops) {
-		if (!this.state.value) {
+		if (nextprops.initialValue != this.props.initialValue) {
 			this.setState({ value: nextprops.initialValue });
 		}
 	}
@@ -56,7 +56,7 @@ GnInput.propTypes = {
 	minLength: PropTypes.number,
 	maxLength: PropTypes.number,
 	required: PropTypes.bool,
-	initialValue: PropTypes.bool,
+	initialValue: PropTypes.string,
 	icon: PropTypes.string
 };
 

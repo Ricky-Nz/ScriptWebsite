@@ -53,11 +53,11 @@ React.render(
                     <Route path='login' component={LoginPage}/>
                     <Route path='dashboard' component={DashboardPage}>
                         <IndexRoute component={DashboardFolder}/>
+                        <Route path='folders/:folderId' component={DashboardScript}/>
                         <Route path='folders' component={DashboardFolder}/>
                         <Route path='parameters' component={DashboardParameter}/>
                         <Route path='packages' component={DashboardPackage}/>
                         <Route path='reports' component={DashboardReport}/>
-                        <Route path='scripts' component={DashboardScript}/>
                     </Route>
                 </Route>
             </Router>

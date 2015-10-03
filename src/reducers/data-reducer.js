@@ -3,7 +3,36 @@ import { CREATE_FOLDER, UPDATE_FOLDER, DELETE_FOLDER, LOAD_FOLDERS,
 		CREATE_PARAMETER, UPDATE_PARAMETER, DELETE_PARAMETER, LOAD_PARAMETERS,
 		CREATE_PACKAGE, DELETE_PACKAGE, LOAD_PACKAGES,
 		CREATE_REPORT, DELETE_REPORT, LOAD_REPORTS,
-		CREATE_SCRIPT, UPDATE_SCRIPT, DELETE_SCRIPT, LOAD_SCRIPTS } from '../actions/crud-actions';
+		CREATE_SCRIPT, UPDATE_SCRIPT, DELETE_SCRIPT, GET_SCRIPT, LOAD_SCRIPTS, CLEAR_SCRIPT } from '../actions/crud-actions';
+
+export function script (script = {}, action) {
+	switch(action.type) {
+		case CREATE_SCRIPT:
+			return updateState(script, 'submiting', action);
+		case UPDATE_SCRIPT:
+			return updateState(script, 'submiting', action);
+		case GET_SCRIPT:
+			return updateState(script, 'loading', action);
+		case DELETE_SCRIPT:
+			return updateState(script, 'deleting', action);
+		case CLEAR_SCRIPT:
+			return {};
+		default:
+			return script;
+	}
+}
+
+function updateState (script, state, action) {
+	if (action.finished) {
+		if (action.result && action.result.content) {
+			try { action.result.content = JSON.parse(action.result.content); } catch(e){}
+		}
+		return Object.assign({}, { error: action.error,
+			[state]: false, script: action.result });
+	} else {
+		return Object.assign({}, script, { error: null, [state]: true });
+	}
+}
 
 export function mainDatas (datas = [], action) {
 	switch(action.type) {

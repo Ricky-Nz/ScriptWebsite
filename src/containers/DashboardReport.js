@@ -8,14 +8,16 @@ import { showFormDialog } from '../actions/dialog-actions';
 import { queryReports } from '../actions/crud-actions';
 
 class DashboardParameter extends Component {
+	componentDidMount() {
+		this.props.dispatch(queryReports());
+	}
 	render() {
 		const config = {
 			searchbarHint: 'search for report title',
 			listHeader: 'Test Reports',
 			itemIcon: 'description',
-			itemMenu: [
-				{ref: 'delete', label: 'Delete'}
-			],
+			showEditBtn: false,
+			showDeleteBtn: true,
 			primaryKey: 'title',
 			secondaryKey: 'date',
 			searchable: ['title']

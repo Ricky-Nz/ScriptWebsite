@@ -18,14 +18,17 @@ class GnList extends Component {
 						icon={this.props.itemIcon}
 						primary={data[this.props.primaryKey]}
 						secondary={data[this.props.secondaryKey]}
-						menus={this.props.menus}
-						onItemClicked={this.props.onItemClicked ? () => this.props.onItemClicked(data, index) : null}
+						showEditBtn={this.props.showEditBtn}
+						showDeleteBtn={this.props.showDeleteBtn}
+						onItemClicked={this.props.onItemClicked ? () => this.props.onItemClicked(data) : null}
+						onEditItem={this.props.onEditItem ? () => this.props.onEditItem(data) : null}
+						onDeleteItem={this.props.onDeleteItem ? () => this.props.onDeleteItem(data) : null}
 						onMenuSelected={this.props.onMenuSelected}/>;
 		});
 
 		return (
 			<div style={this.props.style}>
-				<div style={horVCenterSpaceBetween}>
+				<div style={Object.assign({padding: '10px 0px'}, horVCenterSpaceBetween)}>
 					<div>{this.props.header}</div>
 					<GnIconButton bsStyle='primary' bsSize='small' icon='plus' label='Add'
 						onClick={this.props.onCreateItem}/>
@@ -44,7 +47,7 @@ class GnList extends Component {
 		if (this.props.loaded < this.props.total) {
 			return (
 				<div style={horVCenterRight}>
-					<GnIconButton label={`(${this.props.datas.length}/${this.props.total}) Load more`}
+					<GnIconButton label={`(${this.props.loaded}/${this.props.total}) Load more`}
 						icon='angle-double-down' bsStyle='link' onClick={this.props.onLoadMore}/>
 				</div>
 			);
@@ -64,8 +67,11 @@ GnList.propTypes = {
 	itemIcon: PropTypes.string,
 	primaryKey: PropTypes.string.isRequired,
 	secondaryKey: PropTypes.string,
-	menus: GnListItem.menus,
-	onItemClicked: PropTypes.func
+	showEditBtn: PropTypes.bool,
+	showDeleteBtn: PropTypes.bool,
+	onItemClicked: PropTypes.func,
+	onEditItem: PropTypes.func,
+	onDeleteItem: PropTypes.func
 };
 
 export default GnList;

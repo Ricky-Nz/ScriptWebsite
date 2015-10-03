@@ -17,8 +17,8 @@ class GnTitlebar extends Component {
 			return null;
 		}
 
-		const sectionItems = this.props.sections.map(section => (
-			<NavItem eventKey={section.ref}>{section.label}</NavItem>
+		const sectionItems = this.props.sections.map((section, index) => (
+			<NavItem key={index} eventKey={section.ref}>{section.label}</NavItem>
 		));
 
 		return (
@@ -32,11 +32,11 @@ class GnTitlebar extends Component {
 			return null;
 		}
 
-		const menuItems = this.props.menus.map(menu => {
+		const menuItems = this.props.menus.map((menu, index) => {
 			if (menu.divider) {
-				return <MenuItem divider />;
+				return <MenuItem key={index} divider />;
 			} else {
-				return <MenuItem eventKey={menu.ref}>{menu.label}</MenuItem>;
+				return <MenuItem key={index} eventKey={menu.ref}>{menu.label}</MenuItem>;
 			}
 		});
 

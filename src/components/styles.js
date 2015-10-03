@@ -1,5 +1,23 @@
-export const smHorPadding = {
-	padding: '0px 10px'
+export const clearPadding = {
+	padding: 0
+};
+
+export const verHCenter = {
+	display: 'flex',
+	flexDirection: 'column',
+	alignItems: 'center'
+};
+
+export const verHCenterClearPadding = Object.assign({}, verHCenter, clearPadding);
+
+export const horizontal = {
+	display: 'flex',
+	flexDirection: 'row'
+};
+
+export const smHorFill = {
+	padding: '0px 10px',
+	flexGrow: 1
 };
 
 export const horVCenterRight = {

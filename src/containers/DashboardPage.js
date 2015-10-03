@@ -43,7 +43,7 @@ class DashboardPage extends Component {
 
 const propsSelector = createSelector(
 	state => state.app.access_token,
-	state => state.app.dialog,
+	state => state.dialog,
     (access_token, dialog) => ({ access_token, dialog })
 );
 

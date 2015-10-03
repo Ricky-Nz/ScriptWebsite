@@ -18,10 +18,36 @@ export const CREATE_REPORT = 'CREATE_REPORT';
 export const DELETE_ERPORT = 'DELETE_REPORT';
 export const LOAD_REPORTS = 'LOAD_REPORTS';
 
+export const GET_SCRIPT = 'GET_SCRIPT';
 export const CREATE_SCRIPT = 'CREATE_SCRIPT';
 export const UPDATE_SCRIPT = 'UPDATE_SCRIPT';
 export const DELETE_SCRIPT = 'DELETE_SCRIPT';
 export const LOAD_SCRIPTS = 'LOAD_SCRIPTS';
+export const CLEAR_SCRIPT = 'CLEAR_SCRIPT';
+
+export function clearScript () {
+	return {
+		type: CLEAR_SCRIPT
+	};
+}
+
+export function createScript (folderId, script) {
+	script.date = new Date();
+	return createItem(`/Folders/${folderId}/scripts`, script, CREATE_SCRIPT);
+}
+
+export function getScript (folderId, scriptId) {
+	return getItem(`/Folders/${folderId}/scripts/${scriptId}`, GET_SCRIPT);
+}
+
+export function updateScript (folderId, scriptId, script) {
+	script.date = new Date();
+	return updateItem(`/Folders/${folderId}/scripts/${scriptId}`, script, UPDATE_SCRIPT);
+}
+
+export function deleteScript (folderId, scriptId) {
+	return deleteItem(`/Folders/${folderId}/scripts/${scriptId}`, scriptId, DELETE_SCRIPT);
+}
 
 export function dialogSubmit (fields, id, attachment, label) {
 	switch(label) {
@@ -52,14 +78,6 @@ export function dialogSubmit (fields, id, attachment, label) {
 				return uploadItem('/containers/:userId/upload', attachment, fields, CREATE_REPORT);
 			} else {
 				return deleteItem(`/reports/${id}`, id, DELETE_REPORT);
-			}
-		case 'scripts':
-			if (!id) {
-				return createItem('/parameters', fields, CREATE_PARAMETER);
-			} else if (fields) {
-				return updateItem(`/parameters/${id}`, fields, UPDATE_PARAMETER);
-			} else {
-				return deleteItem(`/parameters/${id}`, id, DELETE_PARAMETER);
 			}
 	}
 }
@@ -133,15 +151,26 @@ function deleteItem (path, id, action) {
 	};
 }
 
+function getItem (path, action) {
+	return {
+		[CALL_API]: {
+			method: 'get',
+			url: path,
+			token: true,
+			action: action
+		}
+	};
+}
+
 function queryItems (path, selection, action) {
 	return {
 		[CALL_API]: {
 			method: 'get',
 			url: path,
 			token: true,
-			query: { filter: JSON.stringify(selection) },
+			query: { filter: JSON.stringify(Object.assign({limit: 10}, selection)) },
 			action: action,
-			args: selection.skip
+			args: selection ? selection.skip : null
 		}
 	};
 }
