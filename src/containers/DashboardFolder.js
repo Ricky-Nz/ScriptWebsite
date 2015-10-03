@@ -51,7 +51,7 @@ class DashboardFolder extends Component {
 						onLoadData={selection => this.props.dispatch(queryFolders(selection))}
 						onCreateItem={() => this.props.dispatch(showFormDialog('folders'))}
 						onItemClicked={item => {
-							this.props.history.replaceState(null, `/dashboard/folders?select=${item.id}`);
+							this.props.history.replaceState(null, `/folders?select=${item.id}`);
 						}}
 						onEditItem={item => this.props.dispatch(showFormDialog('folders', item))}
 						onDeleteItem={item => this.props.dispatch(showDeleteDialog('folders', `folder ${item.title}`, item.id))}/>
@@ -67,10 +67,10 @@ class DashboardFolder extends Component {
 							this.props.dispatch(queryScripts(this.props.location.query.select, selection));
 						}}
 						onCreateItem={() => {
-							this.props.history.replaceState(null, `/dashboard/folders/${this.props.location.query.select}`);
+							this.props.history.replaceState(null, `/folders/${this.props.location.query.select}`);
 						}}
 						onItemClicked={item => {
-							this.props.history.replaceState(null, `/dashboard/folders/${this.props.location.query.select}?select=${item.id}`);
+							this.props.history.replaceState(null, `/folders/${this.props.location.query.select}?select=${item.id}`);
 						}}/>
 				</Col>
 			</Row>

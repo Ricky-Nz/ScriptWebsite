@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Input } from 'react-bootstrap';
+import Dropzone from 'react-dropzone';
 import GnIcon from './GnIcon';
 
 class GnInput extends Component {
@@ -13,18 +14,28 @@ class GnInput extends Component {
 		}
 	}
 	render() {
-		return (
-			<Input
-				type={this.props.type}
-				label={this.props.label}
-				placeholder={this.props.placeholder}
-				help={this.state.error}
-				value={this.state.value}
-				bsStyle={this.state.error ? 'error' : null}
-				onChange={(e) => this.setState({ value: e.target.value })}
-				onBlur={this.validete.bind(this)}
-				addonBefore={this.props.icon ? <GnIcon icon={this.props.icon}/> : null} />
-		);
+		if (this.props.type == 'file') {
+			return (
+				<Dropzone style={{margin: 10, padding: 30, border: '2px dashed gray'}}
+					onDrop={files => this.setState({value:files[0]})}>
+					<div>{this.state.value ? this.state.value.name : 'Try dropping some files here, or click to select files to upload.'}</div>
+	            </Dropzone>
+			);
+		} else {
+			return (
+				<Input
+					disabled={this.props.disabled}
+					type={this.props.type}
+					label={this.props.label}
+					placeholder={this.props.placeholder}
+					help={this.state.error}
+					value={this.state.value}
+					bsStyle={this.state.error ? 'error' : null}
+					onChange={(e) => this.setState({ value: e.target.value })}
+					onBlur={this.validete.bind(this)}
+					addonBefore={this.props.icon ? <GnIcon icon={this.props.icon}/> : null} />
+			);
+		}
 	}
 	validete() {
 		const value = this.state.value;
@@ -57,7 +68,8 @@ GnInput.propTypes = {
 	maxLength: PropTypes.number,
 	required: PropTypes.bool,
 	initialValue: PropTypes.string,
-	icon: PropTypes.string
+	icon: PropTypes.string,
+	disabled: PropTypes.bool
 };
 
 export default GnInput;

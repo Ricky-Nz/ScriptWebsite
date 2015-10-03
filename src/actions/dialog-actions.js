@@ -1,17 +1,41 @@
 export const TOGGLE_DIALOG = 'TOGGLE_DIALOG';
 
-export function showLoginDialog () {
+export function showLoginDialog (redirect) {
     return {
     	show: true,
         type: TOGGLE_DIALOG,
         title: 'User Login',
         size: 'small',
-        submitText: 'Login',
         fields: [
             { ref: 'email', icon: 'user', label: 'Username', initialValue: 'ruiqi.newzealand@gmail.com',
             	placeholder: 'login id', type: 'email', required: true },
             { ref: 'password', icon:'key', label: 'Password', initialValue: '1234',
             	placeholder: 'login password', type: 'password', required: true },
+        ],
+        buttons: [
+        	{ ref: 'register', icon: 'user-plus', label: 'Register' },
+        	{ ref: 'login', icon: 'send', label: 'Login', bsStyle: 'primary', args: redirect }
+        ]
+    };
+}
+
+export function showRegisterDialog () {
+    return {
+    	show: true,
+        type: TOGGLE_DIALOG,
+        title: 'User Register',
+        size: 'small',
+        fields: [
+            { ref: 'email', icon: 'user', label: 'Username',
+            	placeholder: 'login id', type: 'email', required: true },
+            { ref: 'password', icon:'key', label: 'Password',
+            	placeholder: 'login password', type: 'password', required: true },
+            { ref: 'confirm-password', icon:'key', label: 'Confirm Password',
+            	placeholder: 're-enter login password', type: 'password', required: true }
+        ],
+        buttons: [
+        	{ ref: 'cancel', label: 'Cancel' },
+        	{ ref: 'register', icon: 'user-plus', label: 'Register', bsStyle: 'primary' }
         ]
     };
 }
@@ -19,24 +43,27 @@ export function showLoginDialog () {
 export function showDeleteDialog (section, title, id) {
 	return {
 		title: `Are you sure you want to delete ${title}`,
-		label: section,
     	show: true,
         type: TOGGLE_DIALOG,
-        submitText: 'Confirm',
         itemId: id,
-        size: 'small',
-        submitStyle: 'danger'
+        size: 'medium',
+        buttons: [
+        	{ ref: 'cancel', label: 'Cancel' },
+        	{ ref: 'register', icon: 'check', label: 'Confirm', bsStyle: 'danger', args: section }
+        ]
 	};
 }
 
 export function showFormDialog (section, item) {
 	let dialogConfig = {
-		label: section,
     	show: true,
         type: TOGGLE_DIALOG,
-        submitText: 'Submit',
         itemId: item ? item.id : null,
-        size: 'medium'
+        size: 'medium',
+        buttons: [
+        	{ ref: 'cancel', label: 'Cancel' },
+        	{ ref: 'submit', icon: 'check', label: 'Submit', bsStyle: 'primary', args: section }
+        ]
 	};
 
 	switch(section) {
@@ -45,7 +72,7 @@ export function showFormDialog (section, item) {
 		        title: `${item ? 'Edit' : 'New'} Folder`,
 		        fields: [
 		        	{ ref: 'title', icon: 'file-text-o', label: 'Title', placeholder: 'folder title',
-		        		type: 'text', required: true, initialValue: item ? item['title'] : null}
+		        		type: 'text', required: true, initialValue: item ? item['title'] : null }
 		        ]
 		    });
 		    break;
@@ -54,9 +81,10 @@ export function showFormDialog (section, item) {
 		        title: `${item ? 'Edit' : 'New'} Parameter`,
 		        fields: [
 		        	{ ref: 'key', icon: 'edit', label: 'Key', placeholder: 'parameter key',
-		        		type: 'text', required: true, initialValue: item ? item['key'] : null},
+		        		type: 'text', required: true, initialValue: item ? item['key'] : null,
+		        		disabled: item ? true : false },
 		        	{ ref: 'value', icon: 'edit', label: 'Value', placeholder: 'parameter value',
-		        		type: 'text', initialValue: item ? item['value'] : null}
+		        		type: 'text', initialValue: item ? item['value'] : null }
 		        ]
 		    });
 		    break;

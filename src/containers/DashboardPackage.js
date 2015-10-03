@@ -4,7 +4,7 @@ import { Panel, Row, Col, Fade } from 'react-bootstrap';
 // Redux
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { showFormDialog } from '../actions/dialog-actions';
+import { showFormDialog, showDeleteDialog } from '../actions/dialog-actions';
 import { queryPackages } from '../actions/crud-actions';
 
 class DashboardPackage extends Component {
@@ -33,7 +33,8 @@ class DashboardPackage extends Component {
 						total={this.props.mainState.total}
 						loading={this.props.mainState.loading}
 						onLoadData={selection => this.props.dispatch(queryPackages(selection))}
-						onCreateItem={() => this.props.dispatch(showFormDialog('packages'))}/>
+						onCreateItem={() => this.props.dispatch(showFormDialog('packages'))}
+						onDeleteItem={item => this.props.dispatch(showDeleteDialog('packages', `package ${item.title}`, item.id))}/>
 				</Col>
 			</Row>
 		);

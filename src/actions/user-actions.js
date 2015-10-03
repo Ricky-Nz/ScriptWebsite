@@ -19,13 +19,14 @@ export function register(email, password) {
     };
 }
 
-export function login(email, password) {
+export function login(email, password, redirect) {
     return {
         [CALL_API]: {
             method: 'POST',
             url: '/Testers/login',
             body: { email, password },
-            action: LOGIN
+            action: LOGIN,
+            args: redirect
         }
     }
 }

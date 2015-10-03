@@ -1,10 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { Navbar, CollapsibleNav, NavDropdown, Nav, NavItem, MenuItem } from 'react-bootstrap';
+import GnIcon from './GnIcon';
 
 class GnTitlebar extends Component {
 	render() {
 		return (
-			<Navbar style={{margin: 0}} brand={<a href='/'>{this.props.brand}</a>} toggleNavKey='collapsable-menu'>
+			<Navbar fixedTop style={{margin: 0}} toggleNavKey='collapsable-menu'
+				brand={<a href='/'><GnIcon icon='cogs' style={{marginRight: 10}}/>{this.props.brand}</a>}>
 				<CollapsibleNav eventKey='collapsable-menu'>
 					{this.renderLeftNavbar()}
 					{this.renderRightNavbar()}
@@ -28,23 +30,25 @@ class GnTitlebar extends Component {
 		);
 	}
 	renderRightNavbar() {
-		if (!this.props.menus) {
-			return null;
+		let menuItems;
+		if (this.props.menus && this.props.menus.length > 0) {
+			menuItems = this.props.menus.map((menu, index) => {
+				if (menu.divider) {
+					return <MenuItem key={index} divider />;
+				} else {
+					return <MenuItem key={index} eventKey={menu.ref}>{menu.label}</MenuItem>;
+				}
+			});
 		}
 
-		const menuItems = this.props.menus.map((menu, index) => {
-			if (menu.divider) {
-				return <MenuItem key={index} divider />;
-			} else {
-				return <MenuItem key={index} eventKey={menu.ref}>{menu.label}</MenuItem>;
-			}
-		});
-
 		return (
-			<Nav navbar right onSelect={(e, key)=> this.props.onMenuSelected(key)}>
-				<NavDropdown title={this.props.menuTitle}>
-					{menuItems}
-				</NavDropdown>
+			<Nav navbar right onSelect={(e, key)=> this.props.onMenuSelected(key ? key : e)}>
+				{menuItems?
+					<NavDropdown title={this.props.menuTitle}>
+						{menuItems}
+					</NavDropdown>
+					: <NavItem eventKey={this.props.menuTitle}>{this.props.menuTitle}</NavItem>
+				}
 			</Nav>
 		);
 	}

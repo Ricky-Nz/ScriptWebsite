@@ -6,13 +6,13 @@ import 'babel-core/polyfill';
 // React
 import React from 'react';
 import App from './src/containers/App';
-import LoginPage from './src/containers/LoginPage';
-import DashboardPage from './src/containers/DashboardPage';
+import DashboardHome from './src/containers/DashboardHome';
 import DashboardFolder from './src/containers/DashboardFolder';
 import DashboardParameter from './src/containers/DashboardParameter';
 import DashboardPackage from './src/containers/DashboardPackage';
 import DashboardReport from './src/containers/DashboardReport';
 import DashboardScript from './src/containers/DashboardScript';
+import DashboardGuide from './src/containers/DashboardGuide';
 
 // React router
 import { Router, IndexRoute, Route } from 'react-router';
@@ -49,16 +49,13 @@ React.render(
         {() =>
             <Router history={history}>
                 <Route path='/' component={App}>
-                    <IndexRoute component={LoginPage}/>
-                    <Route path='login' component={LoginPage}/>
-                    <Route path='dashboard' component={DashboardPage}>
-                        <IndexRoute component={DashboardFolder}/>
-                        <Route path='folders/:folderId' component={DashboardScript}/>
-                        <Route path='folders' component={DashboardFolder}/>
-                        <Route path='parameters' component={DashboardParameter}/>
-                        <Route path='packages' component={DashboardPackage}/>
-                        <Route path='reports' component={DashboardReport}/>
-                    </Route>
+                    <IndexRoute component={DashboardHome}/>
+                    <Route path='folders/:folderId' component={DashboardScript}/>
+                    <Route path='folders' component={DashboardFolder}/>
+                    <Route path='parameters' component={DashboardParameter}/>
+                    <Route path='packages' component={DashboardPackage}/>
+                    <Route path='reports' component={DashboardReport}/>
+                    <Route path='guide' component={DashboardGuide}/>
                 </Route>
             </Router>
         }

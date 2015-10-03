@@ -14,7 +14,9 @@ export function app (state = {}, action) {
 	            	loggingIn: false,
 	            	error: action.error,
 	                access_token: action.result ? action.result.id : null,
-	                userId: action.result ? action.result.userId : null
+	                userId: action.result ? action.result.userId : null,
+	                email: action.result ? action.result.email : null,
+	                redirect: action.args
 	            });
 			} else {
 				return Object.assign({}, state, { loggingIn: true, error: null });
@@ -22,12 +24,7 @@ export function app (state = {}, action) {
 		}
 		case LOGOUT: {
 			if (action.finished) {
-	            return Object.assign({}, state, {
-	            	loggingOut: false,
-	            	error: action.error,
-	                access_token: null,
-	                userId: null
-	            });
+	            return {};
 			} else {
 				return Object.assign({}, state, { loggingOut: true, error: null });	
 			}
@@ -45,7 +42,11 @@ export function app (state = {}, action) {
 export function dialog (state = {}, action) {
 	switch(action.type) {
 		case TOGGLE_DIALOG:
-			return Object.assign({}, _.omit(action, 'type'));
+			if (action.show) {
+				return Object.assign({}, _.omit(action, 'type'));
+			} else {
+				return Object.assign({}, state, { show: false });
+			}
 		case LOGIN:
 		case REGISTER:
 		case CREATE_FOLDER:

@@ -14,13 +14,13 @@ class DashboardScript extends Component {
 
 		if (this.props.location.query.select) {
 			this.props.dispatch(getScript(this.props.params.folderId, this.props.location.query.select));
-		} else if (this.props.script.script) {
+		} else if (this.props.script.content) {
 			this.props.dispatch(clearScript());
 		}
 	}
 	componentWillReceiveProps(nextProps) {
 		if (!nextProps.location.query.select) {
-			if (nextProps.script.script) {
+			if (nextProps.script.content) {
 				this.props.dispatch(clearScript());
 			}
 		} else if (nextProps.location.query.select != this.props.location.query.select) {
@@ -44,7 +44,7 @@ class DashboardScript extends Component {
 				<Row>
 					<Col xs={6} sm={5} md={4} mdOffset={1}>
 						<GnIconButton bsStyle='link' icon='angle-double-left' label='Back'
-							onClick={() => this.props.history.replaceState(null, `/dashboard/folders?select=${this.props.params.folderId}`)}/>
+							onClick={() => this.props.history.replaceState(null, `/folders?select=${this.props.params.folderId}`)}/>
 					</Col>
 				</Row>
 				<Row>
@@ -60,19 +60,19 @@ class DashboardScript extends Component {
 								this.props.dispatch(queryScripts(this.props.params.folderId, selection));
 							}}
 							onCreateItem={() => {
-								this.props.history.replaceState(null, `/dashboard/folders/${this.props.params.folderId}`);
+								this.props.history.replaceState(null, `/folders/${this.props.params.folderId}`);
 							}}
 							onItemClicked={item => {
-								this.props.history.replaceState(null, `/dashboard/folders/${this.props.params.folderId}?select=${item.id}`)
+								this.props.history.replaceState(null, `/folders/${this.props.params.folderId}?select=${item.id}`)
 							}}/>
 					</Col>
 					<Col xs={6} sm={7} md={6}>
 						<ScriptPanel
-							loading={this.props.script.loading}
-							submiting={this.props.script.submiting}
-							deleting={this.props.script.deleting}
-							error={this.props.script.error}
-							script={this.props.script.script}
+							loading={this.props.scriptState.loading}
+							submiting={this.props.scriptState.submiting}
+							deleting={this.props.scriptState.deleting}
+							error={this.props.scriptState.error}
+							script={this.props.script}
 							onSubmit={(id, script) => {
 								this.props.dispatch(id ? updateScript(this.props.params.folderId, id, script)
 										: createScript(this.props.params.folderId, script));
@@ -89,8 +89,9 @@ const propsSelector = createSelector(
 	state => state.secondaryDatas,
 	state => state.secondaryState,
 	state => state.script,
-    (secondaryDatas, secondaryState, script) =>
-    	({ secondaryDatas, secondaryState, script })
+	state => state.scriptState,
+    (secondaryDatas, secondaryState, script, scriptState) =>
+    	({ secondaryDatas, secondaryState, script, scriptState })
 );
 
 export default connect(propsSelector)(DashboardScript);

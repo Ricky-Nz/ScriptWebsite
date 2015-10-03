@@ -7,30 +7,40 @@ import { CREATE_FOLDER, UPDATE_FOLDER, DELETE_FOLDER, LOAD_FOLDERS,
 
 export function script (script = {}, action) {
 	switch(action.type) {
-		case CREATE_SCRIPT:
-			return updateState(script, 'submiting', action);
-		case UPDATE_SCRIPT:
-			return updateState(script, 'submiting', action);
 		case GET_SCRIPT:
-			return updateState(script, 'loading', action);
-		case DELETE_SCRIPT:
-			return updateState(script, 'deleting', action);
+			if (action.finished && !action.error) {
+				if (action.result && action.result.content) {
+					try { action.result.content = JSON.parse(action.result.content); } catch(e){}
+				}
+				return Object.assign({}, action.result);
+			} else {
+				return script;
+			}
 		case CLEAR_SCRIPT:
 			return {};
+		case DELETE_SCRIPT:
+			if (action.finished && !action.error) {
+				return {};
+			} else {
+				return script;
+			}
 		default:
 			return script;
 	}
 }
 
-function updateState (script, state, action) {
-	if (action.finished) {
-		if (action.result && action.result.content) {
-			try { action.result.content = JSON.parse(action.result.content); } catch(e){}
-		}
-		return Object.assign({}, { error: action.error,
-			[state]: false, script: action.result });
-	} else {
-		return Object.assign({}, script, { error: null, [state]: true });
+export function scriptState (state = {}, action) {
+	switch(action.type) {
+		case CREATE_SCRIPT:
+			return Object.assign({}, state, { submiting: !action.finished, error: action.error })
+		case UPDATE_SCRIPT:
+			return Object.assign({}, state, { submiting: !action.finished, error: action.error })
+		case GET_SCRIPT:
+			return Object.assign({}, state, { loading: !action.finished, error: action.error })
+		case DELETE_SCRIPT:
+			return Object.assign({}, state, { deleting: !action.finished, error: action.error })
+		default:
+			return state;
 	}
 }
 

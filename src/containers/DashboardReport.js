@@ -25,7 +25,7 @@ class DashboardParameter extends Component {
 
 		return (
 			<Row>
-				<Col xs={12} sm={10} smOffset={1} md={8} mdOffset={2} lg={6} lgOffset={3}>
+				<Col xs={6} sm={5} md={4} mdOffset={1}>
 					<SearchableList
 						config={config}
 						datas={this.props.mainDatas}

@@ -3,7 +3,7 @@
  */
 import React, { Component, PropTypes } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import { GnInput, GnSpinnerButton } from './elements';
+import { GnInput, GnIconButton } from './elements';
 import { errorStyle } from './styles';
 import _ from 'underscore';
 
@@ -13,34 +13,38 @@ class FormDialog extends Component {
         this.state = {};
     }
     render() {
+        let formFields;
+        if (this.props.fields) {
+            formFields = this.props.fields.map(
+                (field, index) => <GnInput key={index} ref={field.ref} {...field} />);
+        }
+
+        let actionButtons;
+        if (this.props.buttons) {
+            actionButtons = this.props.buttons.map(
+                (button, index) => <GnIconButton key={index} bsSize='small' icon={button.icon}
+                    bsStyle={button.bsStyle} active={ (index + 1) == this.props.buttons.length ? this.props.processing : false}
+                    label={button.label} onClick={this.onButonClicked.bind(this, button.ref, button.args)}/>);
+        }
+
         return (
             <Modal bsSize={this.props.size} show={this.props.show}
-                onHide={this.props.onHide} backdrop={this.props.processing ? 'static' : true}>
+                onHide={() => this.props.onPerformAction('cancel')} backdrop={this.props.processing ? 'static' : true}>
                 <Modal.Header closeButton>
                     <Modal.Title>{this.props.title}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {this.renderFromFields()}
+                    {formFields}
                     <div style={errorStyle}>{this.props.error}</div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={this.props.onHide}>Cancel</Button>
-                    <GnSpinnerButton bsStyle={this.props.submitStyle} active={this.props.processing}
-                        label={this.props.submitText} onClick={this.onSubmitClicked.bind(this)}/>
+                    {actionButtons}
                 </Modal.Footer>
             </Modal>
         );
     }
-    renderFromFields() {
-        if (!this.props.fields) {
-            return null;
-        }
-
-        return this.props.fields.map((field, index) => <GnInput key={index} ref={field.ref} {...field} />);
-    }
-
-    onSubmitClicked() {
-        if (this.props.fields) {
+    onButonClicked(ref, args) {
+        if (ref == 'submit' && this.props.fields) {
             let allValidate = _.every(this.props.fields, field => this.refs[field.ref].validete());
             if (allValidate) {
                 let fields = {};
@@ -52,34 +56,34 @@ class FormDialog extends Component {
                         fields[item.ref] = this.refs[item.ref].getValue();
                     }
                 });
-                this.props.onSubmit(fields, this.props.itemId, attachment, this.props.label);
+                this.props.onPerformAction(ref, args, fields, this.props.itemId, attachment);
             }
         } else {
-            this.props.onSubmit(null, this.props.itemId, null, this.props.label);
+            this.props.onPerformAction(ref, args, null, this.props.itemId, null);
         }
     }
 }
 
 FormDialog.propTypes = {
-    label: PropTypes.string,
-    itemId: PropTypes.string,
     title: PropTypes.string,
-    message: PropTypes.string,
     show: PropTypes.bool,
     size: PropTypes.oneOf(['small', 'medium', 'large']),
-    fields: PropTypes.array,
-    submitText: PropTypes.string,
-    submitStyle: PropTypes.string,
+    itemId: PropTypes.string,
+    fields: PropTypes.arrayOf(PropTypes.shape(GnInput.propTypes)),
+    buttons: PropTypes.arrayOf(PropTypes.shape({
+        icon: PropTypes.string,
+        label: PropTypes.string.isRequired,
+        ref: PropTypes.string.isRequired,
+        bsStyle: PropTypes.string,
+        args: PropTypes.string
+    })).isRequired,
     error: PropTypes.string,
     processing: PropTypes.bool,
-    onHide: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired
+    onPerformAction: PropTypes.func,
 };
 
 FormDialog.defaultProps = {
-    size: 'medium',
-    submitText: 'Submit',
-    submitStyle: 'primary'
+    size: 'medium'
 };
 
 export default FormDialog;

@@ -33,7 +33,7 @@ class GnList extends Component {
 					<GnIconButton bsStyle='primary' bsSize='small' icon='plus' label='Add'
 						onClick={this.props.onCreateItem}/>
 				</div>
-				<ListGroup style={{maxHeight: 500, overflow: 'auto'}}>
+				<ListGroup style={{maxHeight: 400, overflow: 'auto'}}>
 					{listItems}
 					{this.props.loading ? this.renderSpinner() : this.renderLoadMore()}					
 				</ListGroup>

@@ -13,7 +13,7 @@ import { showLoginDialog, dismissDialog } from '../actions/dialog-actions';
 class LoginPage extends Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.access_token) {
-            this.props.history.replaceState(null, '/dashboard/folders');
+            this.props.history.replaceState(null, '/folders');
         }
     }
     render() {

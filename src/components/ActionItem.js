@@ -10,8 +10,10 @@ class ActionItem extends Component {
 		this.state = Object.assign({}, props.action);
 	}
 	componentWillReceiveProps(nextProps) {
-		this.setState(Object.assign({findType: null, findArgs: null, actionType: null, actionArgs: null},
-				nextProps.action));
+		if (nextProps.action != this.props.action) {
+			this.setState(Object.assign({findType: null, findArgs: null, actionType: null, actionArgs: null},
+					nextProps.action));
+		}
 	}
 	render() {
 		let findTypeItems = this.props.findTypes.map((findType, index) => {

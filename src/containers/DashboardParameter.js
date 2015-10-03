@@ -4,7 +4,7 @@ import { Panel, Row, Col, Fade } from 'react-bootstrap';
 // Redux
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { showFormDialog } from '../actions/dialog-actions';
+import { showFormDialog, showDeleteDialog } from '../actions/dialog-actions';
 import { queryParameters } from '../actions/crud-actions';
 
 class DashboardParameter extends Component {
@@ -33,7 +33,9 @@ class DashboardParameter extends Component {
 						total={this.props.mainState.total}
 						loading={this.props.mainState.loading}
 						onLoadData={selection => this.props.dispatch(queryParameters(selection))}
-						onCreateItem={() => this.props.dispatch(showFormDialog('parameters'))}/>
+						onCreateItem={() => this.props.dispatch(showFormDialog('parameters'))}
+						onEditItem={item => this.props.dispatch(showFormDialog('parameters', item))}
+						onDeleteItem={item => this.props.dispatch(showDeleteDialog('parameters', `parameter ${item.key}`, item.id))}/>
 				</Col>
 			</Row>
 		);
