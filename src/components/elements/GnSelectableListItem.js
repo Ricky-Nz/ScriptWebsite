@@ -6,7 +6,7 @@ import GnIcon from './GnIcon';
 class GnListItem extends Component {
 	render() {
 		return (
-			<ListGroupItem href='#' style={Object.assign({}, this.props.style, { border: 'none' })}
+			<ListGroupItem href='#' style={Object.assign({}, this.props.style, { border: 'none', padding: 0 })}
 				onClick={this.props.onClick}>
 				<div style={horVCenter}>
 					{this.props.icon ? <GnIcon icon={this.props.icon}/> : null}

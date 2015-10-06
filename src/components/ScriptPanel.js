@@ -107,7 +107,7 @@ class ScriptPanel extends Component {
 					</div>
 				</div>
 				<div style={horVCenterRight}>
-					<div style={errorStyle}>{this.props.error}</div>
+					<div style={errorStyle}>{this.props.error || this.state.error}</div>
 					{this.state.id ?
 						<GnIconButton bsSize='small' bsStyle='danger' icon='trash' label='Delete' disabled={this.props.deleting}
 							onClick={() => this.props.onDelete(this.state.id)} active={this.props.deleting}/>
@@ -125,14 +125,16 @@ class ScriptPanel extends Component {
 				id: script.id,
 				title: script.title,
 				tags: script.tags,
-				actions: script.actions
+				actions: script.actions,
+				error: null
 			}
 		} else {
 			return {
 				id: null,
 				title: null,
 				tags: null,
-				actions: null
+				actions: null,
+				error: null
 			};
 		}
 	}
@@ -143,6 +145,8 @@ class ScriptPanel extends Component {
 			return this.setState({error: 'script action can not be empty'});
 		} else if (!_.every(this.state.actions, (action, index) => this.refs[`action-${index}`].validete())) {
 			return this.setState({error: 'action list contains illegal action'});
+		} else if (!this.state.tags || this.state.tags.length == 0) {
+			return this.setState({error: 'script must have at least one tag in order to able to get selected.'})
 		}
 
 		this.props.onSubmit(this.state.id, {

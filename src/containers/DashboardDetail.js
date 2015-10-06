@@ -7,11 +7,11 @@ import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import { showLoginDialog } from '../actions/dialog-actions';
 import { queryScripts, createScript, getScript, updateScript, deleteScript, clearScript } from '../actions/crud-actions';
+import { changeSelection } from '../actions/user-actions';
 
 class DashboardScript extends Component {
 	componentDidMount() {
 		if (this.props.accessToken) {
-			this.onQueryScript();
 			if (this.props.location.query.edit) {
 				this.props.dispatch(getScript(this.props.location.query.edit));
 			} else if (this.props.script) {
@@ -23,13 +23,14 @@ class DashboardScript extends Component {
 	}
 	componentWillReceiveProps(nextProps) {
 		if (nextProps.accessToken) {
-			if (nextProps.accessToken != this.props.accessToken) {
-				this.onQueryScript();
-			}
 			if (nextProps.location.query.edit && nextProps.location.query.edit != this.props.location.query.edit) {
 				this.props.dispatch(getScript(nextProps.location.query.edit));
 			} else if (!nextProps.location.query.edit && nextProps.script) {
 				this.props.dispatch(clearScript());
+			}
+
+			if (nextProps.selection != this.props.selection) {
+				this.props.dispatch(queryScripts(nextProps.selection));
 			}
 		}
 	}
@@ -54,7 +55,7 @@ class DashboardScript extends Component {
 				<Row>
 					<Col xs={6} sm={5} md={4} mdOffset={1}>
 						<GnIconButton bsStyle='link' icon='angle-double-left' label='Back'
-							onClick={() => this.props.history.replaceState(null, `/scripts?selection=${this.props.location.query.selection}`)}/>
+							onClick={() => this.props.history.replaceState(null, '/scripts')}/>
 					</Col>
 				</Row>
 				<Row>
@@ -65,9 +66,9 @@ class DashboardScript extends Component {
 							skip={this.props.skip}
 							total={this.props.total}
 							loading={this.props.loading}
-							onLoadData={this.onQueryScript.bind(this)}
-							onCreateItem={() => this.props.history.replaceState(null, `/scripts/detail?selection=${this.props.location.query.selection}`)}
-							onItemClicked={item => this.props.history.replaceState(null, `/scripts/detail?selection=${this.props.location.query.selection}&edit=${item.id}`)}/>
+							onLoadData={selection => this.props.dispatch(changeSelection(selection))}
+							onCreateItem={() => this.props.history.replaceState(null, `/scripts/detail`)}
+							onItemClicked={item => this.props.history.replaceState(null, `/scripts/detail?edit=${item.id}`)}/>
 					</Col>
 					<Col xs={7} sm={8} md={7}>
 						<ScriptPanel
@@ -85,15 +86,11 @@ class DashboardScript extends Component {
 			</div>
 		);
 	}
-	onQueryScript(querySelection) {
-		const tagSelection = this.props.location.query.selection ?
-				JSON.parse(this.props.location.query.selection) : null;
-		this.props.dispatch(queryScripts(tagSelection));
-	}
 }
 
 const propsSelector = createSelector(
 	state => state.user.id,
+	state => state.user.selection,
 	state => state.arrayData.loading,
 	state => state.arrayData.updating,
 	state => state.arrayData.skip,
@@ -101,7 +98,7 @@ const propsSelector = createSelector(
 	state => state.arrayData.datas,
 	state => state.detail.error,
 	state => state.detail.script,
-    (accessToken, loading, updating, skip, total, datas, error, script) => ({ accessToken, loading, updating, skip, total, datas, error, script })
+    (accessToken, selection, loading, updating, skip, total, datas, error, script) => ({ accessToken, selection, loading, updating, skip, total, datas, error, script })
 );
 
 export default connect(propsSelector)(DashboardScript);

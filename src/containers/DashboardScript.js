@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import { showLoginDialog } from '../actions/dialog-actions';
 import { queryScripts } from '../actions/crud-actions';
-import { getTags } from '../actions/user-actions';
+import { getTags, changeSelection, updateTagSelection } from '../actions/user-actions';
 
 class DashboardFolder extends Component {
 	componentDidMount() {
@@ -21,9 +21,8 @@ class DashboardFolder extends Component {
 			this.props.dispatch(getTags());
 		}
 		
-		if (nextProps.location.query.selection != this.props.location.query.selection) {
-			this.props.dispatch(queryScripts(nextProps.location.query.selection ?
-				JSON.parse(nextProps.location.query.selection) : null));
+		if (nextProps.selection != this.props.selection) {
+			this.props.dispatch(queryScripts(nextProps.selection));
 		}
 	}
 	render() {
@@ -46,7 +45,9 @@ class DashboardFolder extends Component {
 			<Row>
 				<Col xs={5} sm={4} md={3} mdOffset={1}>
 					<TagList ref='tagList' tags={this.props.tags}
-						onTagSelectionChange={selection => this.onQueryScript(selection)}/>
+						selection={this.props.location.query.selection}
+						mode={this.props.location.query.mode}
+						onTagSelctChange={changes => this.props.dispatch(updateTagSelection(changes))}/>
 				</Col>
 				<Col xs={7} sm={8} md={7}>
 					<SearchableList ref='scriptList'
@@ -55,46 +56,24 @@ class DashboardFolder extends Component {
 						skip={this.props.skip}
 						total={this.props.total}
 						loading={this.props.loading}
-						onLoadData={selection => this.onQueryScript(null, selection)}
-						onCreateItem={() => this.props.history.replaceState(null, `/scripts/detail?selection=${this.props.location.query.selection}`)}
-						onItemClicked={item => this.props.history.replaceState(null, `/scripts/detail?selection=${this.props.location.query.selection}&edit=${item.id}`)}/>
+						onLoadData={selection => this.props.dispatch(changeSelection(selection))}
+						onCreateItem={() => this.props.history.replaceState(null, `/scripts/detail`)}
+						onItemClicked={item => this.props.history.replaceState(null, `/scripts/detail?edit=${item.id}`)}/>
 				</Col>
 			</Row>
 		);
-	}
-	onQueryScript(tagSelection, searchSelection) {
-		if (!tagSelection && this.refs.tagList) {
-			const lastSelection = this.refs.tagList.getLastSelection();
-			if (lastSelection) {
-				tagSelection = JSON.parse(lastSelection);
-			}
-		}
-		if (!searchSelection && this.refs.scriptList) {
-			const lastSelection = this.refs.scriptList.getLastSelection();
-			if (lastSelection) {
-				searchSelection = JSON.parse(lastSelection);
-			}
-		}
-
-		let selection;
-		if (tagSelection && searchSelection) {
-			selection = Object.assign(tagSelection, searchSelection, { where: Object.assign(tagSelection.where, searchSelection.where)});
-		} else {
-			selection = tagSelection ? tagSelection : searchSelection;
-		}
-		
-		this.props.history.replaceState(null, `/scripts${selection ? '?selection=' : ''}${selection ? JSON.stringify(selection) : ''}`);
 	}
 }
 
 const propsSelector = createSelector(
 	state => state.user.id,
 	state => state.user.tags,
+	state => state.user.selection,
 	state => state.arrayData.loading,
 	state => state.arrayData.skip,
 	state => state.arrayData.total,
 	state => state.arrayData.datas,
-    (accessToken, tags, loading, skip, total, datas) => ({ accessToken, tags, loading, skip, total, datas })
+    (accessToken, tags, selection, loading, skip, total, datas) => ({ accessToken, tags, selection, loading, skip, total, datas })
 );
 
 export default connect(propsSelector)(DashboardFolder);

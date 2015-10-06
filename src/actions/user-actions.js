@@ -7,6 +7,8 @@ export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const REGISTER = 'REGISTER';
 export const GET_TAGS = 'GET_TAGS';
+export const CHANGE_SELECTION = 'CHANGE_SELECTION';
+export const UPDATE_TAG_SELECTION = 'UPDATE_TAG_SELECTION';
 
 export function register(email, password) {
     return {
@@ -51,4 +53,18 @@ export function getTags () {
             action: GET_TAGS
         }
     }
+}
+
+export function changeSelection (selection) {
+    return {
+        type: CHANGE_SELECTION,
+        data: selection
+    };
+}
+
+export function updateTagSelection (update) {
+    return {
+        type: UPDATE_TAG_SELECTION,
+        data: update
+    };
 }

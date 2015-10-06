@@ -5,115 +5,59 @@ import GnSelectableListItem from './GnSelectableListItem';
 import _ from 'underscore';
 
 class GnSelectableList extends Component {
-	constructor(props) {
-		super(props);
-		this.state = { mutiSelect: true, select: props.datas ?
-				Object.assign(...props.datas.map(data => ({[data.ref]: true}))) : {} };
-	}
-	componentDidMount() {
-		this.onReSelect(this.props.datas, this.state.select);
-	}
-	componentWillReceiveProps(nextProps) {
-		if (this.props.datas != nextProps.datas) {
-			let newSelect;
-			if (nextProps.datas) {
-				newSelect = Object.assign(...nextProps.datas.map(data => ({[data.ref]: true})), this.state.select);
-			} else {
-				newSelect = {};
-			}
-
-			this.setState({ select: newSelect });
-			this.onReSelect(nextProps.datas, newSelect);
-		}
-	}
 	render() {
 		let listItems;
-		let allChecked;
+		let status;
 		if (this.props.datas) {
 			listItems = this.props.datas.map((item, index) => (
 				<GnSelectableListItem key={index} icon={item.icon} text={item.diaplayName}
-					checked={this.state.select[item.ref]} mutiSelect={this.state.mutiSelect}
-					onClick={() => this.onSingleSelectChange(item)} />
+					checked={item.checked} mutiSelect={this.props.mutiSelect}
+					onClick={() => this.onItemClicked(item)} />
 			));
-			allChecked = _.every(this.props.datas, data => this.state.select[data.ref]);
+			status = _.countBy(this.props.datas, data => data.checked ? 'checked' : 'uncheck');
 		}
 
 		return (
 			<div>
 				<div style={horVCenterSpaceBetween}>
-					<Input type='checkbox' label='Multi-select' checked={this.state.mutiSelect}
-						onChange={this.onSelectModeChange.bind(this)}/>
-					<Input type='checkbox' label='Select all' checked={allChecked}
-						onChange={this.onSelectAllChange.bind(this)}/>
+					<Input type='checkbox' label='Multi-select' checked={this.props.mutiSelect}
+						onChange={this.props.onSelectModeChange}/>
+					<Input type='checkbox' label='Select all' checked={status && !status.uncheck}
+						onChange={this.onSelectAllChange.bind(this, status && !status.uncheck)}/>
 				</div>
-				<ListGroup>
+				<ListGroup style={{height: 440, overflow: 'auto'}}>
 					{listItems}
 				</ListGroup>
+				<div>{status ? `${status.checked ? status.checked : 0} / ${this.props.datas.length}` : ''}</div>
 			</div>
 		);
 	}
-	onSelectModeChange() {
+	onSelectAllChange(allChecked) {
 		if (!this.props.datas || this.props.datas.length == 0) {
 			return;
 		}
-
-		if (this.state.mutiSelect) {
-			const select = { [this.props.datas[0].ref]: true };
-
-			this.setState({
-				mutiSelect: !this.state.mutiSelect,
-				select: select
-			});
-			this.onReSelect(this.props.datas, select);
-		} else {
-			this.setState({ mutiSelect: !this.state.mutiSelect });
-		}
+		
+		this.props.onSelectAll(!allChecked);
 	}
-	onSelectAllChange() {
-		if (!this.props.datas || this.props.datas.length == 0) {
-			return;
+	onItemClicked(item) {
+		if (this.props.mutiSelect) {
+			this.props.onSelectChange(item, !item.checked);
+		} else if (!item.checked) {
+			this.props.onSelectChange(item, true);
 		}
-
-		const allChecked = _.every(this.props.datas, data => this.state.select[data.ref]);
-		const newSelect = allChecked ? {} : Object.assign(...this.props.datas.map(data => ({ [data.ref]: true })));
-		this.setState({
-			select: newSelect
-		});
-		this.onReSelect(this.props.datas, newSelect);
-	}
-	onSingleSelectChange(select) {
-		let newSelect;
-
-		if (this.state.mutiSelect) {
-			newSelect = Object.assign(this.state.select, { [select.ref]: !this.state.select[select.ref] });
-		} else {
-			if (this.state.select[select.ref]) {
-				return;
-			}
-
-			newSelect = Object.assign(...this.props.datas.map(data => ({ [data.ref]: false })),
-					{ [select.ref]: true });
-		}
-
-		this.setState({ select: newSelect });
-		this.onReSelect(this.props.datas, newSelect);
-
-	}
-	onReSelect(datas, select) {
-		if (!datas || datas.length == 0) {
-			return;
-		}
-
-		this.props.onSelectChange(_.pluck(_.filter(datas, data => select[data.ref]), 'ref'));
 	}
 }
 
 GnSelectableList.propTypes = {
+	mutiSelect: PropTypes.bool,
 	datas: PropTypes.arrayOf(PropTypes.shape({
 		ref: PropTypes.string.isRequired,
 		diaplayName: PropTypes.string.isRequired,
-		icon: PropTypes.string
+		icon: PropTypes.string,
+		checked: PropTypes.bool
 	})),
+	onSelectModeChange: PropTypes.func.isRequired,
+	onSelectAll: PropTypes.func.isRequired,
 	onSelectChange: PropTypes.func.isRequired
 }
 
