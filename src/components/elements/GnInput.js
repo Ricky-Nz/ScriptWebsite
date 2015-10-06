@@ -23,7 +23,8 @@ class GnInput extends Component {
 			);
 		} else {
 			return (
-				<Input
+				<Input style={this.props.style}
+					onKeyPress={this.props.onKeyPress}
 					disabled={this.props.disabled}
 					type={this.props.type}
 					label={this.props.label}
@@ -57,6 +58,9 @@ class GnInput extends Component {
 	}
 	getValue() {
 		return this.state.value;
+	}
+	clear() {
+		this.setState({ value: '' });
 	}
 }
 

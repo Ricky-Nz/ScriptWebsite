@@ -2,18 +2,16 @@
  * Created by ruiqili on 19/9/15.
  */
 import { combineReducers } from 'redux';
-import { mainDatas, secondaryDatas, script, scriptState } from './data-reducer';
-import { app, dialog, mainState, secondaryState } from './state-reducer';
+import arrayData from './arraydata-reducer';
+import detail from './scriptdetail-reducer'; 
+import user from './user-reducer';
+import dialog from './dialog-reducer';
 
 const rootReducer = combineReducers({
-    app,
-    dialog,
-    mainDatas,
-    mainState,
-    secondaryDatas,
-    secondaryState,
-    script,
-    scriptState
+    user,
+    arrayData,
+    detail,
+    dialog
 });
 
 export default rootReducer;

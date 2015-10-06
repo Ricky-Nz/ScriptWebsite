@@ -13,8 +13,8 @@ export function showLoginDialog (redirect) {
             	placeholder: 'login password', type: 'password', required: true },
         ],
         buttons: [
-        	{ ref: 'register', icon: 'user-plus', label: 'Register' },
-        	{ ref: 'login', icon: 'send', label: 'Login', bsStyle: 'primary', args: redirect }
+        	{ ref: 'go-register', icon: 'user-plus', label: 'Register' },
+        	{ ref: 'login', icon: 'send', label: 'Login', bsStyle: 'primary', args: redirect, collectData: true }
         ]
     };
 }
@@ -35,86 +35,117 @@ export function showRegisterDialog () {
         ],
         buttons: [
         	{ ref: 'cancel', label: 'Cancel' },
-        	{ ref: 'register', icon: 'user-plus', label: 'Register', bsStyle: 'primary' }
+        	{ ref: 'register', icon: 'user-plus', label: 'Register', bsStyle: 'primary', collectData: true }
         ]
     };
 }
 
-export function showDeleteDialog (section, title, id) {
-	return {
-		title: `Are you sure you want to delete ${title}`,
+export function showParameterDialog (data, del) {
+	let config = {
     	show: true,
         type: TOGGLE_DIALOG,
-        itemId: id,
         size: 'medium',
-        buttons: [
-        	{ ref: 'cancel', label: 'Cancel' },
-        	{ ref: 'register', icon: 'check', label: 'Confirm', bsStyle: 'danger', args: section }
-        ]
-	};
-}
-
-export function showFormDialog (section, item) {
-	let dialogConfig = {
-    	show: true,
-        type: TOGGLE_DIALOG,
-        itemId: item ? item.id : null,
-        size: 'medium',
-        buttons: [
-        	{ ref: 'cancel', label: 'Cancel' },
-        	{ ref: 'submit', icon: 'check', label: 'Submit', bsStyle: 'primary', args: section }
-        ]
+        itemId: data.id,
 	};
 
-	switch(section) {
-		case 'folders':
-			Object.assign(dialogConfig, {
-		        title: `${item ? 'Edit' : 'New'} Folder`,
-		        fields: [
-		        	{ ref: 'title', icon: 'file-text-o', label: 'Title', placeholder: 'folder title',
-		        		type: 'text', required: true, initialValue: item ? item['title'] : null }
-		        ]
-		    });
-		    break;
-		case 'parameters':
-			Object.assign(dialogConfig, {
-		        title: `${item ? 'Edit' : 'New'} Parameter`,
-		        fields: [
-		        	{ ref: 'key', icon: 'edit', label: 'Key', placeholder: 'parameter key',
-		        		type: 'text', required: true, initialValue: item ? item['key'] : null,
-		        		disabled: item ? true : false },
-		        	{ ref: 'value', icon: 'edit', label: 'Value', placeholder: 'parameter value',
-		        		type: 'text', initialValue: item ? item['value'] : null }
-		        ]
-		    });
-		    break;
-		case 'packages':
-			Object.assign(dialogConfig, {
-		        title: 'Upload Package',
-		        fields: [
-		        	{ ref: 'title', icon: 'edit', label: 'Title', placeholder: 'package title',
-		        		type: 'text', required: true, initialValue: item ? item['title'] : null},
-		        	{ ref: 'description', icon: 'edit', label: 'Description', placeholder: 'package description',
-		        		type: 'text', initialValue: item ? item['description'] : null},
-		        	{ ref: 'file', icon: 'paperclip', label: 'Attachment', type: 'file',
-		        		required: true, initialValue: item ? item['description'] : null}
-		        ]
-		    });
-		    break;
-		case 'reports':
-			Object.assign(dialogConfig, {
-		        title: 'Upload Report',
-		        fields: [
-		        	{ ref: 'title', icon: 'edit', label: 'Title', placeholder: 'folder title',
-		        		type: 'text', required: true, initialValue: item ? item['title'] : null},
-		        	{ ref: 'file', icon: 'paperclip', label: 'Attachment', type: 'file',
-		        		required: true, initialValue: item ? item['file'] : null}
-		        ]
-		    });
-		    break;
+	if (del) {
+		Object.assign(config, {
+			title: `Are you sure you want to delete paraameter ${data.key}?`,
+	        buttons: [
+	        	{ ref: 'cancel', label: 'Cancel' },
+	        	{ ref: 'delete-parameter', icon: 'check', label: 'Submit', bsStyle: 'primary', args: section, collectData: true }
+	        ]
+    	});
+	} else {
+		Object.assign(config, {
+	        title: `${data.id ? 'Edit' : 'New'} Parameter`,
+	        fields: [
+	        	{ ref: 'key', icon: 'edit', label: 'Key', placeholder: 'parameter key',
+	        		type: 'text', required: true, initialValue: data['key'],
+	        		disabled: data.id ? true : false },
+	        	{ ref: 'value', icon: 'edit', label: 'Value', placeholder: 'parameter value',
+	        		type: 'text', initialValue: data['value'] }
+	        ],
+	        buttons: [
+	        	{ ref: 'cancel', label: 'Cancel' },
+	        	{ ref: data.id ? 'update-parameter' : 'create-parameter', icon: 'check', label: 'Submit', bsStyle: 'primary', args: section, collectData: true }
+	        ]
+		});
 	}
 
-	return dialogConfig;
+	return config;
+}
+
+export function showPackageDialog (data, del) {
+	let config = {
+    	show: true,
+        type: TOGGLE_DIALOG,
+        size: 'medium',
+        itemId: data.id,
+	};
+
+	if (del) {
+		Object.assign(config, {
+			title: `Are you sure you want to delete paraameter ${data.key}?`,
+	        buttons: [
+	        	{ ref: 'cancel', label: 'Cancel' },
+	        	{ ref: 'delete-package', icon: 'check', label: 'Submit', bsStyle: 'primary', args: section, collectData: true }
+	        ]
+    	});
+	} else {
+		Object.assign(config, {
+	        title: 'Upload Package',
+	        fields: [
+	        	{ ref: 'title', icon: 'edit', label: 'Title', placeholder: 'package title',
+	        		type: 'text', required: true },
+	        	{ ref: 'description', icon: 'edit', label: 'Description', placeholder: 'package description',
+	        		type: 'text' },
+	        	{ ref: 'file', icon: 'paperclip', label: 'Attachment', type: 'file',
+	        		required: true }
+	        ],
+	        buttons: [
+	        	{ ref: 'cancel', label: 'Cancel' },
+	        	{ ref: 'create-package', icon: 'check', label: 'Submit', bsStyle: 'primary', args: section, collectData: true }
+	        ]
+		});
+	}
+
+	return config;
+}
+
+export function showReportDialog (data, del) {
+	let config = {
+    	show: true,
+        type: TOGGLE_DIALOG,
+        size: 'medium',
+        itemId: data.id,
+	};
+
+	if (del) {
+		Object.assign(config, {
+			title: `Are you sure you want to delete paraameter ${data.key}?`,
+	        buttons: [
+	        	{ ref: 'cancel', label: 'Cancel' },
+	        	{ ref: 'delete-report', icon: 'check', label: 'Submit', bsStyle: 'primary', args: section, collectData: true }
+	        ]
+    	});
+	} else {
+		Object.assign(config, {
+	        title: 'Upload Report',
+	        fields: [
+	        	{ ref: 'title', icon: 'edit', label: 'Title', placeholder: 'folder title',
+	        		type: 'text', required: true },
+	        	{ ref: 'file', icon: 'paperclip', label: 'Attachment', type: 'file',
+	        		required: true }
+	        ],
+	        buttons: [
+	        	{ ref: 'cancel', label: 'Cancel' },
+	        	{ ref: 'create-report', icon: 'check', label: 'Submit', bsStyle: 'primary', args: section, collectData: true }
+	        ]
+		});
+	}
+
+	return config;
 }
 
 export function dismissDialog () {
@@ -123,3 +154,4 @@ export function dismissDialog () {
 		type: TOGGLE_DIALOG
 	};
 }
+

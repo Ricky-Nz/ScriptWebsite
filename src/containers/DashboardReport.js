@@ -4,14 +4,27 @@ import { Panel, Row, Col, Fade } from 'react-bootstrap';
 // Redux
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { showFormDialog } from '../actions/dialog-actions';
+import { showReportDialog, showLoginDialog } from '../actions/dialog-actions';
 import { queryReports } from '../actions/crud-actions';
 
 class DashboardParameter extends Component {
 	componentDidMount() {
-		this.props.dispatch(queryReports());
+		if (this.props.accessToken) {
+			this.props.dispatch(queryReports());
+		} else {
+			this.props.dispatch(showLoginDialog());
+		}
+	}
+	componentWillReceiveProps(nextProps) {
+		if (nextProps.accessToken && nextProps.accessToken != this.props.accessToken) {
+			this.props.dispatch(queryReports());
+		}
 	}
 	render() {
+		if (!this.props.accessToken) {
+			return null
+		}
+
 		const config = {
 			searchbarHint: 'search for report title',
 			listHeader: 'Test Reports',
@@ -28,12 +41,13 @@ class DashboardParameter extends Component {
 				<Col xs={6} sm={5} md={4} mdOffset={1}>
 					<SearchableList
 						config={config}
-						datas={this.props.mainDatas}
-						skip={this.props.mainState.skip}
-						total={this.props.mainState.total}
-						loading={this.props.mainState.loading}
+						datas={this.props.datas}
+						skip={this.props.skip}
+						total={this.props.total}
+						loading={this.props.loading}
 						onLoadData={selection => this.props.dispatch(queryReports(selection))}
-						onCreateItem={() => this.props.dispatch(showFormDialog('reports'))}/>
+						onCreateItem={() => this.props.dispatch(showReportDialog({}))}
+						onDeleteItem={item => this.props.dispatch(showReportDialog(item, true))}/>
 				</Col>
 			</Row>
 		);
@@ -41,10 +55,12 @@ class DashboardParameter extends Component {
 }
 
 const propsSelector = createSelector(
-	state => state.mainDatas,
-	state => state.mainState,
-    (mainDatas, mainState) =>
-    	({ mainDatas, mainState })
+	state => state.user.id,
+	state => state.arrayData.loading,
+	state => state.arrayData.skip,
+	state => state.arrayData.total,
+	state => state.arrayData.datas,
+    (accessToken, loading, skip, total, datas) => ({ accessToken, loading, skip, total, datas })
 );
 
 export default connect(propsSelector)(DashboardParameter);

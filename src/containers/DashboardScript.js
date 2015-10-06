@@ -1,98 +1,101 @@
 import React, { Component, PropTypes } from 'react';
-import { SearchableList, ScriptPanel } from '../components';
+import { SearchableList, TagList } from '../components';
 import { Panel, Row, Col, Fade } from 'react-bootstrap';
-import { GnIconButton } from '../components/elements';
 // Redux
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { showFormDialog } from '../actions/dialog-actions';
-import { queryFolders, queryScripts, createScript, getScript, updateScript, deleteScript, clearScript } from '../actions/crud-actions';
+import { showLoginDialog } from '../actions/dialog-actions';
+import { queryScripts } from '../actions/crud-actions';
+import { getTags } from '../actions/user-actions';
 
-class DashboardScript extends Component {
+class DashboardFolder extends Component {
 	componentDidMount() {
-		this.props.dispatch(queryScripts(this.props.params.folderId));
-
-		if (this.props.location.query.select) {
-			this.props.dispatch(getScript(this.props.params.folderId, this.props.location.query.select));
-		} else if (this.props.script.content) {
-			this.props.dispatch(clearScript());
+		if (!this.props.accessToken) {
+			this.props.dispatch(showLoginDialog());
+		} else {
+			this.props.dispatch(getTags());
 		}
 	}
 	componentWillReceiveProps(nextProps) {
-		if (!nextProps.location.query.select) {
-			if (nextProps.script.content) {
-				this.props.dispatch(clearScript());
-			}
-		} else if (nextProps.location.query.select != this.props.location.query.select) {
-			this.props.dispatch(getScript(this.props.params.folderId, nextProps.location.query.select));
+		if (nextProps.accessToken && !this.props.accessToken) {
+			this.props.dispatch(getTags());
+		}
+		
+		if (nextProps.location.query.selection != this.props.location.query.selection) {
+			this.props.dispatch(queryScripts(nextProps.location.query.selection ?
+				JSON.parse(nextProps.location.query.selection) : null));
 		}
 	}
 	render() {
+		if (!this.props.accessToken) {
+			return null
+		}
+
 		const scriptConfig = {
 			searchbarPlaceholder: 'search for script by title',
 			listHeader: 'Test Scripts',
 			itemIcon: 'file-text-o',
 			showEditBtn: false,
-			showDeleteBtn: false,
+			showDeleteBtn: true,
 			primaryKey: 'title',
 			secondaryKey: 'date',
 			searchable: ['title']
 		};
 
 		return (
-			<div>
-				<Row>
-					<Col xs={6} sm={5} md={4} mdOffset={1}>
-						<GnIconButton bsStyle='link' icon='angle-double-left' label='Back'
-							onClick={() => this.props.history.replaceState(null, `/folders?select=${this.props.params.folderId}`)}/>
-					</Col>
-				</Row>
-				<Row>
-					<Col xs={6} sm={5} md={4} mdOffset={1}>
-						<SearchableList
-							config={scriptConfig}
-							args={this.props.location.query.select}
-							datas={this.props.secondaryDatas}
-							skip={this.props.secondaryState.skip}
-							total={this.props.secondaryState.total}
-							loading={this.props.secondaryState.loading}
-							onLoadData={(selection, args) => {
-								this.props.dispatch(queryScripts(this.props.params.folderId, selection));
-							}}
-							onCreateItem={() => {
-								this.props.history.replaceState(null, `/folders/${this.props.params.folderId}`);
-							}}
-							onItemClicked={item => {
-								this.props.history.replaceState(null, `/folders/${this.props.params.folderId}?select=${item.id}`)
-							}}/>
-					</Col>
-					<Col xs={6} sm={7} md={6}>
-						<ScriptPanel
-							loading={this.props.scriptState.loading}
-							submiting={this.props.scriptState.submiting}
-							deleting={this.props.scriptState.deleting}
-							error={this.props.scriptState.error}
-							script={this.props.script}
-							onSubmit={(id, script) => {
-								this.props.dispatch(id ? updateScript(this.props.params.folderId, id, script)
-										: createScript(this.props.params.folderId, script));
-							}}
-							onDelete={id => this.props.dispatch(deleteScript(this.props.params.folderId, id))}/>
-					</Col>
-				</Row>
-			</div>
+			<Row>
+				<Col xs={5} sm={4} md={3} mdOffset={1}>
+					<TagList ref='tagList' tags={this.props.tags}
+						onTagSelectionChange={selection => this.onQueryScript(selection)}/>
+				</Col>
+				<Col xs={7} sm={8} md={7}>
+					<SearchableList ref='scriptList'
+						config={scriptConfig}
+						datas={this.props.datas}
+						skip={this.props.skip}
+						total={this.props.total}
+						loading={this.props.loading}
+						onLoadData={selection => this.onQueryScript(null, selection)}
+						onCreateItem={() => this.props.history.replaceState(null, `/scripts/detail?selection=${this.props.location.query.selection}`)}
+						onItemClicked={item => this.props.history.replaceState(null, `/scripts/detail?selection=${this.props.location.query.selection}&edit=${item.id}`)}/>
+				</Col>
+			</Row>
 		);
+	}
+	onQueryScript(tagSelection, searchSelection) {
+		if (!tagSelection && this.refs.tagList) {
+			const lastSelection = this.refs.tagList.getLastSelection();
+			if (lastSelection) {
+				tagSelection = JSON.parse(lastSelection);
+			}
+		}
+		if (!searchSelection && this.refs.scriptList) {
+			const lastSelection = this.refs.scriptList.getLastSelection();
+			if (lastSelection) {
+				searchSelection = JSON.parse(lastSelection);
+			}
+		}
+
+		let selection;
+		if (tagSelection && searchSelection) {
+			selection = Object.assign(tagSelection, searchSelection, { where: Object.assign(tagSelection.where, searchSelection.where)});
+		} else {
+			selection = tagSelection ? tagSelection : searchSelection;
+		}
+		
+		this.props.history.replaceState(null, `/scripts${selection ? '?selection=' : ''}${selection ? JSON.stringify(selection) : ''}`);
 	}
 }
 
 const propsSelector = createSelector(
-	state => state.secondaryDatas,
-	state => state.secondaryState,
-	state => state.script,
-	state => state.scriptState,
-    (secondaryDatas, secondaryState, script, scriptState) =>
-    	({ secondaryDatas, secondaryState, script, scriptState })
+	state => state.user.id,
+	state => state.user.tags,
+	state => state.arrayData.loading,
+	state => state.arrayData.skip,
+	state => state.arrayData.total,
+	state => state.arrayData.datas,
+    (accessToken, tags, loading, skip, total, datas) => ({ accessToken, tags, loading, skip, total, datas })
 );
 
-export default connect(propsSelector)(DashboardScript);
+export default connect(propsSelector)(DashboardFolder);
 

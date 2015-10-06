@@ -1,10 +1,5 @@
 import { CALL_API } from '../middlewares/backendApiMiddleware';
 
-export const CREATE_FOLDER = 'CREATE_FOLDER';
-export const UPDATE_FOLDER = 'UPDATE_FOLDER';
-export const DELETE_FOLDER = 'DELETE_FOLDER';
-export const LOAD_FOLDERS = 'LOAD_FOLDERS';
-
 export const CREATE_PARAMETER = 'CREATE_PARAMETER';
 export const UPDATE_PARAMETER = 'UPDATE_PARAMETER';
 export const DELETE_PARAMETER = 'DELETE_PARAMETER';
@@ -25,81 +20,79 @@ export const DELETE_SCRIPT = 'DELETE_SCRIPT';
 export const LOAD_SCRIPTS = 'LOAD_SCRIPTS';
 export const CLEAR_SCRIPT = 'CLEAR_SCRIPT';
 
+// Scripts:
+
 export function clearScript () {
 	return {
 		type: CLEAR_SCRIPT
 	};
 }
 
-export function createScript (folderId, script) {
-	script.date = new Date();
-	return createItem(`/Folders/${folderId}/scripts`, script, CREATE_SCRIPT);
+export function createScript (data) {
+	return createItem('/testers/:userId/scripts', data, CREATE_SCRIPT);
 }
 
-export function getScript (folderId, scriptId) {
-	return getItem(`/Folders/${folderId}/scripts/${scriptId}`, GET_SCRIPT);
+export function getScript (id) {
+	return getItem(`/testers/:userId/scripts/${id}`, GET_SCRIPT);
 }
 
-export function updateScript (folderId, scriptId, script) {
-	script.date = new Date();
-	return updateItem(`/Folders/${folderId}/scripts/${scriptId}`, script, UPDATE_SCRIPT);
+export function updateScript (id, data) {
+	return updateItem(`/testers/:userId/scripts/${id}`, data, UPDATE_SCRIPT);
 }
 
-export function deleteScript (folderId, scriptId) {
-	return deleteItem(`/Folders/${folderId}/scripts/${scriptId}`, scriptId, DELETE_SCRIPT);
+export function deleteScript (id) {
+	return deleteItem(`/testers/:userId/scripts/${id}`, id, DELETE_SCRIPT);
 }
 
-export function dialogSubmit (fields, id, attachment, label) {
-	switch(label) {
-		case 'folders':
-			if (!id) {
-				return createItem('/folders', fields, CREATE_FOLDER);
-			} else if (fields) {
-				return updateItem(`/folders/${id}`, fields, UPDATE_FOLDER);
-			} else {
-				return deleteItem(`/folders/${id}`, id, DELETE_FOLDER);
-			}
-		case 'parameters':
-			if (!id) {
-				return createItem('/parameters', fields, CREATE_PARAMETER);
-			} else if (fields) {
-				return updateItem(`/parameters/${id}`, fields, UPDATE_PARAMETER);
-			} else {
-				return deleteItem(`/parameters/${id}`, id, DELETE_PARAMETER);
-			}
-		case 'packages':
-			if (!id) {
-				return uploadItem('/containers/:userId/upload', attachment, fields, CREATE_PACKAGE);
-			} else {
-				return deleteItem(`/packages/${id}`, id, DELETE_PACKAGE);
-			}
-		case 'reports':
-			if (!id) {
-				return uploadItem('/containers/:userId/upload', attachment, fields, CREATE_REPORT);
-			} else {
-				return deleteItem(`/reports/${id}`, id, DELETE_REPORT);
-			}
-	}
+export function queryScripts (selection) {
+	selection = Object.assign({fields: {id: true, title: true, date: true}}, selection);
+	return queryItems('/testers/:userId/scripts', selection, LOAD_SCRIPTS);
 }
 
-export function queryFolders (selection) {
-	return queryItems('/testers/:userId/folders', selection, LOAD_FOLDERS);
+// Parameters:
+
+export function createParameter (data) {
+	return createItem('/testers/:userId/parameters', data, CREATE_PARAMETER);
+}
+
+export function updateParameter (id, data) {
+	return updateItem(`/testers/:userId/parameters/${id}`, data, UPDATE_PARAMETER);
+}
+
+export function deleteParameter (id) {
+	return deleteItem(`/testers/:userId/parameters/${id}`, id, DELETE_PARAMETER);
 }
 
 export function queryParameters (selection) {
 	return queryItems('/testers/:userId/parameters', selection, LOAD_PARAMETERS);
 }
 
+// Packages:
+
+export function createPackage (data, attachment) {
+	return uploadItem('/containers/:userId/upload', attachment, data, CREATE_PACKAGE);
+}
+
+export function deletePackage (id) {
+	return deleteItem(`/testers/:userId/packages/${id}`, id, DELETE_PACKAGE);
+}
+
 export function queryPackages (selection) {
 	return queryItems('/testers/:userId/packages', selection, LOAD_PACKAGES);
 }
 
-export function queryReports (selection) {
-	return queryItems('/testers/:userId/reports', selection, LOAD_REPORTS);
+// Reports:
+
+export function createReport (data, attachment) {
+	return uploadItem('/containers/:userId/upload', attachment, data, CREATE_REPORT);
 }
 
-export function queryScripts (folderId, selection) {
-	return queryItems(`/Folders/${folderId}/scripts`, selection, LOAD_SCRIPTS);
+export function deleteReport (id) {
+	return deleteItem(`/testers/:userId/packages/${id}`, id, DELETE_REPORT);
+}
+
+export function queryReports (selection) {
+	return queryItems('/testers/:userId/reports', selection, LOAD_REPORTS);
 }
 
 function createItem (path, item, action) {

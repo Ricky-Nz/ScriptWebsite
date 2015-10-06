@@ -4,14 +4,27 @@ import { Panel, Row, Col, Fade } from 'react-bootstrap';
 // Redux
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { showFormDialog, showDeleteDialog } from '../actions/dialog-actions';
+import { showParameterDialog, showLoginDialog } from '../actions/dialog-actions';
 import { queryParameters } from '../actions/crud-actions';
 
 class DashboardParameter extends Component {
 	componentDidMount() {
-		this.props.dispatch(queryParameters());
+		if (this.props.accessToken) {
+			this.props.dispatch(queryParameters());
+		} else {
+			this.props.dispatch(showLoginDialog());
+		}
+	}
+	componentWillReceiveProps(nextProps) {
+		if (nextProps.accessToken && nextProps.accessToken != this.props.accessToken) {
+			this.props.dispatch(queryParameters());
+		}
 	}
 	render() {
+		if (!this.props.accessToken) {
+			return null
+		}
+
 		const config = {
 			searchbarPlaceholder: 'search for parameter key or value ',
 			listHeader: 'Golabel Parameters',
@@ -33,9 +46,9 @@ class DashboardParameter extends Component {
 						total={this.props.mainState.total}
 						loading={this.props.mainState.loading}
 						onLoadData={selection => this.props.dispatch(queryParameters(selection))}
-						onCreateItem={() => this.props.dispatch(showFormDialog('parameters'))}
-						onEditItem={item => this.props.dispatch(showFormDialog('parameters', item))}
-						onDeleteItem={item => this.props.dispatch(showDeleteDialog('parameters', `parameter ${item.key}`, item.id))}/>
+						onCreateItem={() => this.props.dispatch(showParameterDialog({}))}
+						onEditItem={item => this.props.dispatch(showParameterDialog(item))}
+						onDeleteItem={item => this.props.dispatch(showParameterDialog(item, true))}/>
 				</Col>
 			</Row>
 		);
@@ -43,10 +56,12 @@ class DashboardParameter extends Component {
 }
 
 const propsSelector = createSelector(
-	state => state.mainDatas,
-	state => state.mainState,
-    (mainDatas, mainState) =>
-    	({ mainDatas, mainState })
+	state => state.user.id,
+	state => state.arrayData.loading,
+	state => state.arrayData.skip,
+	state => state.arrayData.total,
+	state => state.arrayData.datas,
+    (accessToken, loading, skip, total, datas) => ({ accessToken, loading, skip, total, datas })
 );
 
 export default connect(propsSelector)(DashboardParameter);

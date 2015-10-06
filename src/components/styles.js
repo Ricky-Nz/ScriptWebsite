@@ -2,6 +2,13 @@ export const clearPadding = {
 	padding: 0
 };
 
+export const horWrap = {
+	display: 'flex',
+	flexDirection: 'row',
+	alignItems: 'center',
+	flexWrap: 'wrap'
+}
+
 export const verHCenter = {
 	display: 'flex',
 	flexDirection: 'column',

@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import { Panel, Fade } from 'react-bootstrap';
-import { GnInput, GnIconButton, GnIcon } from './elements';
-import { horVCenterRight, horCenterPadding, errorStyle, horCenter } from './styles';
+import { Panel, Fade, Label } from 'react-bootstrap';
+import { GnInput, GnIconButton, GnIcon, GnTag } from './elements';
+import { horVCenterRight, horCenterPadding, errorStyle, horCenter, horWrap } from './styles';
 import ActionItem from './ActionItem';
 import _ from 'underscore';
 
@@ -11,9 +11,7 @@ class ScriptPanel extends Component {
 		this.state = this.updateState(props.script);
 	}
 	componentWillReceiveProps(nextProps) {
-		if (!nextProps.script) {
-			this.setState({id: null, title: null, actions: null});
-		} else if (nextProps.script != this.props.script) {
+		if (nextProps.script != this.props.script) {
 			this.setState(this.updateState(nextProps.script));
 		}
 	}
@@ -26,6 +24,9 @@ class ScriptPanel extends Component {
 			);
 		}
 
+		const tagStyle = {
+			margin: '8px 2px 0px 2px'
+		};
 		const findTypes = [
 			'Name'
 		];
@@ -58,6 +59,17 @@ class ScriptPanel extends Component {
 			));
 		}
 
+		let tagItems;
+		if (this.state.tags) {
+			tagItems = this.state.tags.map((tag, index) => (
+				<GnIconButton style={tagStyle} label={tag} bsStyle='success' bsSize='xs'
+					icon='times' onClick={() => {
+						this.state.tags.splice(index, 1);
+						this.setState({tags: this.state.tags});
+					}}/>
+			));
+		}
+
 		return (
 			<Panel style={{height: 500, overflow: 'auto'}}>
 				<GnInput required
@@ -67,6 +79,19 @@ class ScriptPanel extends Component {
 					initialValue={this.state.title}
 					placeholder='test script title'
 					icon='file-text-o'/>
+				<div style={Object.assign({paddingLeft: 15}, horWrap)}>
+					{tagItems}
+				</div>
+				<GnInput ref='tagInput' style={{maxWidth: 150}} type='text' placeholder='new tag' icon='tag'
+					onKeyPress={e => {
+						if (e.which == 13 && e.target.value) {
+							if (!this.state.tags || this.state.tags.indexOf(e.target.value) < 0) {
+								this.setState({ tags: this.state.tags ?
+									[...this.state.tags, e.target.value] : [e.target.value]});
+							}
+							this.refs.tagInput.clear();
+						}
+					}}/>
 				<div style={{margin: '10px 0px 30px 0px'}}>
 					<p>Actions</p>
 					{actionItems}
@@ -99,10 +124,16 @@ class ScriptPanel extends Component {
 			return {
 				id: script.id,
 				title: script.title,
-				actions: script.content
+				tags: script.tags,
+				actions: script.actions
 			}
 		} else {
-			return {};
+			return {
+				id: null,
+				title: null,
+				tags: null,
+				actions: null
+			};
 		}
 	}
 	onSubmitClicked() {
@@ -116,8 +147,8 @@ class ScriptPanel extends Component {
 
 		this.props.onSubmit(this.state.id, {
 			title: this.refs.title.getValue(),
-			content: JSON.stringify(this.state.actions.map((item, index) =>
-					this.refs[`action-${index}`].getValue()))
+			tags: this.state.tags,
+			actions: this.state.actions.map((item, index) => this.refs[`action-${index}`].getValue())
 		});
 	}
 }

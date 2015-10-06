@@ -24,7 +24,7 @@ class FormDialog extends Component {
             actionButtons = this.props.buttons.map(
                 (button, index) => <GnIconButton key={index} bsSize='small' icon={button.icon}
                     bsStyle={button.bsStyle} active={ (index + 1) == this.props.buttons.length ? this.props.processing : false}
-                    label={button.label} onClick={this.onButonClicked.bind(this, button.ref, button.args)}/>);
+                    label={button.label} onClick={this.onButonClicked.bind(this, button.ref, button.args, button.collectData)}/>);
         }
 
         return (
@@ -43,8 +43,8 @@ class FormDialog extends Component {
             </Modal>
         );
     }
-    onButonClicked(ref, args) {
-        if (ref == 'submit' && this.props.fields) {
+    onButonClicked(ref, args, collectData) {
+        if (collectData) {
             let allValidate = _.every(this.props.fields, field => this.refs[field.ref].validete());
             if (allValidate) {
                 let fields = {};
@@ -75,7 +75,8 @@ FormDialog.propTypes = {
         label: PropTypes.string.isRequired,
         ref: PropTypes.string.isRequired,
         bsStyle: PropTypes.string,
-        args: PropTypes.string
+        args: PropTypes.string,
+        collectData: PropTypes.bool
     })).isRequired,
     error: PropTypes.string,
     processing: PropTypes.bool,

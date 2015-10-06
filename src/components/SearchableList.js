@@ -9,8 +9,8 @@ class SearchableList extends Component {
 		const config = this.props.config;
 		return (
 			<Panel style={this.props.style}>
-				<GnSearchbar ref='searchbar' placeholder={config.searchbarPlaceholder}
-					onSearch={searchText => this.loadData(this.props, searchText)}/>
+				{config.hideSearchbar ? null : <GnSearchbar ref='searchbar' placeholder={config.searchbarPlaceholder}
+					onSearch={searchText => this.loadData(this.props, searchText)}/>}
 				<GnList
 					header={config.listHeader}
 					itemIcon={config.itemIcon}
@@ -40,11 +40,16 @@ class SearchableList extends Component {
 		}
 
 		this.props.onLoadData(query);
+		this.setState({ selection: JSON.stringify(query)});
+	}
+	getLastSelection() {
+		return this.state ? this.state.selection : null;
 	}
 }
 
 SearchableList.propTypes = {
 	config: PropTypes.shape({
+		hideSearchbar: PropTypes.bool,
 		searchbarPlaceholder: PropTypes.string,
 		listHeader: PropTypes.string,
 		itemIcon: PropTypes.string,

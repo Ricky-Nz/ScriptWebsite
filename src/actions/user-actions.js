@@ -6,7 +6,7 @@ import { CALL_API } from '../middlewares/backendApiMiddleware';
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const REGISTER = 'REGISTER';
-export const TOGGLE_LOGIN_PANEL = 'TOGGLE_LOGIN_PANEL';
+export const GET_TAGS = 'GET_TAGS';
 
 export function register(email, password) {
     return {
@@ -38,6 +38,17 @@ export function logout () {
             url: '/Testers/logout',
             token: true,
             action: LOGOUT
+        }
+    }
+}
+
+export function getTags () {
+    return {
+        [CALL_API]: {
+            method: 'GET',
+            url: '/Testers/tags',
+            token: true,
+            action: GET_TAGS
         }
     }
 }

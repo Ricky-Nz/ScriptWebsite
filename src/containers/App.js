@@ -4,81 +4,90 @@ import { FormDialog } from '../components';
 // Redux
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { dismissDialog, showLoginDialog } from '../actions/dialog-actions';
-import { dialogSubmit } from '../actions/crud-actions';
-import { login, logout } from '../actions/user-actions';
+import { dismissDialog, showLoginDialog, showRegisterDialog } from '../actions/dialog-actions';
+import { login, logout, register } from '../actions/user-actions';
+import { createParameter, updateParameter, deleteParameter, createPackage,
+	deletePackage, createReport, deleteReport } from '../actions/crud-actions';
 
 class Application extends Component {
-	componentDidMount() {
-		if (['/folders', '/scripts', '/reports', '/parameters', '/packages'].indexOf(this.props.location.pathname) >= 0 && !this.props.access_token) {
-			this.props.dispatch(showLoginDialog(`/${this.props.location.path}`));
-		}
-	}
-	componentWillReceiveProps(nextProps) {
-		if (this.props.redirect != nextProps.redirect) {
-			this.props.history.replaceState(null, nextProps.redirect);
-		}
-	}
 	render() {
+		const titlebarSections = [
+			{ ref: 'scripts', label: 'Script' },
+			{ ref: 'parameters', label: 'Parameter' },
+			{ ref: 'packages', label: 'Package' },
+			{ ref: 'reports', label: 'Report' },
+			{ ref: 'guide', label: 'Guide' }
+		];
+
 		return (
 			<div>
 				<GnTitlebar brand='Gear Test Automation'
-					sections={[
-						{ ref: 'folders', label: 'Script' },
-						{ ref: 'parameters', label: 'Parameter' },
-						{ ref: 'packages', label: 'Package' },
-						{ ref: 'reports', label: 'Report' },
-						{ ref: 'guide', label: 'Guide' }
-					]}
+					sections={titlebarSections}
 					menuTitle={this.props.email ? this.props.email : 'Login'}
-					menus={this.props.email ? [
-						{ ref: 'logout', label: 'Logout' },
-					] : []}
-					onMenuSelected={key => {
-						if (key == 'Login') {
-							this.props.dispatch(showLoginDialog());
-						} else if (key == 'logout') {
-							this.props.dispatch(logout());
-						}
-					}}
-					onSectionSelected={this.onSectionSelected.bind(this)}/>
+					menus={this.props.email ? [{ ref: 'logout', label: 'Logout' }] : []}
+					onMenuSelected={this.onTitlebarMenuSelected.bind(this)}
+					onSectionSelected={this.onTitlebarSectionSelected.bind(this)}/>
 				<br/><br/><br/><br/>
-				{this.renderSection()}
-				<FormDialog {...this.props.dialog}
-                    onPerformAction={(ref, args, fields, id, attachment) => {
-                    	this.props.dispatch(dismissDialog());
-                    	if (['folders', 'scripts', 'reports', 'parameters', 'packages'].indexOf(label) >= 0) {
-                    		this.props.dispatch(dialogSubmit(fields, itemId, attachment, label));
-                    	} else {
-                    		this.props.dispatch(login(fields.email, fields.password, label));
-                    	}
-                    }}/>
+				{this.props.children}
+				<FormDialog {...this.props.dialog} processing={this.props.updating} error={this.props.error}
+                    onPerformAction={this.onProcessDialogAction.bind(this)}/>
 			</div>
 		);
 	}
-	renderSection() {
-		if (!this.props.access_token &&
-			['/folders', '/scripts', '/reports', '/parameters', '/packages'].indexOf(this.props.location.pathname) >= 0) {
-			return null;
+	onTitlebarMenuSelected(ref) {
+		if (ref == 'Login') {
+			this.props.dispatch(showLoginDialog());
+		} else if (ref == 'logout') {
+			this.props.dispatch(logout());
 		}
-
-		return this.props.children;
 	}
-	onSectionSelected(section) {
-		if (['folders', 'scripts', 'reports', 'parameters', 'packages'].indexOf(section) < 0 || this.props.access_token) {
-			this.props.history.replaceState(null, `/${section}`);
-		} else {
-			this.props.dispatch(showLoginDialog(`/${section}`));
+	onTitlebarSectionSelected(section) {
+		this.props.history.replaceState(null, `/${section}`);
+	}
+	onProcessDialogAction(ref, args, fields, id, attachment) {
+		switch(ref) {
+			case 'create-parameter':
+				this.props.dispatch(createParameter(fields));
+				break;
+			case 'update-parameter':
+				this.props.dispatch(updateParameter(id, fields));
+				break;
+			case 'delete-parameter':
+				this.props.dispatch(deleteParameter(id));
+				break;
+			case 'createPackage':
+				this.props.dispatch(createPackage(fields, attachment));
+				break;
+			case 'deletePackage':
+				this.props.dispatch(deletePackage(id));
+				break;
+			case 'createReport':
+				this.props.dispatch(createReport(fields, attachment));
+				break;
+			case 'deleteReport':
+				this.props.dispatch(deleteReport(id));
+				break;
+			case 'login':
+				this.props.dispatch(login(fields.email, fields.password, args));
+				break;
+			case 'go-register':
+				this.props.dispatch(showRegisterDialog());
+				break;
+			case 'register':
+				this.props.dispatch(register(fields.email, fields.password));
+				break;
+			default:
+				this.props.dispatch(dismissDialog());
 		}
 	}
 }
 
 const propsSelector = createSelector(
-	state => state.app.access_token,
-	state => state.app.redirect,
-	state => state.app.email,
+	state => state.user.email,
+	state => state.arrayData.updating || state.user.processing,
+	state => state.arrayData.error,
 	state => state.dialog,
-    (access_token, redirect, email, dialog) => ({ access_token, redirect, email, dialog })
+    (email, updating, error, dialog) => ({ email, updating, error, dialog })
 );
 
 export default connect(propsSelector)(Application);

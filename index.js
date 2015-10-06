@@ -7,11 +7,11 @@ import 'babel-core/polyfill';
 import React from 'react';
 import App from './src/containers/App';
 import DashboardHome from './src/containers/DashboardHome';
-import DashboardFolder from './src/containers/DashboardFolder';
+import DashboardScript from './src/containers/DashboardScript';
 import DashboardParameter from './src/containers/DashboardParameter';
 import DashboardPackage from './src/containers/DashboardPackage';
 import DashboardReport from './src/containers/DashboardReport';
-import DashboardScript from './src/containers/DashboardScript';
+import DashboardDetail from './src/containers/DashboardDetail';
 import DashboardGuide from './src/containers/DashboardGuide';
 
 // React router
@@ -50,8 +50,8 @@ React.render(
             <Router history={history}>
                 <Route path='/' component={App}>
                     <IndexRoute component={DashboardHome}/>
-                    <Route path='folders/:folderId' component={DashboardScript}/>
-                    <Route path='folders' component={DashboardFolder}/>
+                    <Route path='scripts/detail' component={DashboardDetail}/>
+                    <Route path='scripts' component={DashboardScript}/>
                     <Route path='parameters' component={DashboardParameter}/>
                     <Route path='packages' component={DashboardPackage}/>
                     <Route path='reports' component={DashboardReport}/>
