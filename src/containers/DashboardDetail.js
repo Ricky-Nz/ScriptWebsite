@@ -40,7 +40,7 @@ class DashboardScript extends Component {
 		}
 
 		const scriptConfig = {
-			hideSearchbar: true,
+			searchbarPlaceholder: 'search for script by title',
 			listHeader: 'Test Scripts',
 			itemIcon: 'file-text-o',
 			showEditBtn: false,
@@ -77,6 +77,8 @@ class DashboardScript extends Component {
 							deleting={this.props.updating}
 							error={this.props.error}
 							script={this.props.script}
+							findTypes={this.props.findTypes}
+							actionTypes={this.props.actionTypes}
 							onSubmit={(id, script) => {
 								this.props.dispatch(id ? updateScript(id, script) : createScript(script));
 							}}
@@ -91,6 +93,8 @@ class DashboardScript extends Component {
 const propsSelector = createSelector(
 	state => state.user.id,
 	state => state.user.selection,
+	state => state.user.config.findTypes,
+	state => state.user.config.actionTypes,
 	state => state.arrayData.loading,
 	state => state.arrayData.updating,
 	state => state.arrayData.skip,
@@ -98,7 +102,8 @@ const propsSelector = createSelector(
 	state => state.arrayData.datas,
 	state => state.detail.error,
 	state => state.detail.script,
-    (accessToken, selection, loading, updating, skip, total, datas, error, script) => ({ accessToken, selection, loading, updating, skip, total, datas, error, script })
+    (accessToken, selection, findTypes, actionTypes, loading, updating, skip, total, datas, error, script) =>
+    	({ accessToken, selection, findTypes, actionTypes, loading, updating, skip, total, datas, error, script })
 );
 
 export default connect(propsSelector)(DashboardScript);

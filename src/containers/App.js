@@ -55,16 +55,16 @@ class Application extends Component {
 			case 'delete-parameter':
 				this.props.dispatch(deleteParameter(id));
 				break;
-			case 'createPackage':
+			case 'create-package':
 				this.props.dispatch(createPackage(fields, attachment));
 				break;
-			case 'deletePackage':
+			case 'delete-package':
 				this.props.dispatch(deletePackage(id));
 				break;
-			case 'createReport':
+			case 'create-report':
 				this.props.dispatch(createReport(fields, attachment));
 				break;
-			case 'deleteReport':
+			case 'delete-report':
 				this.props.dispatch(deleteReport(id));
 				break;
 			case 'login':

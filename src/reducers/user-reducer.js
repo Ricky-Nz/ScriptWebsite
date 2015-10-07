@@ -33,6 +33,9 @@ export default function (user = {}, action) {
 					};
 				});
 
+				if (user.selection) {
+					user.selection.skip = 0;
+				}
 				return updateUser(user, newTags, user.selection);
 			} else {
 				return user;
@@ -52,6 +55,9 @@ export default function (user = {}, action) {
 				updateTags = [...user.tags.slice(0, index), { ref: update.ref, checked: update.check }, ...user.tags.slice(index + 1)]
 			}
 
+			if (user.selection) {
+				user.selection.skip = 0;
+			}
 			return updateUser(user, updateTags, user.selection);
 		}
 		case CHANGE_SELECTION: {
@@ -69,12 +75,11 @@ function updateUser (user, tags, selection) {
 			tags: {
 				inq: tags ? _.pluck(_.filter(tags, tag => tag.checked), 'ref') : []
 			}
-		},
-		skip: 0
+		}
 	};
 
 	if (selection) {
-		newSelection = Object.assign({}, newSelection, selection,
+		newSelection = Object.assign({}, selection, newSelection,
 			selection.where ? { where: Object.assign({}, selection.where, newSelection.where)} : null);
 	}
 

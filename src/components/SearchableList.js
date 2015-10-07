@@ -35,9 +35,7 @@ class SearchableList extends Component {
 		if (searchText) {
 			Object.assign(query, { where: { or: props.config.searchable.map(key => ({[key]: {regexp: searchText}}))} })
 		}
-		if (loadmore) {
-			Object.assign(query, { skip: props.skip });
-		}
+		Object.assign(query, { skip: loadmore ? props.skip : 0 });
 
 		this.props.onLoadData(query);
 		this.setState({ selection: JSON.stringify(query)});

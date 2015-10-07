@@ -53,7 +53,7 @@ export function showParameterDialog (data, del) {
 			title: `Are you sure you want to delete paraameter ${data.key}?`,
 	        buttons: [
 	        	{ ref: 'cancel', label: 'Cancel' },
-	        	{ ref: 'delete-parameter', icon: 'check', label: 'Submit', bsStyle: 'primary', args: section, collectData: true }
+	        	{ ref: 'delete-parameter', icon: 'check', label: 'Submit', bsStyle: 'primary' }
 	        ]
     	});
 	} else {
@@ -68,7 +68,7 @@ export function showParameterDialog (data, del) {
 	        ],
 	        buttons: [
 	        	{ ref: 'cancel', label: 'Cancel' },
-	        	{ ref: data.id ? 'update-parameter' : 'create-parameter', icon: 'check', label: 'Submit', bsStyle: 'primary', args: section, collectData: true }
+	        	{ ref: data.id ? 'update-parameter' : 'create-parameter', icon: 'check', label: 'Submit', bsStyle: 'primary', collectData: true }
 	        ]
 		});
 	}
@@ -89,7 +89,7 @@ export function showPackageDialog (data, del) {
 			title: `Are you sure you want to delete paraameter ${data.key}?`,
 	        buttons: [
 	        	{ ref: 'cancel', label: 'Cancel' },
-	        	{ ref: 'delete-package', icon: 'check', label: 'Submit', bsStyle: 'primary', args: section, collectData: true }
+	        	{ ref: 'delete-package', icon: 'check', label: 'Submit', bsStyle: 'primary' }
 	        ]
     	});
 	} else {
@@ -105,7 +105,7 @@ export function showPackageDialog (data, del) {
 	        ],
 	        buttons: [
 	        	{ ref: 'cancel', label: 'Cancel' },
-	        	{ ref: 'create-package', icon: 'check', label: 'Submit', bsStyle: 'primary', args: section, collectData: true }
+	        	{ ref: 'create-package', icon: 'check', label: 'Submit', bsStyle: 'primary', collectData: true }
 	        ]
 		});
 	}
@@ -126,7 +126,7 @@ export function showReportDialog (data, del) {
 			title: `Are you sure you want to delete paraameter ${data.key}?`,
 	        buttons: [
 	        	{ ref: 'cancel', label: 'Cancel' },
-	        	{ ref: 'delete-report', icon: 'check', label: 'Submit', bsStyle: 'primary', args: section, collectData: true }
+	        	{ ref: 'delete-report', icon: 'check', label: 'Submit', bsStyle: 'primary' }
 	        ]
     	});
 	} else {
@@ -140,7 +140,7 @@ export function showReportDialog (data, del) {
 	        ],
 	        buttons: [
 	        	{ ref: 'cancel', label: 'Cancel' },
-	        	{ ref: 'create-report', icon: 'check', label: 'Submit', bsStyle: 'primary', args: section, collectData: true }
+	        	{ ref: 'create-report', icon: 'check', label: 'Submit', bsStyle: 'primary', collectData: true }
 	        ]
 		});
 	}

@@ -41,10 +41,10 @@ class DashboardParameter extends Component {
 				<Col xs={12} sm={10} smOffset={1} md={8} mdOffset={2} lg={6} lgOffset={3}>
 					<SearchableList
 						config={config}
-						datas={this.props.mainDatas}
-						skip={this.props.mainState.skip}
-						total={this.props.mainState.total}
-						loading={this.props.mainState.loading}
+						datas={this.props.datas}
+						skip={this.props.skip}
+						total={this.props.total}
+						loading={this.props.loading}
 						onLoadData={selection => this.props.dispatch(queryParameters(selection))}
 						onCreateItem={() => this.props.dispatch(showParameterDialog({}))}
 						onEditItem={item => this.props.dispatch(showParameterDialog(item))}

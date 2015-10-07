@@ -24,28 +24,11 @@ class ScriptPanel extends Component {
 			);
 		}
 
-		const tagStyle = {
-			margin: '8px 2px 0px 2px'
-		};
-		const findTypes = [
-			'Name'
-		];
-
-		const actionTypes = [
-			'Click',
-			'Input',
-			'ClearInput',
-			'ScrollUp',
-			'ScrollDown',
-			'ScrollLeft',
-			'ScrollRight'
-		];
-
 		let actionItems;
 		if (this.state.actions) {
 			actionItems = this.state.actions.map((action, index) => (
 				<ActionItem ref={`action-${index}`} key={index} action={action}
-					index={index} findTypes={findTypes} actionTypes={actionTypes}
+					index={index} findTypes={this.props.findTypes} actionTypes={this.props.actionTypes}
 					onInsert={index => {
 						let newActions = this.state.actions.map((item, index) => this.refs[`action-${index}`].getValue());
 						newActions.splice(index, 0, {});
@@ -61,6 +44,10 @@ class ScriptPanel extends Component {
 
 		let tagItems;
 		if (this.state.tags) {
+			const tagStyle = {
+				margin: '8px 2px 0px 2px'
+			};
+			
 			tagItems = this.state.tags.map((tag, index) => (
 				<GnIconButton style={tagStyle} label={tag} bsStyle='success' bsSize='xs'
 					icon='times' onClick={() => {
@@ -144,7 +131,7 @@ class ScriptPanel extends Component {
 		} else if (!this.state.actions || this.state.actions.length == 0) {
 			return this.setState({error: 'script action can not be empty'});
 		} else if (!_.every(this.state.actions, (action, index) => this.refs[`action-${index}`].validete())) {
-			return this.setState({error: 'action list contains illegal action'});
+			return;
 		} else if (!this.state.tags || this.state.tags.length == 0) {
 			return this.setState({error: 'script must have at least one tag in order to able to get selected.'})
 		}
@@ -160,6 +147,8 @@ class ScriptPanel extends Component {
 ScriptPanel.propTypes = {
 	error: PropTypes.string,
 	script: PropTypes.string,
+	findTypes: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+	actionTypes: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
 	loading: PropTypes.bool,
 	submiting: PropTypes.bool,
 	deleting: PropTypes.bool,

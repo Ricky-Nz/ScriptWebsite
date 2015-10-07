@@ -34,7 +34,7 @@ class GnInput extends Component {
 					bsStyle={this.state.error ? 'error' : null}
 					onChange={(e) => this.setState({ value: e.target.value })}
 					onBlur={this.validete.bind(this)}
-					addonBefore={this.props.icon ? <GnIcon icon={this.props.icon}/> : null} />
+					addonBefore={this.props.icon ? <GnIcon icon={this.props.icon}/> : this.props.addonBefore} />
 			);
 		}
 	}

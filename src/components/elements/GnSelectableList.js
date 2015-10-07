@@ -25,7 +25,7 @@ class GnSelectableList extends Component {
 					<Input type='checkbox' label='Select all' checked={status && !status.uncheck}
 						onChange={this.onSelectAllChange.bind(this, status && !status.uncheck)}/>
 				</div>
-				<ListGroup style={{height: 440, overflow: 'auto'}}>
+				<ListGroup style={{height: 420, overflow: 'auto'}}>
 					{listItems}
 				</ListGroup>
 				<div>{status ? `${status.checked ? status.checked : 0} / ${this.props.datas.length}` : ''}</div>
