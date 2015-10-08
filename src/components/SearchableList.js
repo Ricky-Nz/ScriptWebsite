@@ -12,6 +12,8 @@ class SearchableList extends Component {
 				{config.hideSearchbar ? null : <GnSearchbar ref='searchbar' placeholder={config.searchbarPlaceholder}
 					onSearch={searchText => this.loadData(this.props, searchText)}/>}
 				<GnList
+					limitScroll={config.limitScroll}
+					hideAddBtn={config.hideAddBtn}
 					header={config.listHeader}
 					itemIcon={config.itemIcon}
 					showEditBtn={config.showEditBtn}
@@ -61,7 +63,7 @@ SearchableList.propTypes = {
 	datas: PropTypes.array,
 	skip: PropTypes.number,
 	total: PropTypes.number,
-	onCreateItem: PropTypes.func.isRequired,
+	onCreateItem: PropTypes.func,
 	onLoadData: PropTypes.func.isRequired,
 	onItemClicked: PropTypes.func,
 	onEditItem: PropTypes.func,

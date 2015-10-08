@@ -8,6 +8,8 @@ import GnIconButton from './GnIconButton';
 import GnTitlebar from './GnTitlebar';
 import GnTag from './GnTag';
 import GnSelectableList from './GnSelectableList';
+import GnAccordionList from './GnAccordionList';
+import GnDataPanel from './GnDataPanel';
 
 export default {
 	GnIcon,
@@ -19,5 +21,7 @@ export default {
 	GnSpinnerButton,
 	GnIconButton,
 	GnTitlebar,
-	GnSelectableList
+	GnSelectableList,
+	GnAccordionList,
+	GnDataPanel
 };

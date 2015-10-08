@@ -22,7 +22,7 @@ class GnList extends Component {
 						showDeleteBtn={this.props.showDeleteBtn}
 						onItemClicked={this.props.onItemClicked ? () => this.props.onItemClicked(data) : null}
 						onEditItem={this.props.onEditItem ? () => this.props.onEditItem(data) : null}
-						onDeleteItem={this.props.onDeleteItem ? () => this.props.onDeleteItem(data) : null}
+						onDeleteItem={this.props.onDeleteItem ? () => this.props.onDeleteItem(data, true) : null}
 						onMenuSelected={this.props.onMenuSelected}/>;
 		});
 
@@ -30,10 +30,10 @@ class GnList extends Component {
 			<div style={this.props.style}>
 				<div style={Object.assign({padding: '10px 0px'}, horVCenterSpaceBetween)}>
 					<div>{this.props.header}</div>
-					<GnIconButton bsStyle='primary' bsSize='small' icon='plus' label='Add'
-						onClick={this.props.onCreateItem}/>
+					{this.props.hideAddBtn ? null : <GnIconButton bsStyle='primary' bsSize='small' icon='plus' label='Add'
+						onClick={this.props.onCreateItem}/>}
 				</div>
-				<ListGroup style={{maxHeight: 400, overflow: 'auto'}}>
+				<ListGroup style={this.props.limitScroll ? {height: 420, overflow: 'auto'} : null}>
 					{listItems}
 					{this.props.loading ? this.renderSpinner() : this.renderLoadMore()}					
 				</ListGroup>
@@ -56,6 +56,8 @@ class GnList extends Component {
 }
 
 GnList.propTypes = {
+	limitScroll: PropTypes.bool,
+	hideAddBtn: PropTypes.bool,
 	header: PropTypes.string,
 	datas: PropTypes.array.isRequired,
 	loaded: PropTypes.number.isRequired,

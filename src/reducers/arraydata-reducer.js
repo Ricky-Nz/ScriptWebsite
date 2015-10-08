@@ -58,6 +58,9 @@ export default function (arrayData = { datas: [] }, action) {
 					break;
 				case 'delete':
 					newDatas = arrayDelete(arrayData.datas, action);
+					if (arrayData.skip > 0) {
+						newState.skip = arrayData.skip - 1;
+					}
 					break;
 				case 'load':
 					newDatas = arrayLoad(arrayData.datas, action);

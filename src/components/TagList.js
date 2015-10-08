@@ -30,8 +30,8 @@ class TagList extends Component {
 	onSelectModeChange() {
 		this.setState({ mutiSelect: !this.state.mutiSelect });
 		const checkedList = _.filter(this.props.tags, tag => tag.checked);
-		if (checkedList > 1) {
-			this.props.onTagSelctChange({
+		if (checkedList.length > 1) {
+			this.props.onTagSelectChange({
 				ref: checkedList[0].ref,
 				check: true,
 				single: true
@@ -40,29 +40,26 @@ class TagList extends Component {
 	}
 	onSelectAll(selectAll) {
 		if (selectAll) {
-			this.props.onTagSelctChange({
+			this.props.onTagSelectChange({
 				all: true
 			});
 		} else {
-			this.props.onTagSelctChange({
+			this.props.onTagSelectChange({
 				clear: true
 			});
 		}
 	}
 	onSelectionChange(item, check) {
-		this.props.onTagSelctChange({
+		this.props.onTagSelectChange({
 			ref: item.ref,
 			check: check
 		});
-	}
-	getLastSelection() {
-		return this.state ? this.state.selection : null;
 	}
 }
 
 TagList.propTypes = {
 	tags: PropTypes.arrayOf(PropTypes.string.isRequired),
-	onTagSelctChange: PropTypes.func.isRequired
+	onTagSelectChange: PropTypes.func.isRequired
 };
 
 export default TagList;

@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { Row, Col, PageHeader, SplitButton, MenuItem } from 'react-bootstrap';
-import { GnIcon } from '../components/elements';
-import { horCenter } from '../components/styles';
+import { GnIcon } from './elements';
+import { horCenter } from './styles';
 
-class DashboardHome extends Component {
+class HomeSection extends Component {
 	render() {
 		const subTitleMargin = {
 			marginLeft: 10
@@ -66,4 +66,5 @@ class DashboardHome extends Component {
 	}
 }
 
-export default DashboardHome;
+export default HomeSection;
+

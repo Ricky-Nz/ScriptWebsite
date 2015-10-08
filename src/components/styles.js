@@ -83,3 +83,22 @@ export const errorStyle = {
 	minHeight: 20
 };
 
+export const fillHeight = {
+	height: '100%'
+};
+
+export const fillHeightScroll = {
+	height: '100%',
+	overflow: 'auto',
+	padding: '2px 10px 150px 10px'
+};
+
+export const positionRelative = {
+	position: 'relative'
+};
+
+export const positionAbsoluteTop = {
+	position: 'absolute',
+	top: 0
+}
+

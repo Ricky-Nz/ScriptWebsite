@@ -6,7 +6,7 @@ class GnTitlebar extends Component {
 	render() {
 		return (
 			<Navbar fixedTop style={{margin: 0}} toggleNavKey='collapsable-menu'
-				brand={<a href='/'><GnIcon icon='cogs' style={{marginRight: 10}}/>{this.props.brand}</a>}>
+				brand={<a href='#' onClick={this.props.onBrandClicked}><GnIcon icon='cogs' style={{marginRight: 10}}/>{this.props.brand}</a>}>
 				<CollapsibleNav eventKey='collapsable-menu'>
 					{this.renderLeftNavbar()}
 					{this.renderRightNavbar()}
@@ -67,6 +67,7 @@ GnTitlebar.propTypes = {
 		label: PropTypes.string.isRequired,
 		divider: PropTypes.bool
 	}),
+	onBrandClicked: PropTypes.func,
 	onMenuSelected: PropTypes.func,
 	onSectionSelected: PropTypes.func
 };

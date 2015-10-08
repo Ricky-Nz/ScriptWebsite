@@ -1,13 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { GnTitlebar } from '../components/elements';
 import { FormDialog } from '../components';
+import { fillHeight } from '../components/styles';
 // Redux
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import { dismissDialog, showLoginDialog, showRegisterDialog } from '../actions/dialog-actions';
 import { login, logout, register } from '../actions/user-actions';
 import { createParameter, updateParameter, deleteParameter, createPackage,
-	deletePackage, createReport, deleteReport } from '../actions/crud-actions';
+	deletePackage, createReport, deleteReport, deleteScript } from '../actions/crud-actions';
 
 class Application extends Component {
 	render() {
@@ -20,14 +21,14 @@ class Application extends Component {
 		];
 
 		return (
-			<div>
+			<div style={fillHeight}>
 				<GnTitlebar brand='Gear Test Automation'
 					sections={titlebarSections}
 					menuTitle={this.props.email ? this.props.email : 'Login'}
 					menus={this.props.email ? [{ ref: 'logout', label: 'Logout' }] : []}
+					onBrandClicked={() => this.props.history.replaceState(null, '')}
 					onMenuSelected={this.onTitlebarMenuSelected.bind(this)}
 					onSectionSelected={this.onTitlebarSectionSelected.bind(this)}/>
-				<br/><br/><br/><br/>
 				{this.props.children}
 				<FormDialog {...this.props.dialog} processing={this.props.updating} error={this.props.error}
                     onPerformAction={this.onProcessDialogAction.bind(this)}/>
@@ -66,6 +67,9 @@ class Application extends Component {
 				break;
 			case 'delete-report':
 				this.props.dispatch(deleteReport(id));
+				break;
+			case 'delete-script':
+				this.props.dispatch(deleteScript(id));
 				break;
 			case 'login':
 				this.props.dispatch(login(fields.email, fields.password, args));

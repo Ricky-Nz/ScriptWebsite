@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Row, Col } from 'react-bootstrap';
 
-class DashboardGuide extends Component {
+class GuideSection extends Component {
 	render() {
 		return (
 			<Row>
@@ -13,4 +13,4 @@ class DashboardGuide extends Component {
 	}
 }
 
-export default DashboardGuide;
+export default GuideSection;

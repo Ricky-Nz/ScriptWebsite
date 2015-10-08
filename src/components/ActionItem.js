@@ -38,7 +38,7 @@ class ActionItem extends Component {
 					<div style={horizontal}>
 						<GnIconButton bsSize='small' bsStyle='link' icon='arrow-up'
 							label='Insert' onClick={() => this.props.onInsert(this.props.index)}/>
-						<GnIconButton bsSize='small' bsStyle='link' icon='remove'
+						<GnIconButton bsSize='small' bsStyle='link' icon='arrow-down'
 							label='Remove' onClick={() => this.props.onDelete(this.props.index)}/>
 					</div>
 				</div>
@@ -54,7 +54,7 @@ class ActionItem extends Component {
 					<Input type="text" help={this.state.findError ? <div style={{color: 'red'}}>{this.state.findError}</div> : null}
 						addonBefore={
 							<DropdownButton bsSize='small' onSelect={(e, type) => this.setState({ findType: type })}
-								title={`to element find by ${this.state.findType ? this.state.findType : ' ? '}`}>
+								title={`on element find by ${this.state.findType ? this.state.findType : ' ? '}`}>
 								{findTypeItems}
 							</DropdownButton>
 						} value={this.state.findArgs} onChange={e => this.setState({findArgs : e.target.value})}/>

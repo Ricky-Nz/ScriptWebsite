@@ -2,7 +2,7 @@ import { TOGGLE_DIALOG } from '../actions/dialog-actions';
 import {
 	CREATE_PARAMETER, UPDATE_PARAMETER, DELETE_PARAMETER,
 	CREATE_PACKAGE, DELETE_PACKAGE,
-	CREATE_REPORT, DELETE_ERPORT,
+	CREATE_REPORT, DELETE_REPORT,
 	DELETE_SCRIPT
 } from '../actions/crud-actions';
 import { LOGIN, REGISTER } from '../actions/user-actions';
@@ -22,7 +22,7 @@ export default function (dialog = {}, action) {
 		case CREATE_PACKAGE:
 		case DELETE_PACKAGE:
 		case CREATE_REPORT:
-		case DELETE_ERPORT:
+		case DELETE_REPORT:
 		case DELETE_SCRIPT:
 		case LOGIN:
 		case REGISTER:

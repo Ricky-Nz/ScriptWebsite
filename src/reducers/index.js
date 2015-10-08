@@ -3,7 +3,7 @@
  */
 import { combineReducers } from 'redux';
 import arrayData from './arraydata-reducer';
-import detail from './scriptdetail-reducer'; 
+import detail from './detail-reducer'; 
 import user from './user-reducer';
 import dialog from './dialog-reducer';
 

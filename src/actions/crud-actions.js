@@ -9,8 +9,8 @@ export const CREATE_PACKAGE = 'CREATE_PACKAGE';
 export const DELETE_PACKAGE = 'DELETE_PACKAGE';
 export const LOAD_PACKAGES = 'LOAD_PACKAGES';
 
-export const CREATE_REPORT = 'CREATE_REPORT';
-export const DELETE_ERPORT = 'DELETE_REPORT';
+export const GET_REPORT = 'GET_REPORT';
+export const DELETE_REPORT = 'DELETE_REPORT';
 export const LOAD_REPORTS = 'LOAD_REPORTS';
 
 export const GET_SCRIPT = 'GET_SCRIPT';
@@ -83,15 +83,16 @@ export function queryPackages (selection) {
 
 // Reports:
 
-export function createReport (data, attachment) {
-	return uploadItem('/containers/:userId/upload', attachment, data, CREATE_REPORT);
+export function getReport (id) {
+	return getItem(`/testers/:userId/reports/${id}`, GET_REPORT);
 }
 
 export function deleteReport (id) {
-	return deleteItem(`/testers/:userId/packages/${id}`, id, DELETE_REPORT);
+	return deleteItem(`/testers/:userId/reports/${id}`, id, DELETE_REPORT);
 }
 
 export function queryReports (selection) {
+	selection = Object.assign({fields: {id: true, tags: true, date: true}}, selection);
 	return queryItems('/testers/:userId/reports', selection, LOAD_REPORTS);
 }
 
@@ -161,7 +162,7 @@ function queryItems (path, selection, action) {
 			method: 'get',
 			url: path,
 			token: true,
-			query: { filter: JSON.stringify(Object.assign({limit: 10}, selection)) },
+			query: { filter: JSON.stringify(Object.assign({limit: 10, order: 'date DESC'}, selection)) },
 			action: action,
 			args: selection ? selection.skip : null
 		}

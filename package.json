@@ -26,6 +26,7 @@
     "history": "^1.11.0",
     "react": "^0.13.3",
     "react-bootstrap": "^0.25.2",
+    "react-d3": "^0.4.0",
     "react-dom": "^0.14.0-rc1",
     "react-dropzone": "^2.1.0",
     "react-fa": "^4.0.0",

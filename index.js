@@ -2,22 +2,13 @@
  * Created by ruiqili on 19/9/15.
  */
 import 'babel-core/polyfill';
-
 // React
 import React from 'react';
 import App from './src/containers/App';
-import DashboardHome from './src/containers/DashboardHome';
-import DashboardScript from './src/containers/DashboardScript';
-import DashboardParameter from './src/containers/DashboardParameter';
-import DashboardPackage from './src/containers/DashboardPackage';
-import DashboardReport from './src/containers/DashboardReport';
-import DashboardDetail from './src/containers/DashboardDetail';
-import DashboardGuide from './src/containers/DashboardGuide';
-
+import Dashboard from './src/containers/Dashboard';
 // React router
 import { Router, IndexRoute, Route } from 'react-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
-
 // Redux
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
@@ -49,13 +40,8 @@ React.render(
         {() =>
             <Router history={history}>
                 <Route path='/' component={App}>
-                    <IndexRoute component={DashboardHome}/>
-                    <Route path='scripts/detail' component={DashboardDetail}/>
-                    <Route path='scripts' component={DashboardScript}/>
-                    <Route path='parameters' component={DashboardParameter}/>
-                    <Route path='packages' component={DashboardPackage}/>
-                    <Route path='reports' component={DashboardReport}/>
-                    <Route path='guide' component={DashboardGuide}/>
+                    <IndexRoute component={Dashboard}/>
+                    <Route path=':section' component={Dashboard}/>
                 </Route>
             </Router>
         }

@@ -15,11 +15,10 @@ class GnListItem extends Component {
 		};
 
 		return (
-			<ListGroupItem href='#' style={Object.assign({}, this.props.style, { border: 'none' })}
-				onClick={this.props.onItemClicked}>
+			<ListGroupItem href='#' style={Object.assign({}, this.props.style, { border: 'none' })}>
 				<div style={horVCenter}>
 					{this.props.icon ? <GnIcon icon={this.props.icon}/> : null}
-					<div style={smHorFill}>
+					<div style={smHorFill} onClick={this.props.onItemClicked}>
 						<div style={primaryStyle}>{this.props.primary}</div>
 						<div style={secondaryStyle}>{this.props.secondary}</div>
 					</div>

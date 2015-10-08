@@ -50,10 +50,10 @@ export function showParameterDialog (data, del) {
 
 	if (del) {
 		Object.assign(config, {
-			title: `Are you sure you want to delete paraameter ${data.key}?`,
+			title: `Are you sure you want to delete parameter ${data.key}?`,
 	        buttons: [
 	        	{ ref: 'cancel', label: 'Cancel' },
-	        	{ ref: 'delete-parameter', icon: 'check', label: 'Submit', bsStyle: 'primary' }
+	        	{ ref: 'delete-parameter', icon: 'times', label: 'Delete', bsStyle: 'danger' }
 	        ]
     	});
 	} else {
@@ -86,10 +86,10 @@ export function showPackageDialog (data, del) {
 
 	if (del) {
 		Object.assign(config, {
-			title: `Are you sure you want to delete paraameter ${data.key}?`,
+			title: `Are you sure you want to delete package ${data.title}?`,
 	        buttons: [
 	        	{ ref: 'cancel', label: 'Cancel' },
-	        	{ ref: 'delete-package', icon: 'check', label: 'Submit', bsStyle: 'primary' }
+	        	{ ref: 'delete-package', icon: 'times', label: 'Delete', bsStyle: 'danger' }
 	        ]
     	});
 	} else {
@@ -123,10 +123,10 @@ export function showReportDialog (data, del) {
 
 	if (del) {
 		Object.assign(config, {
-			title: `Are you sure you want to delete paraameter ${data.key}?`,
+			title: `Are you sure you want to delete report ${data.tags}-${data.date}?`,
 	        buttons: [
 	        	{ ref: 'cancel', label: 'Cancel' },
-	        	{ ref: 'delete-report', icon: 'check', label: 'Submit', bsStyle: 'primary' }
+	        	{ ref: 'delete-report', icon: 'times', label: 'Delete', bsStyle: 'danger' }
 	        ]
     	});
 	} else {
@@ -143,6 +143,27 @@ export function showReportDialog (data, del) {
 	        	{ ref: 'create-report', icon: 'check', label: 'Submit', bsStyle: 'primary', collectData: true }
 	        ]
 		});
+	}
+
+	return config;
+}
+
+export function showScriptDialog (data, del) {
+	let config = {
+    	show: true,
+        type: TOGGLE_DIALOG,
+        size: 'medium',
+        itemId: data.id,
+	};
+
+	if (del) {
+		Object.assign(config, {
+			title: `Are you sure you want to delete script ${data.title}?`,
+	        buttons: [
+	        	{ ref: 'cancel', label: 'Cancel' },
+	        	{ ref: 'delete-script', icon: 'times', label: 'Delete', bsStyle: 'danger' }
+	        ]
+    	});
 	}
 
 	return config;
