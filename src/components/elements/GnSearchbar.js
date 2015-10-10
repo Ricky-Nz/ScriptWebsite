@@ -1,11 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { Input } from 'react-bootstrap';
+import GnIcon from './GnIcon';
 
 class GnSearchBar extends Component {
 	render() {
 		return (
-			<Input ref='input' type='text' label={this.props.label}
-				placeholder={this.props.placeholder} onChange={this.onTextChange.bind(this)} />
+			<Input style={this.props.style} ref='input' type='text' label={this.props.label}
+				placeholder={this.props.placeholder} onChange={this.onTextChange.bind(this)}
+				addonAfter={<GnIcon icon={this.props.searching ? 'spinner' : 'search'}
+				active={this.props.searching}/>} />
 		);
 	}
 	onTextChange() {
@@ -32,6 +35,7 @@ GnSearchBar.propTypes = {
 	placeholder: PropTypes.string,
 	label: PropTypes.string,
 	onSearch: PropTypes.func.isRequired,
+	searching: PropTypes.bool,
 	delay: PropTypes.number
 };
 

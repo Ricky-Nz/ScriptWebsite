@@ -2,6 +2,10 @@ export const clearPadding = {
 	padding: 0
 };
 
+export const flexFill = {
+	flexGrow: 2
+};
+
 export const horWrap = {
 	display: 'flex',
 	flexDirection: 'row',
@@ -89,8 +93,7 @@ export const fillHeight = {
 
 export const fillHeightScroll = {
 	height: '100%',
-	overflow: 'auto',
-	padding: '2px 10px 150px 10px'
+	overflow: 'auto'
 };
 
 export const positionRelative = {

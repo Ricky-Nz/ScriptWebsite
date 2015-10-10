@@ -23,18 +23,21 @@ export default store => next => action => {
 
     if (apiCall.body) request.send(apiCall.body);
     if (apiCall.query) request.query(apiCall.query);
-    if (apiCall.token) request.query({ access_token: user.id });
+    if (apiCall.token) request.query({ access_token: user.accessToken });
     if (apiCall.file) request.attach('file', apiCall.file, Date.now() + apiCall.file.name);
     if (apiCall.field) _.map(apiCall.field, (value, key) => request.field(key, value));
 
     next({ type: apiCall.action, finished: false, args: apiCall.args });
-    request.end((error, res) => {
-        next({
-            type: apiCall.action,
-            finished: true,
-            error: res.status < 400 ? null : (res.body.error ? res.body.error : error.message),
-            result: res.status < 400 ? res.body : null,
-            args: apiCall.args
+    setTimeout(function () {
+        request.end((error, res) => {
+            next({
+                type: apiCall.action,
+                finished: true,
+                error: res.status < 400 ? null : (res.body.error ? res.body.error : error.message),
+                result: res.status < 400 ? res.body : null,
+                args: apiCall.args,
+                requireLogin: res.status == 401
+            });
         });
-    });
+    }, 500);
 }

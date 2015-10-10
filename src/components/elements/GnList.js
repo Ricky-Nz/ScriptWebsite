@@ -31,7 +31,7 @@ class GnList extends Component {
 				<div style={Object.assign({padding: '10px 0px'}, horVCenterSpaceBetween)}>
 					<div>{this.props.header}</div>
 					{this.props.hideAddBtn ? null : <GnIconButton bsStyle='primary' bsSize='small' icon='plus' label='Add'
-						onClick={this.props.onCreateItem}/>}
+						onClick={e => this.props.onCreateItem({})}/>}
 				</div>
 				<ListGroup style={this.props.limitScroll ? {height: 420, overflow: 'auto'} : null}>
 					{listItems}
@@ -60,8 +60,8 @@ GnList.propTypes = {
 	hideAddBtn: PropTypes.bool,
 	header: PropTypes.string,
 	datas: PropTypes.array.isRequired,
-	loaded: PropTypes.number.isRequired,
-	total: PropTypes.number.isRequired,
+	loaded: PropTypes.number,
+	total: PropTypes.number,
 	onCreateItem: PropTypes.func.isRequired,
 	onLoadMore: PropTypes.func.isRequired,
 	loading: PropTypes.bool,

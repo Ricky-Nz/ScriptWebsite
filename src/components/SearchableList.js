@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import { GnSearchbar, GnList, GnIconButton } from './elements';
+import { GnSearchbar, GnList, GnIconButton, GnIcon } from './elements';
 import { Panel, Row, Col } from 'react-bootstrap';
-import { horVCenterSpaceBetween } from './styles';
+import { horVCenterSpaceBetween, horVCenter, flexFill } from './styles';
 import _ from 'underscore';
 
 class SearchableList extends Component {
@@ -9,8 +9,7 @@ class SearchableList extends Component {
 		const config = this.props.config;
 		return (
 			<Panel style={this.props.style}>
-				{config.hideSearchbar ? null : <GnSearchbar ref='searchbar' placeholder={config.searchbarPlaceholder}
-					onSearch={searchText => this.loadData(this.props, searchText)}/>}
+				{this.renderSearchBar(config)}
 				<GnList
 					limitScroll={config.limitScroll}
 					hideAddBtn={config.hideAddBtn}
@@ -30,6 +29,17 @@ class SearchableList extends Component {
 					onEditItem={this.props.onEditItem}
 					onDeleteItem={this.props.onDeleteItem}/>
 			</Panel>
+		);
+	}
+	renderSearchBar(config) {
+		if (config.hideSearchbar) {
+			return null;
+		}
+
+		const showSpinner = this.props.loading && this.refs.searchbar && this.refs.searchbar.getValue();
+		return (
+			<GnSearchbar ref='searchbar' style={flexFill} placeholder={config.searchbarPlaceholder}
+				onSearch={searchText => this.loadData(this.props, searchText)} searching={showSpinner}/>
 		);
 	}
 	loadData(props, searchText, loadmore) {
@@ -63,12 +73,12 @@ SearchableList.propTypes = {
 	datas: PropTypes.array,
 	skip: PropTypes.number,
 	total: PropTypes.number,
+	loading: PropTypes.bool,
 	onCreateItem: PropTypes.func,
 	onLoadData: PropTypes.func.isRequired,
 	onItemClicked: PropTypes.func,
 	onEditItem: PropTypes.func,
-	onDeleteItem: PropTypes.func,
-	loading: PropTypes.bool
+	onDeleteItem: PropTypes.func
 };
 
 export default SearchableList;

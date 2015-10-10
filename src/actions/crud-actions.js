@@ -18,13 +18,26 @@ export const CREATE_SCRIPT = 'CREATE_SCRIPT';
 export const UPDATE_SCRIPT = 'UPDATE_SCRIPT';
 export const DELETE_SCRIPT = 'DELETE_SCRIPT';
 export const LOAD_SCRIPTS = 'LOAD_SCRIPTS';
-export const CLEAR_SCRIPT = 'CLEAR_SCRIPT';
+export const CLEAR_SELECT = 'CLEAR_SELECT';
+
+export const GET_TAGS = 'GET_TAGS';
+
+export function getTags () {
+    return {
+        [CALL_API]: {
+            method: 'GET',
+            url: '/Testers/tags',
+            token: true,
+            action: GET_TAGS
+        }
+    }
+}
 
 // Scripts:
 
-export function clearScript () {
+export function clearSelect () {
 	return {
-		type: CLEAR_SCRIPT
+		type: CLEAR_SELECT
 	};
 }
 

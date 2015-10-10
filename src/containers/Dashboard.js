@@ -3,98 +3,117 @@ import { ReportSection, PackageSection, ParameterSection, ScriptSection, ScriptE
 // Redux
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { showLoginDialog, showReportDialog, showPackageDialog, showParameterDialog, showScriptDialog } from '../actions/dialog-actions';
-import { getTags, updateTagSelection, changeSelection } from '../actions/user-actions';
+import { showDialog } from '../actions/dialog-actions';
+import { changeSection, editScript, updateTagSelection } from '../actions/app-actions';
 import {
 	queryReports, getReport,
-	queryPackages,
+	queryPackages, getTags,
 	queryParameters,
-	queryScripts, getScript, createScript, updateScript, clearScript
+	queryScripts, getScript, createScript, updateScript, clearSelect
 } from '../actions/crud-actions';
 // Tools
 import _ from 'underscore';
 
 class Dashboard extends Component {
 	componentDidMount() {
+		this.updateSectionCheck(this.props);
 		if (this.requireLogin(this.props)) {
-			this.props.dispatch(showLoginDialog());
+			if (this.props.dialogLabel != 'login') {
+				this.props.dispatch(showDialog('login'));
+			}
 		} else {
 			this.onInitDatas();
 		}
 	}
 	componentWillReceiveProps(nextProps) {
+		this.updateSectionCheck(nextProps);
 		if (this.requireLogin(nextProps)) {
-			this.props.dispatch(showLoginDialog());
+			if (nextProps.section != this.props.section) {
+				nextProps.dispatch(showDialog('login'));
+			}
 		} else {
+			if (nextProps.section != this.props.section
+					|| !this.props.accessToken) {
+				this.onInitDatas(null, nextProps);
+			}
+
 			if (nextProps.location.query.select
-					&& (nextProps.location.query.select != this.props.location.query.select || !this.props.user.id)) {
+					&& (nextProps.section != this.props.section
+						|| nextProps.location.query.select != this.props.location.query.select
+						|| !this.props.accessToken)) {
 				this.onDoLoadItem(nextProps, nextProps.location.query.select);
-			} else if (!nextProps.location.query.select && nextProps.detail.data) {
-				this.props.dispatch(clearScript());
+			} else if (nextProps.select && nextProps.select.id && !nextProps.location.query.select) {
+				nextProps.dispatch(clearSelect());
 			}
-
-			if (nextProps.params.section != this.props.params.section
-					|| !this.props.user.id) {
-				this.onInitDatas(null, nextProps)
-			}
-
-			if (nextProps.user.selection != this.props.user.selection) {
-				this.props.dispatch(queryScripts(nextProps.user.selection));
-			}
+		}
+	}
+	updateSectionCheck(props) {
+		if (props.section != props.params.section) {
+			props.dispatch(changeSection(props.params.section));
 		}
 	}
 	render() {
 		if (this.requireLogin(this.props)) {
-			return null
+			return null;
 		}
 
 		const props = this.props;
-		switch(props.params.section){
+		switch(props.section){
 			case 'reports':
-				return <ReportSection arrayData={props.arrayData} detail={props.detail}
+				return <ReportSection array={props.array} skip={props.skip}
+							total={props.total} querying={props.querying} getting={props.getting}
+							error={props.error} select={props.select}
 							onLoadDatas={this.onLoadDatas.bind(this)}
 							onLoadItem={this.onLoadItem.bind(this)}
 							onChangeItem={this.onChangeItem.bind(this)}/>;
 			case 'packages':
-				return <PackageSection arrayData={props.arrayData}
+				return <PackageSection array={props.array} skip={props.skip}
+							total={props.total} querying={props.querying}
 							onLoadDatas={this.onLoadDatas.bind(this)}
 							onLoadItem={this.onLoadItem.bind(this)}
 							onChangeItem={this.onChangeItem.bind(this)}/>;
 			case 'parameters':
-				return <ParameterSection arrayData={props.arrayData}
+				return <ParameterSection array={props.array} skip={props.skip}
+							total={props.total} querying={props.querying}
 							onLoadDatas={this.onLoadDatas.bind(this)}
 							onChangeItem={this.onChangeItem.bind(this)}/>;
 			case 'scripts':
-				return <ScriptSection arrayData={props.arrayData} tags={props.user.tags}
-							onLoadDatas={selection => this.props.dispatch(changeSelection(selection))}
+				return <ScriptSection array={props.array} skip={props.skip}
+							total={props.total} querying={props.querying} tags={props.tags}
+							onLoadDatas={this.onLoadDatas.bind(this)}
 							onChangeItem={this.onChangeItem.bind(this)}
 							onSelectScript={item => props.history.pushState(null, `/scripteditor${(item && item.id) ? ('?select=' + item.id) : ''}`)}
-							onTagSelectChange={change => this.props.dispatch(updateTagSelection(change))}/>;
+							onTagSelectChange={updateTags => this.props.dispatch(updateTagSelection(updateTags))}/>;
 			case 'scripteditor':
-				return <ScriptEditorSection user={props.user}
-							arrayData={props.arrayData} detail={props.detail}
+				return <ScriptEditorSection
+							array={props.array} skip={props.skip}
+							total={props.total} querying={props.querying}
+							error={props.error} getting={props.getting}
+							submitting={props.submitting} select={props.select}
 							onLoadDatas={this.onLoadDatas.bind(this)}
 							onLoadItem={this.onLoadItem.bind(this)}
-							onChangeItem={(item, del) => item.id ? this.onChangeItem(item, del) : props.history.replaceState(null, '/scripteditor')}
-							onBack={() => this.props.history.replaceState(null, '/scripts')}/>;
+							onChangeItem={this.onChangeItem.bind(this)}
+							onNewBlankScript={() => props.history.replaceState(null, '/scripteditor')}
+							onBack={() => this.props.history.replaceState(null, '/scripts')}
+							onUpdateScript={update => this.props.dispatch(editScript(update))}/>;
 			case 'guide':
 				return <GuideSection/>;
 			default:
-				return <HomeSection/>;
+				return <HomeSection versions={props.versions}/>;
 		}
 	}
 	requireLogin(props) {
-		return !props.user.id &&
-			_.contains(['scripts', 'scripteditor', 'parameters', 'packages', 'reports'], props.params.section);
+		return !props.accessToken &&
+			_.contains(['scripts', 'scripteditor', 'parameters', 'packages', 'reports'], props.section);
 	}
 	onLoadItem(item) {
-		this.props.history.replaceState(null, `/${this.props.params.section}?select=${item.id}`);
+		this.props.history.replaceState(null, `/${this.props.section}?select=${item.id}`);
 	}
 	onInitDatas(selection, props) {
 		if (!props) {
 			props = this.props;
 		}
-		if (props.params.section == 'scripts') {
+		if (props.section == 'scripts') {
 			props.dispatch(getTags());
 		}
 		this.onLoadDatas(selection, props);
@@ -104,7 +123,7 @@ class Dashboard extends Component {
 			props = this.props;
 		}
 
-		switch(props.params.section) {
+		switch(props.section) {
 			case 'reports':
 				props.dispatch(queryReports(selection));
 				break;
@@ -121,7 +140,7 @@ class Dashboard extends Component {
 		}
 	}
 	onDoLoadItem(props, id) {
-		switch(props.params.section) {
+		switch(props.section) {
 			case 'reports':
 				props.dispatch(getReport(id));
 				break;
@@ -133,37 +152,37 @@ class Dashboard extends Component {
 	onChangeItem(item, del) {
 		const props = this.props;
 		if (del) {
-			switch(props.params.section) {
+			switch(props.section) {
 				case 'reports':
-					props.dispatch(showReportDialog(item, del));
+					props.dispatch(showDialog('del-report', item));
 					break;
 				case 'packages':
-					props.dispatch(showPackageDialog(item, del));
+					props.dispatch(showDialog('del-package', item));
 					break;
 				case 'parameters':
-					props.dispatch(showParameterDialog(item, del));
+					props.dispatch(showDialog('del-parameter', item));
 					break;
 				case 'scripts':
 				case 'scripteditor':
-					props.dispatch(showScriptDialog(item, del));
+					props.dispatch(showDialog('del-script', item));
 					break;
 			}
 		} else if (item.id) {
-			switch(props.params.section) {
+			switch(props.section) {
 				case 'parameters':
-					props.dispatch(updateParameter(item.id, item));
+					props.dispatch(showDialog('parameter', item));
 					break;
 				case 'scripteditor':
 					props.dispatch(updateScript(item.id, item));
 					break;
 			}
 		} else {
-			switch(props.params.section) {
+			switch(props.section) {
 				case 'packages':
-					props.dispatch(createPackage(item));
+					props.dispatch(showDialog('package', item));
 					break;
 				case 'parameters':
-					props.dispatch(createParameter(item));
+					props.dispatch(showDialog('parameter', item));
 					break;
 				case 'scripteditor':
 					props.dispatch(createScript(item));
@@ -174,10 +193,23 @@ class Dashboard extends Component {
 }
 
 const propsSelector = createSelector(
-	state => state.user,
-	state => state.arrayData,
-	state => state.detail,
-    (user, arrayData, detail) => ({ user, arrayData, detail })
+	state => state.user.accessToken,
+	state => state.array,
+	state => state.tags,
+	state => state.select,
+	state => state.status.section,
+	state => state.status.skip,
+	state => state.status.total,
+	state => state.status.error,
+	state => state.status.querying,
+	state => state.status.getting,
+	state => state.status.submitting,
+	state => state.status.dialogLabel,
+	state => state.versions,
+    (accessToken, array, tags, select, section, skip, total, error,
+    		querying, getting, submitting, dialogLabel, versions) =>
+    	({accessToken, array, tags, select, section, skip, total, error,
+    		querying, getting, submitting, dialogLabel, versions})
 );
 
 export default connect(propsSelector)(Dashboard);

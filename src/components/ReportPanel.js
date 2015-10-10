@@ -3,16 +3,25 @@ import { Panel } from 'react-bootstrap';
 import { GnIcon, GnAccordionList, GnDataPanel } from './elements';
 import ReportActionItem from './ReportActionItem';
 import { PieChart } from 'react-d3';
+import { horCenter } from './styles';
 import _ from 'underscore';
 
 class ReportPanel extends Component {
 	render() {
-		return (
-			<div>
-				{this.renderDetailPanel()}
-				{this.renderScriptList()}
-			</div>
-		);
+		if (this.props.getting || this.props.report == null) {
+			return (
+				<Panel style={horCenter}>
+					<GnIcon icon='spinner' size='sm' active/>
+				</Panel>
+			);
+		} else {
+			return (
+				<div>
+					{this.renderDetailPanel()}
+					{this.renderScriptList()}
+				</div>
+			);
+		}
 	}
 	renderDetailPanel() {
 		const report = this.props.report;
@@ -21,7 +30,7 @@ class ReportPanel extends Component {
 			{ icon: 'code-fork', label: 'Version', content: report.platformVersion },
 			{ icon: 'bug', label: 'Package', content: <a href={report.packagePath} target='_blank'>{report.packageName}</a> },
 			{ icon: 'tags', label: 'Run Tags', content: report.tags },
-			{ icon: 'clock-o', label: 'Duration', content: `${report.startDate}&nbsp;&nbsp;~&nbsp;&nbsp;${report.endDate}` }
+			{ icon: 'clock-o', label: 'Duration', content: `${report.startDate} ~ ${report.endDate}` }
 		];
 
 		let count = _.countBy(report.scripts, script => script.err ? 'failed' : 'success');
@@ -69,7 +78,9 @@ ReportPanel.propTypes = {
 		packageDescription: PropTypes.string,
 		packagePath: PropTypes.string.isRequired,
 		scripts: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired
-	}).isRequired
+	}).isRequired,
+	getting: PropTypes.bool,
+	error: PropTypes.string
 };
 
 export default ReportPanel;

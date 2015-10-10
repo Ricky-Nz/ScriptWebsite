@@ -57,16 +57,16 @@ class GnTitlebar extends Component {
 GnTitlebar.propTypes = {
 	brand: PropTypes.string.isRequired,
 	brandHref: PropTypes.string,
-	sections: PropTypes.arrayOf({
+	sections: PropTypes.arrayOf(PropTypes.shape({
 		ref: PropTypes.string.isRequired,
 		label: PropTypes.string.isRequired
-	}),
+	})),
 	menuTitle: PropTypes.string,
-	menus: PropTypes.arrayOf({
+	menus: PropTypes.arrayOf(PropTypes.shape({
 		ref: PropTypes.string.isRequired,
 		label: PropTypes.string.isRequired,
 		divider: PropTypes.bool
-	}),
+	})),
 	onBrandClicked: PropTypes.func,
 	onMenuSelected: PropTypes.func,
 	onSectionSelected: PropTypes.func

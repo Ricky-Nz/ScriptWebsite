@@ -5,11 +5,17 @@ import ReportPanel from './ReportPanel';
 import { fillHeight, fillHeightScroll } from './styles';
 
 class ReportSection extends Component {
+	componentWillReceiveProps(nextProps) {
+		if (nextProps.select == null && nextProps.array.length > 0
+				&& !nextProps.getting && !nextProps.error) {
+			nextProps.onLoadItem(nextProps.array[0]);
+		}
+	}
 	render() {
 		const props = this.props;
 		const config = {
 			hideAddBtn: true,
-			searchbarHint: 'search for report title',
+			searchbarPlaceholder: 'search for report title',
 			listHeader: 'Test Reports',
 			itemIcon: 'description',
 			showEditBtn: false,
@@ -22,14 +28,14 @@ class ReportSection extends Component {
 		return (
 			<Row style={fillHeight}>
 				<Col xs={4} md={3} mdOffset={1}>
-					<SearchableList config={config} {...props.arrayData} onLoadData={this.props.onLoadDatas}
-							onDeleteItem={this.props.onChangeItem} onItemClicked={this.props.onLoadItem}/>
+					<br/><br/><br/><br/>
+					<SearchableList config={config} datas={props.array} skip={props.skip}
+						total={props.total} loading={props.querying} onLoadData={props.onLoadDatas}
+						onDeleteItem={props.onChangeItem} onItemClicked={props.onLoadItem}/>
 				</Col>
 				<Col xs={8} md={7} style={fillHeightScroll}>
-					{props.detail.data ?
-						<ReportPanel report={props.detail.data}
-							error={props.detail.error}/> : null
-					}
+					<br/><br/><br/><br/>
+					<ReportPanel report={props.select} error={props.error} getting={props.getting}/>
 				</Col>
 			</Row>
 		);
@@ -37,9 +43,13 @@ class ReportSection extends Component {
 }
 
 ReportSection.propTypes = {
-	arrayData: PropTypes.object.isRequired,
-	detail: PropTypes.object.isRequired,
-	select: PropTypes.string,
+	array: PropTypes.array.isRequired,
+	skip: PropTypes.number,
+	total: PropTypes.number,
+	querying: PropTypes.bool,
+	getting: PropTypes.bool,
+	error: PropTypes.string,
+	select: PropTypes.object,
 	onLoadDatas: PropTypes.func.isRequired,
 	onLoadItem: PropTypes.func.isRequired,
 	onChangeItem: PropTypes.func.isRequired

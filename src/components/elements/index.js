@@ -10,6 +10,7 @@ import GnTag from './GnTag';
 import GnSelectableList from './GnSelectableList';
 import GnAccordionList from './GnAccordionList';
 import GnDataPanel from './GnDataPanel';
+import GnDialog from './GnDialog';
 
 export default {
 	GnIcon,
@@ -23,5 +24,6 @@ export default {
 	GnTitlebar,
 	GnSelectableList,
 	GnAccordionList,
-	GnDataPanel
+	GnDataPanel,
+	GnDialog
 };

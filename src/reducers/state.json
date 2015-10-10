@@ -1,0 +1,20 @@
+{
+	user: {
+		email,
+		userId,
+		accessToken
+	},
+	array: [],
+	tags: [],
+	select: null,
+	status: {
+		dialogShow,
+		dialogLabel,
+		skip,
+		total,
+		error,
+		querying,
+		getting,
+		submiting,
+	}
+}

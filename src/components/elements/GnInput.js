@@ -76,5 +76,9 @@ GnInput.propTypes = {
 	disabled: PropTypes.bool
 };
 
+GnInput.defaultProps = {
+	type: 'text'
+};
+
 export default GnInput;
 

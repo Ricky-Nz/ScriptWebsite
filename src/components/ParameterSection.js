@@ -4,6 +4,7 @@ import SearchableList from './SearchableList';
 
 class ParameterSection extends Component {
 	render() {
+		const props = this.props;
 		const config = {
 			searchbarPlaceholder: 'search for parameter key or value ',
 			listHeader: 'Golabel Parameters',
@@ -18,11 +19,13 @@ class ParameterSection extends Component {
 		return (
 			<Row>
 				<Col xs={12} sm={10} smOffset={1} md={8} mdOffset={2} lg={6} lgOffset={3}>
-					<SearchableList config={config} {...this.props.arrayData}
-						onLoadData={this.props.onLoadDatas}
-						onCreateItem={this.props.onChangeItem}
-						onEditItem={this.props.onChangeItem}
-						onDeleteItem={this.props.onChangeItem}/>
+					<br/><br/><br/><br/>
+					<SearchableList config={config} datas={props.array} skip={props.skip}
+						total={props.total} loading={props.querying}
+						onLoadData={props.onLoadDatas}
+						onCreateItem={props.onChangeItem}
+						onEditItem={props.onChangeItem}
+						onDeleteItem={props.onChangeItem}/>
 				</Col>
 			</Row>
 		);
@@ -30,7 +33,10 @@ class ParameterSection extends Component {
 }
 
 ParameterSection.propTypes = {
-	arrayData: PropTypes.object.isRequired,
+	array: PropTypes.array.isRequired,
+	skip: PropTypes.number,
+	total: PropTypes.number,
+	querying: PropTypes.bool,
 	onLoadDatas: PropTypes.func.isRequired,
 	onChangeItem: PropTypes.func.isRequired
 };

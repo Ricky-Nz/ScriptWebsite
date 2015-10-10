@@ -7,6 +7,7 @@ import { fillHeight, fillHeightScroll } from './styles';
 
 class ScriptEditorSection extends Component {
 	render() {
+		const props = this.props;
 		const scriptConfig = {
 			limitScroll: true,
 			searchbarPlaceholder: 'search for script by title',
@@ -23,23 +24,23 @@ class ScriptEditorSection extends Component {
 			<Row style={fillHeight}>
 				<Col xs={5} sm={4} md={3} mdOffset={1}>
 					<br/><br/><br/><br/>
-					<GnIconButton bsStyle='link' icon='angle-double-left' label='Back' onClick={this.props.onBack}/>
-					<SearchableList config={scriptConfig} {...this.props.arrayData}
-						onLoadData={this.props.onLoadDatas}
-						onCreateItem={this.props.onChangeItem}
-						onItemClicked={this.props.onLoadItem}/>
+					<GnIconButton bsStyle='link' icon='angle-double-left' label='Back' onClick={props.onBack}/>
+					<SearchableList config={scriptConfig} datas={props.array} skip={props.skip}
+						total={props.total} loading={props.querying}
+						onLoadData={props.onLoadDatas}
+						onCreateItem={props.onNewBlankScript}
+						onItemClicked={props.onLoadItem}/>
 				</Col>
 				<Col xs={7} sm={8} md={7} style={fillHeightScroll}>
-					<div style={{height: 126}}/>
+					<div style={{height: 120}}/>
 					<ScriptPanel
-						loading={this.props.detail.loading}
-						submiting={this.props.arrayData.updating}
-						error={this.props.detail.error}
-						script={this.props.detail.data}
-						findTypes={this.props.user.config.findTypes}
-						actionTypes={this.props.user.config.actionTypes}
-						onSubmit={this.props.onChangeItem}
-						onDelete={this.props.onChangeItem}/>
+						getting={props.getting}
+						submitting={props.submitting}
+						error={props.error}
+						script={props.select}
+						onSubmit={props.onChangeItem}
+						onDelete={props.onChangeItem}
+						onUpdateScript={props.onUpdateScript}/>
 				</Col>
 			</Row>
 		);
@@ -47,12 +48,19 @@ class ScriptEditorSection extends Component {
 }
 
 ScriptEditorSection.propTypes = {
-	user: PropTypes.object.isRequired,
-	arrayData: PropTypes.object.isRequired,
-	detail: PropTypes.object.isRequired,
+	array: PropTypes.array.isRequired,
+	skip: PropTypes.number,
+	total: PropTypes.number,
+	querying: PropTypes.bool,
+	error: PropTypes.string,
+	getting: PropTypes.bool,
+	submitting: PropTypes.bool,
+	select: PropTypes.object.isRequired,
 	onLoadDatas: PropTypes.func.isRequired,
 	onLoadItem: PropTypes.func.isRequired,
 	onChangeItem: PropTypes.func.isRequired,
+	onUpdateScript: PropTypes.func.isRequired,
+	onNewBlankScript: PropTypes.func.isRequired,
 	onBack: PropTypes.func.isRequired
 };
 

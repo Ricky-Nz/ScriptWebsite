@@ -31,29 +31,15 @@ class TagList extends Component {
 		this.setState({ mutiSelect: !this.state.mutiSelect });
 		const checkedList = _.filter(this.props.tags, tag => tag.checked);
 		if (checkedList.length > 1) {
-			this.props.onTagSelectChange({
-				ref: checkedList[0].ref,
-				check: true,
-				single: true
-			});
+			this.props.onTagSelectChange(this.props.tags.map((tag, index) => ({ref: tag.ref, checked: index == 0})));
 		}
 	}
 	onSelectAll(selectAll) {
-		if (selectAll) {
-			this.props.onTagSelectChange({
-				all: true
-			});
-		} else {
-			this.props.onTagSelectChange({
-				clear: true
-			});
-		}
+		this.props.onTagSelectChange(this.props.tags.map(tag => ({ref: tag.ref, checked: selectAll})));
 	}
 	onSelectionChange(item, check) {
-		this.props.onTagSelectChange({
-			ref: item.ref,
-			check: check
-		});
+		this.props.onTagSelectChange(this.props.tags.map(tag =>
+				({ref: tag.ref, checked: tag.ref == item.ref ? !tag.checked : tag.checked})));
 	}
 }
 

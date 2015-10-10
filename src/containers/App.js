@@ -5,13 +5,18 @@ import { fillHeight } from '../components/styles';
 // Redux
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import { dismissDialog, showLoginDialog, showRegisterDialog } from '../actions/dialog-actions';
+import { dismissDialog, showDialog } from '../actions/dialog-actions';
 import { login, logout, register } from '../actions/user-actions';
-import { createParameter, updateParameter, deleteParameter, createPackage,
-	deletePackage, createReport, deleteReport, deleteScript } from '../actions/crud-actions';
+import { createParameter, createPackage, updateParameter,
+	deleteParameter, deletePackage, deleteReport, deleteScript } from '../actions/crud-actions';
+import { getVersions } from '../actions/app-actions';
 
 class Application extends Component {
+	componentDidMount() {
+		this.props.dispatch(getVersions());
+	}
 	render() {
+		const props = this.props;
 		const titlebarSections = [
 			{ ref: 'scripts', label: 'Script' },
 			{ ref: 'parameters', label: 'Parameter' },
@@ -30,68 +35,76 @@ class Application extends Component {
 					onMenuSelected={this.onTitlebarMenuSelected.bind(this)}
 					onSectionSelected={this.onTitlebarSectionSelected.bind(this)}/>
 				{this.props.children}
-				<FormDialog {...this.props.dialog} processing={this.props.updating} error={this.props.error}
-                    onPerformAction={this.onProcessDialogAction.bind(this)}/>
+				<FormDialog show={props.dialogShow} label={props.dialogLabel} submitting={props.submitting} error={props.error}
+                    select={props.dialogSelect} onCancelAction={this.onCancelDialogAction.bind(this)}
+                    onPerformAction={this.onPerformDialogAction.bind(this)}/>
 			</div>
 		);
 	}
 	onTitlebarMenuSelected(ref) {
 		if (ref == 'Login') {
-			this.props.dispatch(showLoginDialog());
+			this.props.dispatch(showDialog('login'));
 		} else if (ref == 'logout') {
+			this.props.history.replaceState(null, '');
 			this.props.dispatch(logout());
 		}
 	}
 	onTitlebarSectionSelected(section) {
+		if (section == this.props.params.section) {
+			return;
+		}
+		
 		this.props.history.replaceState(null, `/${section}`);
 	}
-	onProcessDialogAction(ref, args, fields, id, attachment) {
-		switch(ref) {
-			case 'create-parameter':
-				this.props.dispatch(createParameter(fields));
-				break;
-			case 'update-parameter':
-				this.props.dispatch(updateParameter(id, fields));
-				break;
-			case 'delete-parameter':
-				this.props.dispatch(deleteParameter(id));
-				break;
-			case 'create-package':
-				this.props.dispatch(createPackage(fields, attachment));
-				break;
-			case 'delete-package':
-				this.props.dispatch(deletePackage(id));
-				break;
-			case 'create-report':
-				this.props.dispatch(createReport(fields, attachment));
-				break;
-			case 'delete-report':
-				this.props.dispatch(deleteReport(id));
-				break;
-			case 'delete-script':
-				this.props.dispatch(deleteScript(id));
-				break;
+	onCancelDialogAction() {
+		this.props.dispatch(dismissDialog());
+	}
+	onPerformDialogAction(label, data, file) {
+		switch(label) {
 			case 'login':
-				this.props.dispatch(login(fields.email, fields.password, args));
-				break;
-			case 'go-register':
-				this.props.dispatch(showRegisterDialog());
+				this.props.dispatch(login(data.email, data.password));
 				break;
 			case 'register':
-				this.props.dispatch(register(fields.email, fields.password));
+				this.props.dispatch(register(data.email, data.password));
 				break;
-			default:
-				this.props.dispatch(dismissDialog());
+			case 'go-register':
+				this.props.dispatch(showDialog('register'));
+				break;
+			case 'parameter':
+				if (this.props.dialogSelect.id) {
+					this.props.dispatch(updateParameter(this.props.dialogSelect.id, data));
+				} else {
+					this.props.dispatch(createParameter(data));
+				}
+				break;
+			case 'package':
+				this.props.dispatch(createPackage(data, file));
+				break;
+			case 'del-parameter':
+				this.props.dispatch(deleteParameter(this.props.dialogSelect.id));
+				break;
+			case 'del-package':
+				this.props.dispatch(deletePackage(this.props.dialogSelect.id));
+				break;
+			case 'del-report':
+				this.props.dispatch(deleteReport(this.props.dialogSelect.id));
+				break;
+			case 'del-script':
+				this.props.dispatch(deleteScript(this.props.dialogSelect.id));
+				break;
 		}
 	}
 }
 
 const propsSelector = createSelector(
 	state => state.user.email,
-	state => state.arrayData.updating || state.user.processing,
-	state => state.arrayData.error,
-	state => state.dialog,
-    (email, updating, error, dialog) => ({ email, updating, error, dialog })
+	state => state.dialogSelect,
+	state => state.status.submitting,
+	state => state.status.error,
+	state => state.status.dialogShow,
+	state => state.status.dialogLabel,
+    (email, dialogSelect, submitting, error, dialogShow, dialogLabel) =>
+    	({email, dialogSelect, submitting, error, dialogShow, dialogLabel})
 );
 
 export default connect(propsSelector)(Application);

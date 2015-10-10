@@ -1,18 +1,18 @@
 import React, { Component, PropTypes } from 'react';
-import { Accordion, Panel } from 'react-bootstrap';
+import { PanelGroup, Panel } from 'react-bootstrap';
 
 class GnAccordionList extends Component {
 	render() {
 		const panelItems = this.props.panels ? this.props.panels.map((panel, index) => (
-			<Panel header={panel.title} eventKey={index} defaultExpanded={index == 0}>
+			<Panel header={panel.title} eventKey={index}>
 				{panel.node}
 			</Panel>
 		)) : null;
 
 		return (
-			<Accordion>
+			<PanelGroup defaultActiveKey={0} accordion>
 				{panelItems}
-			</Accordion>
+			</PanelGroup>
 		);
 	}
 }

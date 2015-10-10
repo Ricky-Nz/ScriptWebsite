@@ -14,9 +14,13 @@ class GnIconButton extends Component {
 	}
 }
 
-GnIconButton.propTypes = combinePropTypes(GnIcon, {
+GnIconButton.propTypes = {
 	label: PropTypes.string,
 	active: PropTypes.bool
-});
+};
+
+GnIconButton.defaultProps = {
+	bsSize: 'small'
+}
 
 export default GnIconButton;
