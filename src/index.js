@@ -4,19 +4,19 @@
 import 'babel-core/polyfill';
 // React
 import React from 'react';
-import App from './src/containers/App';
-import Dashboard from './src/containers/Dashboard';
+import App from './containers/App';
+import Dashboard from './containers/Dashboard';
 // React router
 import { Router, IndexRoute, Route } from 'react-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 // Redux
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-import rootReducer from './src/reducers';
+import rootReducer from './reducers';
 // Redux middleware
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
-import backendApiMiddleware from './src/middlewares/backendApiMiddleware';
+import backendApiMiddleware from './middlewares/backendApiMiddleware';
 
 const createStoreWithMiddleware = applyMiddleware(
     thunk,
@@ -29,8 +29,8 @@ const store = createStoreWithMiddleware(rootReducer);
 
 if (module.hot) {
     // Enable Webpack hot module replacement for reducers
-    module.hot.accept('./src/reducers', () => {
-        const nextRootReducer = require('./src/reducers');
+    module.hot.accept('./reducers', () => {
+        const nextRootReducer = require('./reducers');
         store.replaceReducer(nextRootReducer);
     });
 }

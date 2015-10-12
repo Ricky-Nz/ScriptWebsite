@@ -7,12 +7,11 @@ module.exports = {
 	entry: [
 		'webpack-dev-server/client?http://localhost:8080',
 		'webpack/hot/only-dev-server',
-		'./index'
+		'./src/index'
 	],
 	output: {
 		path: path.join(__dirname, 'dist'),    //Path of output file
-		filename: 'bundle.js',
-		publicPath: '/static/'
+		filename: 'bundle.js'
 	},
 	plugins: [
 		new webpack.HotModuleReplacementPlugin()
@@ -29,7 +28,7 @@ module.exports = {
 	},
 	//Server Configuration options
 	devServer: {
-		publicPath: '/static/',
+		contentBase: path.join(__dirname, 'src'),
 		hot: true,        //Live-reload
 		historyApiFallback: true,
 		host : '0.0.0.0',
