@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Panel, Fade, Label } from 'react-bootstrap';
-import { GnInput, GnIconButton, GnIcon, GnTag } from './elements';
+import { GnInput, GnButton, GnIcon, GnTag } from './elements';
 import { horVCenterRight, horCenterPadding, errorStyle, horCenter, horWrap } from './styles';
 import ActionItem from './ActionItem';
 import _ from 'underscore';
@@ -53,7 +53,7 @@ class ScriptPanel extends Component {
 
 		const script = this.props.script;
 		const tagItems = script.tags ? script.tags.map((tag, index) => (
-			<GnIconButton style={tagStyle} label={tag} bsStyle='success' bsSize='xs' icon='times'
+			<GnButton style={tagStyle} label={tag} bsStyle='success' bsSize='xs' icon='times'
 				onClick={() => this.props.onUpdateScript({ target: 'tags', position: index, action: 'delete'})}/>
 		)) : null;
 		const actionItems = script.actions ? script.actions.map((action, index) => (
@@ -81,17 +81,17 @@ class ScriptPanel extends Component {
 					<p>Actions</p>
 					{actionItems}
 					<div style={horVCenterRight}>
-						<GnIconButton bsSize='small' bsStyle='link' icon='arrow-up' label='Append'
+						<GnButton bsSize='small' bsStyle='link' icon='arrow-up' label='Append'
 							onClick={() => this.props.onUpdateScript({ target: 'actions', action: 'append', args: {}})}/>
 					</div>
 				</div>
 				<div style={horVCenterRight}>
 					<div style={errorStyle}>{this.props.error || (this.state ? this.state.error : null)}</div>
 					{script.id ?
-						<GnIconButton bsSize='small' bsStyle='danger' icon='trash' label='Delete' disabled={this.props.submitting}
+						<GnButton bsSize='small' bsStyle='danger' icon='trash' label='Delete' disabled={this.props.submitting}
 							onClick={() => this.props.onDelete(this.props.script, true)}/>
 						: null}
-					<GnIconButton bsSize='small' bsStyle='primary' icon='save' style={{marginLeft: 10}}
+					<GnButton bsSize='small' bsStyle='primary' icon='save' style={{marginLeft: 10}}
 						active={this.props.submitting} disabled={this.props.submitting}
 						label={script.id ? 'Save' : 'Submit'} onClick={this.onSubmitClicked.bind(this)}/>
 				</div>

@@ -2,10 +2,12 @@
  * Created by ruiqili on 19/9/15.
  */
 import 'babel-core/polyfill';
+import './styles/main.css';
 // React
 import React from 'react';
-import App from './containers/App';
-import Dashboard from './containers/Dashboard';
+import ReactDOM from 'react-dom';
+import App from './components/App';
+import Dashboard from './components/Dashboard';
 // React router
 import { Router, IndexRoute, Route } from 'react-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
@@ -35,16 +37,30 @@ if (module.hot) {
     });
 }
 
-React.render(
-    <Provider store={store}>
-        {() =>
-            <Router history={history}>
-                <Route path='/' component={App}>
-                    <IndexRoute component={Dashboard}/>
-                    <Route path=':section' component={Dashboard}/>
-                </Route>
-            </Router>
-        }
-    </Provider>, document.body
+import GnInput2 from './components/dump-components/elements/GnInput2';
+class TestCase extends React.Component {
+    render() {
+        return (
+<div>
+    <br/><br/><br/><br/>
+    <GnInput2 test='username' type='email' error='Invalide email address'/>
+    <br/><br/><br/><br/>
+    <GnInput2 test='password'/>
+</div>
+        );
+    }
+}
+
+ReactDOM.render(
+    <TestCase/>, document.getElementById('root')
 );
+
+// <Provider store={store}>
+//         <Router history={history}>
+//             <Route path='/' component={App}>
+//                 <IndexRoute component={Dashboard}/>
+//                 <Route path=':section' component={Dashboard}/>
+//             </Route>
+//         </Router>
+//     </Provider>
 

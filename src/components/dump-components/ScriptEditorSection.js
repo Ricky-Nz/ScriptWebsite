@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Panel, Row, Col, Fade } from 'react-bootstrap';
-import { GnIconButton } from './elements';
+import { GnButton } from './elements';
 import SearchableList from './SearchableList';
 import ScriptPanel from './ScriptPanel';
 import { fillHeight, fillHeightScroll } from './styles';
@@ -24,7 +24,7 @@ class ScriptEditorSection extends Component {
 			<Row style={fillHeight}>
 				<Col xs={5} sm={4} md={3} mdOffset={1}>
 					<br/><br/><br/><br/>
-					<GnIconButton bsStyle='link' icon='angle-double-left' label='Back' onClick={props.onBack}/>
+					<GnButton bsStyle='link' icon='angle-double-left' label='Back' onClick={props.onBack}/>
 					<SearchableList config={scriptConfig} datas={props.array} skip={props.skip}
 						total={props.total} loading={props.querying}
 						onLoadData={props.onLoadDatas}

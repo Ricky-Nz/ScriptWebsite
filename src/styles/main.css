@@ -1,0 +1,22 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	overflow: hidden;
+}
+::-webkit-scrollbar { 
+    display: none; 
+}
+* {
+	box-sizing: border-box;
+}
+.form-group {
+    margin-bottom: 0px;
+}
+*:focus,*:active {
+   outline: none !important;
+}
+			
+.test-class {
+	color: green;
+}

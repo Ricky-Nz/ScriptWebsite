@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { GnSearchbar, GnList, GnIconButton, GnIcon } from './elements';
+import { GnSearchbar, GnList, GnButton, GnIcon } from './elements';
 import { Panel, Row, Col } from 'react-bootstrap';
 import { horVCenterSpaceBetween, horVCenter, flexFill } from './styles';
 import _ from 'underscore';

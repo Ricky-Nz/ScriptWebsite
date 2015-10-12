@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { ReportSection, PackageSection, ParameterSection, ScriptSection, ScriptEditorSection, HomeSection, GuideSection } from '../components';
+import { ReportSection, PackageSection, ParameterSection, ScriptSection, ScriptEditorSection, HomeSection, GuideSection } from './dump-components';
 // Redux
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';

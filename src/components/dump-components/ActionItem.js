@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { DropdownButton, MenuItem, Label, Input, Row, Col } from 'react-bootstrap';
-import { GnIconButton } from './elements';
+import { GnButton } from './elements';
 import { horVCenter, horCenter, horizontal, horVCenterSpaceBetween } from './styles';
 import _ from 'underscore';
 
@@ -36,9 +36,9 @@ class ActionItem extends Component {
 				<div style={horVCenterSpaceBetween}>
 					<Label style={{marginLeft: 15}} bsSize='small'>{this.props.index + 1}</Label>
 					<div style={horizontal}>
-						<GnIconButton bsSize='small' bsStyle='link' icon='arrow-up'
+						<GnButton bsSize='small' bsStyle='link' icon='arrow-up'
 							label='Insert' onClick={() => this.props.onInsert(this.props.index)}/>
-						<GnIconButton bsSize='small' bsStyle='link' icon='arrow-down'
+						<GnButton bsSize='small' bsStyle='link' icon='arrow-down'
 							label='Remove' onClick={() => this.props.onDelete(this.props.index)}/>
 					</div>
 				</div>

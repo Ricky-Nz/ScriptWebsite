@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { ListGroup, Well } from 'react-bootstrap';
 import GnListItem from './GnListItem';
 import GnIcon from './GnIcon';
-import GnIconButton from './GnIconButton';
+import GnButton from './GnButton';
 import { horCenterPadding, horVCenterRight, horVCenterSpaceBetween } from '../styles';
 
 class GnList extends Component {
@@ -30,7 +30,7 @@ class GnList extends Component {
 			<div style={this.props.style}>
 				<div style={Object.assign({padding: '10px 0px'}, horVCenterSpaceBetween)}>
 					<div>{this.props.header}</div>
-					{this.props.hideAddBtn ? null : <GnIconButton bsStyle='primary' bsSize='small' icon='plus' label='Add'
+					{this.props.hideAddBtn ? null : <GnButton bsStyle='primary' bsSize='small' icon='plus' label='Add'
 						onClick={e => this.props.onCreateItem({})}/>}
 				</div>
 				<ListGroup style={this.props.limitScroll ? {height: 420, overflow: 'auto'} : null}>
@@ -47,7 +47,7 @@ class GnList extends Component {
 		if (this.props.loaded < this.props.total) {
 			return (
 				<div style={horVCenterRight}>
-					<GnIconButton label={`(${this.props.loaded}/${this.props.total}) Load more`}
+					<GnButton label={`(${this.props.loaded}/${this.props.total}) Load more`}
 						icon='angle-double-down' bsStyle='link' onClick={this.props.onLoadMore}/>
 				</div>
 			);

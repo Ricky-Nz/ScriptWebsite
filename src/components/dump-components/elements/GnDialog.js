@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Modal } from 'react-bootstrap';
 import GnInput from './GnInput';
-import GnIconButton from './GnIconButton';
+import GnButton from './GnButton';
 import { errorStyle } from '../styles';
 
 class GnDialog extends Component {
@@ -19,10 +19,10 @@ class GnDialog extends Component {
                 </Modal.Body>
                 <Modal.Footer>
                 	{props.leftClicked ?
-                        <GnIconButton icon={props.leftIcon} label={props.leftLabel}
+                        <GnButton icon={props.leftIcon} label={props.leftLabel}
                             onClick={props.leftClicked} disabled={props.submitting}/> : null}
                     {props.rightClicked ?
-                        <GnIconButton icon={props.rightIcon} label={props.rightLabel}
+                        <GnButton icon={props.rightIcon} label={props.rightLabel}
                             onClick={props.rightClicked} bsStyle={props.rightBsStyle}
                             disabled={props.submitting} active={props.submitting}/> : null}
                 </Modal.Footer>

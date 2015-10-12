@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from 'react';
-import { Navbar, CollapsibleNav, NavDropdown, Nav, NavItem, MenuItem } from 'react-bootstrap';
+import { Navbar, NavBrand, CollapsibleNav, NavDropdown, Nav, NavItem, MenuItem } from 'react-bootstrap';
 import GnIcon from './GnIcon';
 
 class GnTitlebar extends Component {
 	render() {
 		return (
-			<Navbar fixedTop style={{margin: 0}} toggleNavKey='collapsable-menu'
-				brand={<a href='#' onClick={this.props.onBrandClicked}><GnIcon icon='cogs' style={{marginRight: 10}}/>{this.props.brand}</a>}>
+			<Navbar fixedTop style={{margin: 0}} toggleNavKey='collapsable-menu'>
+				<NavBrand onClick={this.props.onBrandClicked}><GnIcon icon='cogs' style={{marginRight: 10}}/>{this.props.brand}</NavBrand>
 				<CollapsibleNav eventKey='collapsable-menu'>
 					{this.renderLeftNavbar()}
 					{this.renderRightNavbar()}

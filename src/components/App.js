@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import { GnTitlebar } from '../components/elements';
-import { FormDialog } from '../components';
-import { fillHeight } from '../components/styles';
+import { GnTitlebar } from './dump-components/elements';
+import { FormDialog } from './dump-components';
+import { fillHeight } from './dump-components/styles';
 // Redux
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';

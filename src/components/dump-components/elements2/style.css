@@ -1,0 +1,22 @@
+.horizontalVerCenter {
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.itemGrow {
+	flex-grow: 1;
+}
+
+.fontPrimary {
+	font-size: 1.1em;
+}
+
+.fontSecondary {
+	font-size: 0.9em;
+	color: gray;
+}

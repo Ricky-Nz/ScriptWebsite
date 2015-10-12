@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { ListGroupItem } from 'react-bootstrap';
 import { horVCenter, smHorFill } from '../styles';
 import GnIcon from './GnIcon';
-import GnIconButton from './GnIconButton';
+import GnButton from './GnButton';
 
 class GnListItem extends Component {
 	render() {
@@ -22,8 +22,8 @@ class GnListItem extends Component {
 						<div style={primaryStyle}>{this.props.primary}</div>
 						<div style={secondaryStyle}>{this.props.secondary}</div>
 					</div>
-					{this.props.showEditBtn ? <GnIconButton bsStyle='link' icon='edit' onClick={this.props.onEditItem}/> : null}
-					{this.props.showDeleteBtn ? <GnIconButton bsStyle='link' icon='remove' onClick={this.props.onDeleteItem}/> : null}
+					{this.props.showEditBtn ? <GnButton bsStyle='link' icon='edit' onClick={this.props.onEditItem}/> : null}
+					{this.props.showDeleteBtn ? <GnButton bsStyle='link' icon='remove' onClick={this.props.onDeleteItem}/> : null}
 				</div>
 			</ListGroupItem>
 		);

@@ -4,7 +4,7 @@ import GnList from './GnList';
 import GnListItem from './GnListItem';
 import GnSearchbar from './GnSearchbar';
 import GnSpinnerButton from './GnSpinnerButton';
-import GnIconButton from './GnIconButton';
+import GnButton from './GnButton';
 import GnTitlebar from './GnTitlebar';
 import GnTag from './GnTag';
 import GnSelectableList from './GnSelectableList';
@@ -20,7 +20,7 @@ export default {
 	GnListItem,
 	GnSearchbar,
 	GnSpinnerButton,
-	GnIconButton,
+	GnButton,
 	GnTitlebar,
 	GnSelectableList,
 	GnAccordionList,
