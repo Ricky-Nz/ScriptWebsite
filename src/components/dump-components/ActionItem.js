@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import { DropdownButton, MenuItem, Label, Input, Row, Col } from 'react-bootstrap';
-import { GnButton } from './elements';
+import { Label, Input, Row, Col } from 'react-bootstrap';
+import { GnButton, GnDropdownButton } from './elements2';
 import { horVCenter, horCenter, horizontal, horVCenterSpaceBetween } from './styles';
 import _ from 'underscore';
 
@@ -45,18 +45,18 @@ class ActionItem extends Component {
 				<Input type='text' disabled={!showActionArgs}
 					help={this.state.actionError ? <div style={{color: 'red'}}>{this.state.actionError}</div> : null}
 					addonBefore={
-						<DropdownButton bsSize='small' onSelect={(e, type) => this.setState({ actionType: type, actionArgs: null })}
+						<GnDropdownButton bsSize='small' onSelect={(e, type) => this.setState({ actionType: type, actionArgs: null })}
 							title={`perform action ${this.state.actionType ? this.state.actionType : ' ? '}`}>
 							{actionItems}
-						</DropdownButton>
+						</GnDropdownButton>
 					} value={this.state.actionArgs} onChange={e => this.setState({actionArgs : e.target.value})}/>
 				{showElement ?
 					<Input type="text" help={this.state.findError ? <div style={{color: 'red'}}>{this.state.findError}</div> : null}
 						addonBefore={
-							<DropdownButton bsSize='small' onSelect={(e, type) => this.setState({ findType: type })}
+							<GnDropdownButton bsSize='small' onSelect={(e, type) => this.setState({ findType: type })}
 								title={`on element find by ${this.state.findType ? this.state.findType : ' ? '}`}>
 								{findTypeItems}
-							</DropdownButton>
+							</GnDropdownButton>
 						} value={this.state.findArgs} onChange={e => this.setState({findArgs : e.target.value})}/>
 				: null}
 			</div>

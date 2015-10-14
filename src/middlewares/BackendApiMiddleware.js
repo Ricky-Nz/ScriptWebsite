@@ -18,8 +18,7 @@ export default store => next => action => {
         apiCall.url = apiCall.url.slice(0, parmIndex) + user.userId + apiCall.url.slice(parmIndex + 7);
     }
     let request = agent(apiCall.method, 'http://localhost:3000/api' + apiCall.url)
-    	.accept('json')
-        .timeout(10000);
+    	.accept('json');
 
     if (apiCall.body) request.send(apiCall.body);
     if (apiCall.query) request.query(apiCall.query);

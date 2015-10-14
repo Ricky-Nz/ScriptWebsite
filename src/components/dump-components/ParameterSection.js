@@ -1,31 +1,36 @@
 import React, { Component, PropTypes } from 'react';
-import { Panel, Row, Col, Fade } from 'react-bootstrap';
-import SearchableList from './SearchableList';
+import { Panel, Row, Col } from 'react-bootstrap';
+import { GnAsyncPanel, GnSearchbar, GnList, GnListItem, GnIcon, GnButton } from './elements2';
 
 class ParameterSection extends Component {
 	render() {
-		const props = this.props;
-		const config = {
-			searchbarPlaceholder: 'search for parameter key or value ',
-			listHeader: 'Golabel Parameters',
-			itemIcon: 'code',
-			showEditBtn: true,
-			showDeleteBtn: true,
-			primaryKey: 'key',
-			secondaryKey: 'value',
-			searchable: ['key', 'value']
-		};
+		const itemStyle = { border: 'none' };
+		const listItems = this.props.array.map((item, index) => (
+			<GnListItem key={index} style={itemStyle} leftView={<GnIcon icon='code'/>}
+				primary={item.key} secondary={item.value}
+				rightView={
+					<span>
+						<GnButton gnStyle='link' icon='edit'
+							onClick={() => this.props.onChangeItem(item)}/>,
+						<GnButton gnStyle='link' icon='remove'
+							onClick={() => this.props.onChangeItem(item, true)}/>
+					</span>
+				}/>
+		));
 
 		return (
-			<Row>
-				<Col xs={12} sm={10} smOffset={1} md={8} mdOffset={2} lg={6} lgOffset={3}>
-					<br/><br/><br/><br/>
-					<SearchableList config={config} datas={props.array} skip={props.skip}
-						total={props.total} loading={props.querying}
-						onLoadData={props.onLoadDatas}
-						onCreateItem={props.onChangeItem}
-						onEditItem={props.onChangeItem}
-						onDeleteItem={props.onChangeItem}/>
+			<Row className='fillHeight'>
+				<Col xs={12} sm={10} smOffset={1} md={8} mdOffset={2} lg={6} lgOffset={3} className='fillHeightScroll'>
+					<Panel>
+						<GnSearchbar ref='search' placeholder='search for parameter key or value'
+							searching={this.props.querying} onSearch={this.onLoadDatas}/>
+						<GnAsyncPanel loading={this.props.querying}>
+							<GnList total={this.props.total} skip={this.props.skip}
+								loading={this.props.querying} onLoadMore={() => this.onLoadDatas(this.refs.search.getValue(), true)}>
+								{listItems}
+							</GnList>
+						</GnAsyncPanel>
+					</Panel>
 				</Col>
 			</Row>
 		);

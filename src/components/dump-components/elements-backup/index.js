@@ -11,6 +11,7 @@ import GnSelectableList from './GnSelectableList';
 import GnAccordionList from './GnAccordionList';
 import GnDataPanel from './GnDataPanel';
 import GnDialog from './GnDialog';
+import GnChart from './GnChart';
 
 export default {
 	GnIcon,
@@ -25,5 +26,6 @@ export default {
 	GnSelectableList,
 	GnAccordionList,
 	GnDataPanel,
-	GnDialog
+	GnDialog,
+	GnChart
 };

@@ -1,41 +1,74 @@
 import React, { Component, PropTypes } from 'react';
 import { Panel, Row, Col, Fade } from 'react-bootstrap';
-import SearchableList from './SearchableList';
-import ReportPanel from './ReportPanel';
-import { fillHeight, fillHeightScroll } from './styles';
+import { GnAsyncPanel, GnSearchbar, GnList, GnListItem, GnIndexItem,
+	GnIcon, GnButton, GnIconItem, GnChart, GnAccordionList } from './elements2';
 
 class ReportSection extends Component {
-	componentWillReceiveProps(nextProps) {
-		if (nextProps.select == null && nextProps.array.length > 0
-				&& !nextProps.getting && !nextProps.error) {
-			nextProps.onLoadItem(nextProps.array[0]);
-		}
-	}
 	render() {
-		const props = this.props;
-		const config = {
-			hideAddBtn: true,
-			searchbarPlaceholder: 'search for report title',
-			listHeader: 'Test Reports',
-			itemIcon: 'description',
-			showEditBtn: false,
-			showDeleteBtn: true,
-			primaryKey: 'date',
-			secondaryKey: 'tags',
-			searchable: ['tags', 'date']
-		};
+		const itemStyle = { border: 'none' };
+		const reportItems = props.array.map((item, index) => (
+			<GnListItem key={index} style={itemStyle} leftView={<GnIcon icon='flag-o'/>}
+				primary={item.date} secondary={item.title}
+				rightView={<GnButton gnStyle='link' icon='remove'
+					onClick={() => props.onChangeItem(item, true)}/>}/>
+		));
+
+		const report = props.select;
+		let count = _.countBy(report.scripts, script => script.err ? 'failed' : 'success');
+		count.failed = count.failed ? count.failed : 0;
+		count.success = count.success ? count.success : 0;
+		const pieData = [
+			{label: 'Success', color: '#4caf50',
+				value: count.success ? (count.failed + count.success) / count.success * 100 : 0},
+			{label: 'Failed', color: '#e51c23',
+				value: count.failed ? (count.failed + count.success) / count.failed * 100 : 0}
+		];
+		const scriptReports = report.scripts.map((script, index) => {
+			const actionItems = script.actions.map((action, index) => (
+				<GnIndexItem key={index} index={index + 1} indexStyle={action.err ? 'success' : 'danger'}
+					primary={action.title} secondary={<p className='errorText'>{action.err}</p>}/>
+			));
+
+			return {
+				title: <GnIconItem icon={script.err ? 'times' : 'check'}
+					iconClass={script.err ? 'errorText' : 'successText'} content={script.title}/>,
+				node: {actionItems}
+			};
+		});
 
 		return (
-			<Row style={fillHeight}>
+			<Row className={fillHeight}>
 				<Col xs={4} md={3} mdOffset={1}>
-					<br/><br/><br/><br/>
-					<SearchableList config={config} datas={props.array} skip={props.skip}
-						total={props.total} loading={props.querying} onLoadData={props.onLoadDatas}
-						onDeleteItem={props.onChangeItem} onItemClicked={props.onLoadItem}/>
+					<Panel>
+						<GnSearchbar ref='search' placeholder='search for parameter title or date'
+							searching={props.querying} onSearch={this.loadData.bind(this)}/>
+						<GnAsyncPanel loading={props.querying}>
+							<GnList total={props.total} skip={props.skip}
+								loading={props.querying} onLoadMore={() => this.loadData(this.refs.search.getValue(), true)}>
+								{reportItems}
+							</GnList>
+						</GnAsyncPanel>
+					</Panel>
 				</Col>
 				<Col xs={8} md={7} style={fillHeightScroll}>
-					<br/><br/><br/><br/>
-					<ReportPanel report={props.select} error={props.error} getting={props.getting}/>
+					<GnAsyncPanel>
+						<Panel className='horizontalVerCenter'>
+							<div>
+								<GnIconItem icon='tablet'
+									content={<span>Platform: <GnIcon icon={report.platform.toLowerCase()}/></span>}/>
+								<GnIconItem icon='code-fork'
+									content={`Version: ${report.platformVersion}`}/>
+								<GnIconItem icon='bug'
+									content={<span>Package: <a href={report.packagePath} target='_blank'>{report.packageName}</a></span>}/>
+								<GnIconItem icon='tags'
+									content={`Run Tags: ${report.tags}`}/>
+								<GnIconItem icon='clock-o'
+									content={`${Duration}: ${report.startDate} ~ ${report.endDate}`}/>
+							</div>
+							<GnChart width={200} height={200} datas={pieData}/>
+						</Panel>
+						<GnAccordionList items={scriptReports}/>
+					</GnAsyncPanel>
 				</Col>
 			</Row>
 		);

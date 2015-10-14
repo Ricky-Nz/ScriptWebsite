@@ -1,50 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import { Panel, Row, Col, Fade } from 'react-bootstrap';
-import SearchableList from './SearchableList';
-import TagList from './TagList';
-import { fillHeight, fillHeightScroll } from './styles';
+import { GnSelectList, GnAsyncPanel, GnSearchbar, GnList, GnListItem, GnIcon } from './elements2';
 import _ from 'underscore';
 
-class ScriptSection extends Component {
-	render() {
-		const props = this.props;
-		const scriptConfig = {
-			searchbarPlaceholder: 'search for script by title',
-			listHeader: 'Test Scripts',
-			itemIcon: 'file-text-o',
-			showEditBtn: false,
-			showDeleteBtn: true,
-			primaryKey: 'title',
-			secondaryKey: 'date',
-			searchable: ['title']
-		};
-
-		return (
-			<Row style={fillHeight}>
-				<Col xs={5} sm={4} md={3} mdOffset={1}>
-					<br/><br/><br/><br/>
-					<TagList tags={props.tags}
-						onTagSelectChange={tags => {
-							props.onTagSelectChange(tags);
-							this.combineSelection(this.state, tags);
-						}}/>
-				</Col>
-				<Col xs={7} sm={8} md={7} style={fillHeightScroll}>
-					<br/><br/><br/><br/>
-					<SearchableList config={scriptConfig} datas={props.array} skip={props.skip}
-						total={props.total} loading={props.querying}
-						onLoadData={selection => {
-							this.setState(selection);
-							this.combineSelection(selection, this.props.tags);
-						}}
-						onCreateItem={props.onSelectScript}
-						onItemClicked={props.onSelectScript}
-						onDeleteItem={props.onChangeItem}/>
-				</Col>
-			</Row>
-		);
-	}
-	combineSelection(selection, tags) {
+let ScriptSection = props => {
+	const itemStyle = { border: 'none' };
+	const listItems = props.array.map((item, index) => (
+		<GnListItem key={index} style={itemStyle} leftView={<GnIcon icon='file-text-o'/>}
+			primary={item.title} secondary={item.date}/>
+	));
+	const combineSelection = (selection, tags) => {
 		let newSelection = {
 			where: {
 				tags: {
@@ -58,8 +23,28 @@ class ScriptSection extends Component {
 				selection.where ? { where: Object.assign({}, selection.where, newSelection.where)} : null);
 		}
 
-		this.props.onLoadDatas(newSelection);
-	}
+		props.onLoadDatas(newSelection);
+	};
+
+	return (
+		<Row className='fillHeight'>
+			<Col xs={5} sm={4} md={3} mdOffset={1}>
+				<Panel>
+					<GnSelectList items={props.tags} onSelectChange={select => console.log(select)}/>
+				</Panel>
+			</Col>
+			<Col xs={7} sm={8} md={7}>
+				<Panel>
+					<GnSearchbar placeholder='search for script by title' searching={props.loading}/>
+					<GnAsyncPanel loading={props.querying}>
+						<GnList total={props.total} skip={props.skip} loading={props.querying}>
+							{listItems}
+						</GnList>
+					</GnAsyncPanel>
+				</Panel>
+			</Col>
+		</Row>
+	);
 }
 
 ScriptSection.propTypes = {
@@ -70,8 +55,7 @@ ScriptSection.propTypes = {
 	querying: PropTypes.bool,
 	onLoadDatas: PropTypes.func.isRequired,
 	onChangeItem: PropTypes.func.isRequired,
-	onSelectScript: PropTypes.func.isRequired,
-	onTagSelectChange: PropTypes.func.isRequired
+	onSelectScript: PropTypes.func.isRequired
 };
 
 export default ScriptSection;

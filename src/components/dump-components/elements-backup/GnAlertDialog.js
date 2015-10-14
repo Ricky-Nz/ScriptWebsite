@@ -4,7 +4,7 @@ import GnInput from './GnInput';
 import GnButton from './GnButton';
 import { errorStyle } from '../styles';
 
-class GnDialog extends Component {
+class GnAlertDialog extends Component {
 	render() {
         const props = this.props;
 		return (

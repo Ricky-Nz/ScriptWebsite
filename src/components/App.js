@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import { GnTitlebar } from './dump-components/elements';
-import { FormDialog } from './dump-components';
-import { fillHeight } from './dump-components/styles';
+import { GnTitlebar, GnNavbar, GnAlertDialog } from './dump-components/elements2';
+import { LoginDialog, RegisterDialog, PackageDialog, ParameterDialog } from './dump-components';
 // Redux
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
@@ -16,95 +15,132 @@ class Application extends Component {
 		this.props.dispatch(getVersions());
 	}
 	render() {
-		const props = this.props;
-		const titlebarSections = [
-			{ ref: 'scripts', label: 'Script' },
-			{ ref: 'parameters', label: 'Parameter' },
-			{ ref: 'packages', label: 'Package' },
-			{ ref: 'reports', label: 'Report' },
-			{ ref: 'guide', label: 'Guide' }
-		];
-
 		return (
-			<div style={fillHeight}>
-				<GnTitlebar brand='Gear Test Automation'
-					sections={titlebarSections}
-					menuTitle={this.props.email ? this.props.email : 'Login'}
-					menus={this.props.email ? [{ ref: 'logout', label: 'Logout' }] : []}
-					onBrandClicked={() => this.props.history.replaceState(null, '')}
-					onMenuSelected={this.onTitlebarMenuSelected.bind(this)}
-					onSectionSelected={this.onTitlebarSectionSelected.bind(this)}/>
+			<div className='fillHeight'>
+				<GnTitlebar brandIcon='cogs' brandLabel='Gear Test Automation'
+					onBrandClicked={() => this.props.history.replaceState(null, '')}>
+					<GnNavbar items={this.props.leftSections} onSelect={this.onNavabrSelected.bind(this)}/>
+					<GnNavbar right items={this.props.rightSsctions} onSelect={this.onNavabrSelected.bind(this)}/>
+				</GnTitlebar>
 				{this.props.children}
-				<FormDialog show={props.dialogShow} label={props.dialogLabel} submitting={props.submitting} error={props.error}
-                    select={props.dialogSelect} onCancelAction={this.onCancelDialogAction.bind(this)}
-                    onPerformAction={this.onPerformDialogAction.bind(this)}/>
+				{this.renderDialog()}
 			</div>
 		);
 	}
-	onTitlebarMenuSelected(ref) {
-		if (ref == 'Login') {
-			this.props.dispatch(showDialog('login'));
-		} else if (ref == 'logout') {
-			this.props.history.replaceState(null, '');
-			this.props.dispatch(logout());
-		}
+	renderDialog() {
+		const select = this.props.dialogSelect;
+		const commonProps = {
+			show: this.props.dialogShow,
+			submitting: this.props.submitting,
+			error: this.props.error,
+			onCancel: this.onCancelDialog.bind(this)
+		};
+        switch(this.props.dialogLabel) {
+            case 'login':
+            	return <LoginDialog {...commonProps}
+            		onLogin={this.onLogin.bind(this)} onRegister={this.onGoRegister.bind(this)}/>
+            case 'register':
+            	return <RegisterDialog {...commonProps} onSubmit={this.onRegister.bind(this)}/>
+            case 'parameter':
+            	return <ParameterDialog {...commonProps} select={select}
+            		onSubmit={this.onCommitParameter.bind(this)}/>
+            case 'package':
+            	return <PackageDialog {...commonProps} onSubmit={this.onCommitPackage.bind(this)}/>
+            case 'del-parameter':
+            	return <GnAlertDialog {...commonProps} title='Confirm'
+                	message={`Are you sure you want to delete parameter ${select ? select.key : ''}(${select ? select.value : ''})?`}
+                    onSubmit={this.onDeleteParameter.bind(this)}/>;
+            case 'del-package':
+            	return <GnAlertDialog {...commonProps} title='Confirm'
+                	message={`Are you sure you want to delete package ${select ? select.title : ''}?`}
+                    onSubmit={this.onDeletePackage.bind(this)}/>;
+            case 'del-report':
+            	return <GnAlertDialog {...commonProps} title='Confirm'
+                	message={`Are you sure you want to delete report ${select ? select.tags : ''}-${select ? select.date : ''}?`}
+                    onSubmit={this.onDeleteReport.bind(this)}/>;
+            case 'del-script':
+                return <GnAlertDialog {...commonProps} title='Confirm'
+                	message={`Are you sure you want to delete script ${select ? select.title : ''}?`}
+                    onSubmit={this.onDeleteScript.bind(this)}/>;
+            default:
+                return null;
+        };
 	}
-	onTitlebarSectionSelected(section) {
-		if (section == this.props.params.section) {
-			return;
-		}
-		
-		this.props.history.replaceState(null, `/${section}`);
-	}
-	onCancelDialogAction() {
+	onCancelDialog() {
 		this.props.dispatch(dismissDialog());
 	}
-	onPerformDialogAction(label, data, file) {
-		switch(label) {
-			case 'login':
-				this.props.dispatch(login(data.email, data.password));
-				break;
-			case 'register':
-				this.props.dispatch(register(data.email, data.password));
-				break;
-			case 'go-register':
-				this.props.dispatch(showDialog('register'));
-				break;
-			case 'parameter':
-				if (this.props.dialogSelect.id) {
-					this.props.dispatch(updateParameter(this.props.dialogSelect.id, data));
-				} else {
-					this.props.dispatch(createParameter(data));
-				}
-				break;
-			case 'package':
-				this.props.dispatch(createPackage(data, file));
-				break;
-			case 'del-parameter':
-				this.props.dispatch(deleteParameter(this.props.dialogSelect.id));
-				break;
-			case 'del-package':
-				this.props.dispatch(deletePackage(this.props.dialogSelect.id));
-				break;
-			case 'del-report':
-				this.props.dispatch(deleteReport(this.props.dialogSelect.id));
-				break;
-			case 'del-script':
-				this.props.dispatch(deleteScript(this.props.dialogSelect.id));
-				break;
+	onLogin(email, password) {
+		this.props.dispatch(login(email, password));
+	}
+	onGoRegister() {
+		this.props.dispatch(showDialog('register'));
+	}
+	onRegister(email, password) {
+		this.props.dispatch(register(email, password));
+	}
+	onCommitParameter(key, value, id) {
+		if (id) {
+			this.props.dispatch(updateParameter(id, { key, value }));
+		} else {
+			this.props.dispatch(createParameter({ key, value }));
+		}
+	}
+	onCommitPackage(title, description, file) {
+		this.props.dispatch(createPackage({title, description}, file));
+	}
+	onDeleteScript(id) {
+		this.props.dispatch(deleteScript(id));
+	}
+	onDeleteParameter(id) {
+		this.props.dispatch(deleteParameter(id));
+	}
+	onDeletePackage(id) {
+		this.props.dispatch(deletePackage(id));
+	}
+	onDeleteReport(id) {
+		this.props.dispatch(deleteReport(id));
+	}
+	onNavabrSelected(select) {
+		if (select == this.props.params.section) {
+			return;
+		}
+
+		if (select == 'login') {
+			this.props.dispatch(showDialog('login'));
+		} else if (select == 'logout') {
+			this.props.history.replaceState(null, '');
+			this.props.dispatch(logout());
+		} else {
+			this.props.history.replaceState(null, `/${select}`);
 		}
 	}
 }
 
-const propsSelector = createSelector(
+const loginSelector = createSelector(
 	state => state.user.email,
+	email => ({
+		leftSections: [
+			{ key: 'scripts', label: 'Script' },
+			{ key: 'parameters', label: 'Parameter' },
+			{ key: 'packages', label: 'Package' },
+			{ key: 'reports', label: 'Report' },
+			{ key: 'guide', label: 'Guide' }
+		],
+		rightSsctions: email ?
+			[{ label: email, key: [{ label: 'Logout', key: 'logout' }] }]
+			: [{ label: 'Login', key: 'login' }]
+	})
+);
+
+const propsSelector = createSelector(
+	loginSelector,
 	state => state.dialogSelect,
 	state => state.status.submitting,
 	state => state.status.error,
 	state => state.status.dialogShow,
 	state => state.status.dialogLabel,
-    (email, dialogSelect, submitting, error, dialogShow, dialogLabel) =>
-    	({email, dialogSelect, submitting, error, dialogShow, dialogLabel})
+    (loginInfo, dialogSelect, submitting, error, dialogShow, dialogLabel) =>
+    	({...loginInfo, dialogSelect, submitting, error, dialogShow, dialogLabel})
 );
 
 export default connect(propsSelector)(Application);

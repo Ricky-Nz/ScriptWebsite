@@ -1,28 +1,33 @@
 import React, { Component, PropTypes } from 'react';
 import { Panel, Row, Col, Fade } from 'react-bootstrap';
-import SearchableList from './SearchableList';
+import { GnAsyncPanel, GnSearchbar, GnList, GnListItem, GnIcon, GnButton } from './elements2';
 
 class PackageSection extends Component {
 	render() {
-		const props = this.props;
-		const config = {
-			searchbarPlaceholder: 'search for package title or descriptions',
-			listHeader: 'Installation Packages',
-			itemIcon: 'android',
-			showEditBtn: false,
-			showDeleteBtn: true,
-			primaryKey: 'title',
-			secondaryKey: 'description',
-			searchable: ['title', 'description']
-		};
+		const itemStyle = { border: 'none' };
+		const listItems = this.props.array.map((item, index) => (
+			<GnListItem key={index} style={itemStyle} leftView={<GnIcon icon='android'/>}
+				primary={item.title} secondary={item.description}
+				rightView={
+					<GnButton gnStyle='link' icon='remove'
+						onClick={() => this.props.onChangeItem(item, true)}/>
+				}/>
+		));
 
 		return (
 			<Row>
 				<Col xs={12} sm={10} smOffset={1} md={8} mdOffset={2} lg={6} lgOffset={3}>
 					<br/><br/><br/><br/>
-					<SearchableList config={config} datas={props.array} skip={props.skip}
-						total={props.total} loading={props.querying} onLoadData={props.onLoadDatas}
-						onCreateItem={props.onChangeItem} onDeleteItem={props.onChangeItem}/>
+					<Panel>
+						<GnSearchbar ref='search' placeholder='search for package title or descriptions'
+							searching={this.props.querying} onSearch={this.onLoadDatas}/>
+						<GnAsyncPanel loading={this.props.querying}>
+							<GnList total={this.props.total} skip={this.props.skip}
+								loading={this.props.querying} onLoadMore={() => this.onLoadDatas(this.refs.search.getValue(), true)}>
+								{listItems}
+							</GnList>
+						</GnAsyncPanel>
+					</Panel>
 				</Col>
 			</Row>
 		);
@@ -35,7 +40,6 @@ PackageSection.propTypes = {
 	total: PropTypes.number,
 	querying: PropTypes.bool,
 	onLoadDatas: PropTypes.func.isRequired,
-	onLoadItem: PropTypes.func.isRequired,
 	onChangeItem: PropTypes.func.isRequired
 };
 

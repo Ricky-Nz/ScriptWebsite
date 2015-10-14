@@ -34,7 +34,7 @@ class Dashboard extends Component {
 		} else {
 			if (nextProps.section != this.props.section
 					|| !this.props.accessToken) {
-				this.onInitDatas(null, nextProps);
+				this.onInitDatas(nextProps);
 			}
 
 			if (nextProps.location.query.select
@@ -85,10 +85,10 @@ class Dashboard extends Component {
 							onSelectScript={item => props.history.pushState(null, `/scripteditor${(item && item.id) ? ('?select=' + item.id) : ''}`)}
 							onTagSelectChange={updateTags => this.props.dispatch(updateTagSelection(updateTags))}/>;
 			case 'scripteditor':
-				return <ScriptEditorSection
-							array={props.array} skip={props.skip}
+				return <ScriptEditorSection array={props.array} skip={props.skip}
 							total={props.total} querying={props.querying}
 							error={props.error} getting={props.getting}
+							findTypes={props.findTypes} actionTypes={props.actionTypes}
 							submitting={props.submitting} select={props.select}
 							onLoadDatas={this.onLoadDatas.bind(this)}
 							onLoadItem={this.onLoadItem.bind(this)}
@@ -109,18 +109,29 @@ class Dashboard extends Component {
 	onLoadItem(item) {
 		this.props.history.replaceState(null, `/${this.props.section}?select=${item.id}`);
 	}
-	onInitDatas(selection, props) {
+	onInitDatas(props) {
 		if (!props) {
 			props = this.props;
 		}
 		if (props.section == 'scripts') {
 			props.dispatch(getTags());
 		}
-		this.onLoadDatas(selection, props);
+		this.onLoadDatas(null, false, null, props);
 	}
-	onLoadDatas(selection, props) {
+	onLoadDatas(searchText, loadmore, extraSelection, props) {
 		if (!props) {
 			props = this.props;
+		}
+
+		let selection = extraSelection ? extraSelection : {};
+		if (searchText) {
+			Object.assign(selection, { where: { or: [
+				{ key: { regexp: searchText }},
+				{ value: { regexp: searchText }}
+			]}});
+		}
+		if (loadmore) {
+			Object.assign(selection, { skip: this.props.skip });
 		}
 
 		switch(props.section) {
@@ -192,8 +203,44 @@ class Dashboard extends Component {
 	}
 }
 
-const propsSelector = createSelector(
+const loginSelector = createSelector(
 	state => state.user.accessToken,
+	accessToken => {
+		return {
+			accessToken: accessToken,
+			findTypes: [
+				"Id",
+				"Name",
+				"ClassName",
+				"TagName",
+				"XPath",
+				"IosUIAutomation",
+				"AndroidUIAutomator",
+				"AccessibilityId",
+				"LinkText",
+				"PartialLinkText",
+				"Css",
+				"CssSelector"
+			],
+			actionTypes: [
+				{ "name": "Click", "element": true },
+				{ "name": "Input", "element": true, "args": ".*" },
+				{ "name": "Touch", "args": "\\((\\d*\\.?\\d+), ?(\\d*\\.?\\d+)\\)", "help": "plaese follow this format: (x_number, y_number)" },
+				{ "name": "TouchRelative", "args": "\\((0\\.\\d+), ?(0\\.\\d+)\\)", "help": "plaese follow this format: (0.x_precentage, 0.y_precentage)" },
+				{ "name": "ClearInput", "element": true },
+				{ "name": "FlickUp", "args": "^[0-9]*$", "help": "enter the distance in pixel." },
+				{ "name": "FlickDown", "args": "^[0-9]*$", "help": "enter the distance in pixel." },
+				{ "name": "FlickLeft", "args": "^[0-9]*$", "help": "enter the distance in pixel." },
+				{ "name": "FlickRight", "args": "^[0-9]*$", "help": "enter the distance in pixel." },
+				{ "name": "Back" },
+				{ "name": "Wait", "args": "^[0-9]*$", "help": "number in milliseconds to wait." }
+			]
+		}
+	}
+)
+
+const propsSelector = createSelector(
+	loginSelector,
 	state => state.array,
 	state => state.tags,
 	state => state.select,
@@ -206,10 +253,18 @@ const propsSelector = createSelector(
 	state => state.status.submitting,
 	state => state.status.dialogLabel,
 	state => state.versions,
-    (accessToken, array, tags, select, section, skip, total, error,
-    		querying, getting, submitting, dialogLabel, versions) =>
-    	({accessToken, array, tags, select, section, skip, total, error,
-    		querying, getting, submitting, dialogLabel, versions})
+    (loginInfo, array, tags, select, section, skip, total, error,
+    		querying, getting, submitting, dialogLabel, versions) => {
+    	tags = ['SDF', 'DSF','DF','SS','GE','POI'];
+    	tags = tags.map(tag => ({
+    		key: tag,
+    		label: tag,
+    		icon: 'tag',
+    		defaultChecked: true
+    	}));
+    	return {...loginInfo, array, tags, select, section, skip, total, error,
+    		querying, getting, submitting, dialogLabel, versions};
+    }
 );
 
 export default connect(propsSelector)(Dashboard);

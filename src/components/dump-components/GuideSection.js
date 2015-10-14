@@ -1,13 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { Row, Col, Tabs, Tab, Table  } from 'react-bootstrap';
-import { GnIcon } from './elements';
-import { fillHeight, fillHeightScroll } from './styles';
+import { GnIcon } from './elements2';
 
 class GuideSection extends Component {
 	render() {
 		return (
-			<Row style={fillHeight}>
-				<Col xs={10} xsOffset={1} style={fillHeightScroll}>
+			<Row className='fillHeight'>
+				<Col xs={10} xsOffset={1} className='fillHeightScroll'>
 					<br/><br/><br/><br/>
 					<Tabs defaultActiveKey={1} position="left" tabWidth={3} bsStyle='tabs'>
 						<Tab eventKey={1} title='Write a script'>{this.renderScriptGuide()}</Tab>

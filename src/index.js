@@ -37,30 +37,16 @@ if (module.hot) {
     });
 }
 
-import GnInput2 from './components/dump-components/elements/GnInput2';
-class TestCase extends React.Component {
-    render() {
-        return (
-<div>
-    <br/><br/><br/><br/>
-    <GnInput2 test='username' type='email' error='Invalide email address'/>
-    <br/><br/><br/><br/>
-    <GnInput2 test='password'/>
-</div>
-        );
-    }
-}
-
 ReactDOM.render(
-    <TestCase/>, document.getElementById('root')
+    <Provider store={store}>
+        <Router history={history}>
+            <Route path='/' component={App}>
+                <IndexRoute component={Dashboard}/>
+                <Route path=':section' component={Dashboard}/>
+            </Route>
+        </Router>
+    </Provider>, document.getElementById('root')
 );
 
-// <Provider store={store}>
-//         <Router history={history}>
-//             <Route path='/' component={App}>
-//                 <IndexRoute component={Dashboard}/>
-//                 <Route path=':section' component={Dashboard}/>
-//             </Route>
-//         </Router>
-//     </Provider>
+
 

@@ -1,3 +1,25 @@
+.horizontalCenter {
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+
+.horizontalVercenterWrap {
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
 .horizontalVerCenter {
 	display: -webkit-box;
 	display: -moz-box;
@@ -6,6 +28,28 @@
 	display: flex;
 	flex-direction: row;
 	align-items: center;
+}
+
+.horizontalVerCenterRight {
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+.horizontalVerCenterSpaceBetween {
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
 }
 
 .itemGrow {
@@ -19,4 +63,25 @@
 .fontSecondary {
 	font-size: 0.9em;
 	color: gray;
+}
+
+.content {
+	padding: 20px;
+}
+
+.errorText {
+	color: #e51c23;
+}
+
+.successText {
+	color: #4caf50;
+}
+
+.fillHeight {
+	height: 100%;
+}
+
+.fillHeightScroll {
+	height: 100%;
+	overflow: auto;
 }

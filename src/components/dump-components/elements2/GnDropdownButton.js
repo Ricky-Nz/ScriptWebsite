@@ -4,16 +4,13 @@ import GnIcon from './GnIcon';
 import _ from 'underscore';
 
 const GnDropdownButton = props => {
-	cosnt { split, options, title, onSelect, ...buttonProps } = props;
-	cosnt onSelectItem = (e, eventKey) => onSelect(eventKey);
-	const menuItems;
-	if (options) {
-		menuItems = options.map((option, index) => (
-			<MenuItem key={index} eventKey={option.ref}>
-				{option.icon ? <span><GnIcon icon={option.icon}/>{option.name}</span> : option.name}
-			</MenuItem>
-		));
-	}
+	const { split, options, title, onSelect, ...buttonProps } = props;
+	const onSelectItem = (e, eventKey) => onSelect(eventKey);
+	const menuItems = options.map((option, index) => (
+		<MenuItem key={index} eventKey={option.ref}>
+			{option.icon ? <span><GnIcon icon={option.icon}/>{option.name}</span> : option.name}
+		</MenuItem>
+	));
 
 	if (props.split) {
 		return (
@@ -42,8 +39,10 @@ GnDropdownButton.propTypes = {
 		name: PropTypes.string.isRequired,
 		ref: PropTypes.string.isRequired,
 		icon: PropTypes.string
-	})),
+	})).isRequired,
 	onSelect: PropTypes.func.isRequired
 };
 
 export default GnDropdownButton;
+
+
