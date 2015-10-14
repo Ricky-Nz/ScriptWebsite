@@ -11,13 +11,13 @@ const GnAlertDialog = props => {
             </Modal.Header>
             <Modal.Body>
                 {props.message}
-                <div className={errorText}>{props.error}</div>
+                <div className='errorText'>{props.error}</div>
             </Modal.Body>
             <Modal.Footer>
                 <GnButton label='Cancel'
                     onClick={props.onCancel} disabled={props.submitting}/>
                 <GnButton icon='check' label='Confirm'
-                    onClick={props.onSubmit} gnStyle='danger'
+                    onClick={() => props.onSubmit(props.args)} gnStyle='danger'
                     disabled={props.submitting} active={props.submitting}/>
             </Modal.Footer>
         </Modal>
@@ -25,6 +25,7 @@ const GnAlertDialog = props => {
 }
 
 GnAlertDialog.propTypes = {
+    args: PropTypes.any,
 	submitting: PropTypes.bool,
 	show: PropTypes.bool,
     title: PropTypes.node,

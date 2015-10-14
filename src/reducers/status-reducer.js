@@ -14,7 +14,7 @@ export default function (status = {}, action) {
 		case SHOW_DIALOG:
 			return Object.assign({}, status, { dialogShow: true, dialogLabel: action.label });
 		case DISMISS_DIALOG:
-			return Object.assign({}, status, { dialogShow: false, dialogLabel: null });
+			return Object.assign({}, status, { dialogShow: false });
 		case CREATE_PARAMETER:
 		case UPDATE_PARAMETER:
 		case DELETE_PARAMETER:

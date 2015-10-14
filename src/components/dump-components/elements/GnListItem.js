@@ -8,7 +8,7 @@ const GnListItem = props => {
 		<ListGroupItem href='#' {...itemProps}>
 			<div className='horizontalVerCenter'>
 				{leftView}
-				<div className='itemGrow'>
+				<div className='itemGrow' style={{padding: '0px 10px'}}>
 					<div className='fontPrimary'>{primary}</div>
 					<div className='fontSecondary'>{secondary}</div>
 				</div>

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Modal } from 'react-bootstrap';
-import { GnInput, GnButton } from './elements2';
+import { GnInput, GnButton } from './elements';
 
 class PackageDialog extends Component {
 	render() {
@@ -11,12 +11,12 @@ class PackageDialog extends Component {
                     <Modal.Title>Upload Package</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <GnInput key='title' ref='title' icon='edit' label='Title'
+                    <GnInput ref='title' icon='edit' help='Package title can not be empty'
                         placeholder='package title' required/>,
-                    <GnInput key='description' ref='description' icon='edit' label='Description'
-                        placeholder='parameter value'/>,
-                    <GnInput key='file' ref='file' icon='paperclip' label='Attachment' type='file'
-                        required/>
+                    <GnInput ref='description' icon='edit'
+                        placeholder='package description'/>,
+                    <GnInput ref='file' icon='paperclip' type='file'
+                        help='You must select a package file for upload' required/>
                     <div className='errorText'>{this.props.error}</div>
                 </Modal.Body>
                 <Modal.Footer>

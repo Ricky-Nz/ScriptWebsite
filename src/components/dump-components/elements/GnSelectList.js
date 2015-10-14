@@ -94,6 +94,10 @@ class GnSelectList extends Component {
 			this.setState(newState);
 		}
 	}
+	getSelection() {
+		const checkedList = _.filter(this.props.items, item => this.state[item.key]);
+		return _.pluck(checkedList, 'key'); 
+	}
 }
 
 GnSelectList.propTypes = {

@@ -3,7 +3,7 @@ import { Label } from 'react-bootstrap';
 import { gnStyles } from './common'; 
 
 let GnLabel = props => {
-	return <Label bsStyle={props.gnStyle}>props.children</Label>
+	return <Label bsStyle={props.gnStyle}>{props.children}</Label>
 }
 
 GnLabel.propTypes = {

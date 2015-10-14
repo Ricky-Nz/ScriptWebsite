@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Panel, Row, Col, Fade } from 'react-bootstrap';
-import { GnAsyncPanel, GnSearchbar, GnList, GnListItem, GnIcon, GnButton } from './elements2';
+import { GnAsyncPanel, GnSearchbar, GnList, GnListItem, GnIcon, GnButton } from './elements';
 
 class PackageSection extends Component {
 	render() {
@@ -20,13 +20,12 @@ class PackageSection extends Component {
 					<br/><br/><br/><br/>
 					<Panel>
 						<GnSearchbar ref='search' placeholder='search for package title or descriptions'
-							searching={this.props.querying} onSearch={this.onLoadDatas}/>
-						<GnAsyncPanel loading={this.props.querying}>
-							<GnList total={this.props.total} skip={this.props.skip}
-								loading={this.props.querying} onLoadMore={() => this.onLoadDatas(this.refs.search.getValue(), true)}>
-								{listItems}
-							</GnList>
-						</GnAsyncPanel>
+							searching={this.props.querying} onSearch={this.props.onLoadDatas}/>
+						<GnList total={this.props.total} skip={this.props.skip} header='Test Packages'
+							loading={this.props.querying} onLoadMore={() => this.onLoadDatas(this.refs.search.getValue(), true)}
+							onAddItem={() => this.props.onChangeItem({})}>
+							{listItems}
+						</GnList>
 					</Panel>
 				</Col>
 			</Row>

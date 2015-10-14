@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Row, Col, Tabs, Tab, Table  } from 'react-bootstrap';
-import { GnIcon } from './elements2';
+import { GnIcon } from './elements';
 
 class GuideSection extends Component {
 	render() {

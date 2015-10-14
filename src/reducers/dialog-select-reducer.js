@@ -9,8 +9,6 @@ export default function (select = null, action) {
 			} else {
 				return null;
 			}
-		case DISMISS_DIALOG:
-			return null;
 		case CHANGE_SECTION:
 			return null;
 		default:

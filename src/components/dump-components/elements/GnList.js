@@ -13,8 +13,8 @@ const GnList = props => {
 		);
 	} else if (props.skip < props.total) {
 		bottomView = (
-			<div className={horizontalVerCenterRight}>
-				<GnButton icon='angle-double-down' label='load more'
+			<div className='horizontalVerCenterRight'>
+				<GnButton icon='angle-double-down' label='load more' gnStyle='link'
 					onClick={props.onLoadMore}/>
 			</div>
 		);
@@ -22,6 +22,10 @@ const GnList = props => {
 
 	return (
 		<ListGroup>
+			<div className='horizontalVerCenterSpaceBetween' style={{padding: '10px 0px'}}>
+				<span>{props.header}</span>
+				{props.onAddItem ? <GnButton icon='plus' label='Add' gnStyle='primary' onClick={props.onAddItem}/> : null}
+			</div>
 			{props.children}
 			{bottomView}
 		</ListGroup>
@@ -29,10 +33,12 @@ const GnList = props => {
 }
 
 GnList.propTypes = {
+	header: PropTypes.string,
 	total: PropTypes.number,
 	skip: PropTypes.number,
 	loading: PropTypes.bool,
-	onLoadMore: PropTypes.func
+	onLoadMore: PropTypes.func,
+	onAddItem: PropTypes.func
 };
 
 export default GnList;

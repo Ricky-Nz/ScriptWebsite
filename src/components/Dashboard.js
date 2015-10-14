@@ -4,7 +4,7 @@ import { ReportSection, PackageSection, ParameterSection, ScriptSection, ScriptE
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import { showDialog } from '../actions/dialog-actions';
-import { changeSection, editScript, updateTagSelection } from '../actions/app-actions';
+import { changeSection } from '../actions/app-actions';
 import {
 	queryReports, getReport,
 	queryPackages, getTags,
@@ -81,9 +81,7 @@ class Dashboard extends Component {
 				return <ScriptSection array={props.array} skip={props.skip}
 							total={props.total} querying={props.querying} tags={props.tags}
 							onLoadDatas={this.onLoadDatas.bind(this)}
-							onChangeItem={this.onChangeItem.bind(this)}
-							onSelectScript={item => props.history.pushState(null, `/scripteditor${(item && item.id) ? ('?select=' + item.id) : ''}`)}
-							onTagSelectChange={updateTags => this.props.dispatch(updateTagSelection(updateTags))}/>;
+							onOpenScript={item => props.history.pushState(null, `/scripteditor${item ? ('?select=' + item.id) : ''}`)}/>;
 			case 'scripteditor':
 				return <ScriptEditorSection array={props.array} skip={props.skip}
 							total={props.total} querying={props.querying}
@@ -93,9 +91,7 @@ class Dashboard extends Component {
 							onLoadDatas={this.onLoadDatas.bind(this)}
 							onLoadItem={this.onLoadItem.bind(this)}
 							onChangeItem={this.onChangeItem.bind(this)}
-							onNewBlankScript={() => props.history.replaceState(null, '/scripteditor')}
-							onBack={() => this.props.history.replaceState(null, '/scripts')}
-							onUpdateScript={update => this.props.dispatch(editScript(update))}/>;
+							onBack={() => this.props.history.replaceState(null, '/scripts')}/>;
 			case 'guide':
 				return <GuideSection/>;
 			default:
@@ -107,7 +103,11 @@ class Dashboard extends Component {
 			_.contains(['scripts', 'scripteditor', 'parameters', 'packages', 'reports'], props.section);
 	}
 	onLoadItem(item) {
-		this.props.history.replaceState(null, `/${this.props.section}?select=${item.id}`);
+		if (item && item.id) {
+			this.props.history.replaceState(null, `/${this.props.section}?select=${item.id}`);
+		} else {
+			this.props.history.replaceState(null, `/${this.props.section}`);
+		}
 	}
 	onInitDatas(props) {
 		if (!props) {
@@ -124,28 +124,46 @@ class Dashboard extends Component {
 		}
 
 		let selection = extraSelection ? extraSelection : {};
-		if (searchText) {
-			Object.assign(selection, { where: { or: [
-				{ key: { regexp: searchText }},
-				{ value: { regexp: searchText }}
-			]}});
-		}
 		if (loadmore) {
 			Object.assign(selection, { skip: this.props.skip });
 		}
 
 		switch(props.section) {
 			case 'reports':
+				if (searchText) {
+					Object.assign(selection, { where: { or: [
+						{ title: { regexp: searchText }},
+						{ date: { regexp: searchText }}
+					]}});
+				}
 				props.dispatch(queryReports(selection));
 				break;
 			case 'packages':
+				if (searchText) {
+					Object.assign(selection, { where: { or: [
+						{ title: { regexp: searchText }},
+						{ description: { regexp: searchText }}
+					]}});
+				}
 				props.dispatch(queryPackages(selection));
 				break;
 			case 'parameters':
+				if (searchText) {
+					Object.assign(selection, { where: { or: [
+						{ key: { regexp: searchText }},
+						{ value: { regexp: searchText }}
+					]}});
+				}
 				props.dispatch(queryParameters(selection));
 				break;
 			case 'scripts':
 			case 'scripteditor':
+				if (searchText) {
+					Object.assign(selection, { where: { or: [
+						{ title: { regexp: searchText }},
+						{ date: { regexp: searchText }}
+					]}});
+				}
 				props.dispatch(queryScripts(selection));
 				break;
 		}
@@ -209,40 +227,55 @@ const loginSelector = createSelector(
 		return {
 			accessToken: accessToken,
 			findTypes: [
-				"Id",
-				"Name",
-				"ClassName",
-				"TagName",
-				"XPath",
-				"IosUIAutomation",
-				"AndroidUIAutomator",
-				"AccessibilityId",
-				"LinkText",
-				"PartialLinkText",
-				"Css",
-				"CssSelector"
+				{ name: 'Id' },
+				{ name: 'Name' },
+				{ name: 'ClassName' },
+				{ name: 'TagName' },
+				{ name: 'XPath' },
+				{ name: 'IosUIAutomation' },
+				{ name: 'AndroidUIAutomator' },
+				{ name: 'AccessibilityId' },
+				{ name: 'LinkText' },
+				{ name: 'PartialLinkText' },
+				{ name: 'Css' },
+				{ name: 'CssSelector' }
 			],
 			actionTypes: [
-				{ "name": "Click", "element": true },
-				{ "name": "Input", "element": true, "args": ".*" },
-				{ "name": "Touch", "args": "\\((\\d*\\.?\\d+), ?(\\d*\\.?\\d+)\\)", "help": "plaese follow this format: (x_number, y_number)" },
-				{ "name": "TouchRelative", "args": "\\((0\\.\\d+), ?(0\\.\\d+)\\)", "help": "plaese follow this format: (0.x_precentage, 0.y_precentage)" },
-				{ "name": "ClearInput", "element": true },
-				{ "name": "FlickUp", "args": "^[0-9]*$", "help": "enter the distance in pixel." },
-				{ "name": "FlickDown", "args": "^[0-9]*$", "help": "enter the distance in pixel." },
-				{ "name": "FlickLeft", "args": "^[0-9]*$", "help": "enter the distance in pixel." },
-				{ "name": "FlickRight", "args": "^[0-9]*$", "help": "enter the distance in pixel." },
-				{ "name": "Back" },
-				{ "name": "Wait", "args": "^[0-9]*$", "help": "number in milliseconds to wait." }
+				{ name: "Click", element: true },
+				{ name: "Input", element: true, args: true, hint: 'input text' },
+				{ name: "Touch", args: true, regex: /\((\d*\.?\d+), ?(\d*\.?\d+)\)/g,
+					help: "plaese follow this format: (x_number, y_number)", hint: '(x, y)' },
+				{ name: "TouchRelative", args: true, regex: /\((0\.\d+), ?(0\.\d+)\)/g, help: "plaese follow this format: (0.x_precentage, 0.y_precentage)" },
+				{ name: "ClearInput", element: true },
+				{ name: "FlickUp", args: true, regex: /^[0-9]*$/g, help: "enter the distance in pixel.", hint: 'number in pixel' },
+				{ name: "FlickDown", args: true, regex: /^[0-9]*$/g, help: "enter the distance in pixel.", hint: 'number in pixel' },
+				{ name: "FlickLeft", args: true, regex: /^[0-9]*$/g, help: "enter the distance in pixel.", hint: 'number in pixel' },
+				{ name: "FlickRight", args: true, regex: /^[0-9]*$/g, help: "enter the distance in pixel.", hint: 'number in pixel' },
+				{ name: "Back" },
+				{ name: "Wait", args: true, regex: "^[0-9]*$", help: "number in milliseconds to wait.", hint: 'milliseconds' }
 			]
 		}
 	}
 )
 
+const tagSelector = createSelector(
+	state => state.tags,
+	tags => {
+		return {
+			tags : tags.map(tag => ({
+	    		key: tag,
+	    		label: tag,
+	    		icon: 'tag',
+	    		defaultChecked: true
+	    	}))
+		};
+	}
+);
+
 const propsSelector = createSelector(
 	loginSelector,
 	state => state.array,
-	state => state.tags,
+	tagSelector,
 	state => state.select,
 	state => state.status.section,
 	state => state.status.skip,
@@ -255,14 +288,7 @@ const propsSelector = createSelector(
 	state => state.versions,
     (loginInfo, array, tags, select, section, skip, total, error,
     		querying, getting, submitting, dialogLabel, versions) => {
-    	tags = ['SDF', 'DSF','DF','SS','GE','POI'];
-    	tags = tags.map(tag => ({
-    		key: tag,
-    		label: tag,
-    		icon: 'tag',
-    		defaultChecked: true
-    	}));
-    	return {...loginInfo, array, tags, select, section, skip, total, error,
+    	return {...loginInfo, array, ...tags, select, section, skip, total, error,
     		querying, getting, submitting, dialogLabel, versions};
     }
 );

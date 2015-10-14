@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Modal } from 'react-bootstrap';
-import { GnInput, GnButton } from './elements2';
+import { GnInput, GnButton } from './elements';
 
 class LoginDialog extends Component {
 	render() {
@@ -16,7 +16,7 @@ class LoginDialog extends Component {
 		                help='Username must be a valid email address'
 		                placeholder='login id' type='email' required/>,
 		            <GnInput ref='password' icon='key' defaultValue='123456'
-		            	regex='^$|\s+' help='Password can not be empty'
+		            	regex='^(?!\s*$).+' help='Password can not be empty'
 		                placeholder='login password' type='password' required/>
 		            <div className='errorText'>{this.props.error}</div>
 		        </Modal.Body>

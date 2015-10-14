@@ -1,28 +1,28 @@
 import React, { Component, PropTypes } from 'react';
 import { Modal } from 'react-bootstrap';
-import { GnInput, GnButton } from './elements2';
+import { GnInput, GnButton } from './elements';
 
 class ParameterDialog extends Component {
 	render() {
         const select = this.props.select;
         return (
             <Modal bsSize='small' show={this.props.show}
-                onHide={this.onCancel} backdrop={this.props.submitting ? 'static' : true}>
+                onHide={this.props.onCancel} backdrop={this.props.submitting ? 'static' : true}>
                 <Modal.Header closeButton>
                     <Modal.Title>{`${select && select.id ? 'Edit' : 'New'} Parameter`}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <GnInput key='key' ref='key' icon='edit' label='Key' initialValue={select ? select.key : null}
+                    <GnInput ref='key' icon='edit' defaultValue={select ? select.key : null}
                         placeholder='parameter key' disabled={select&&select.id} required/>,
-                    <GnInput key='value' ref='value' icon='edit' label='Value' initialValue={select ? select.value : null}
+                    <GnInput ref='value' icon='edit' defaultValue={select ? select.value : null}
                         placeholder='parameter value' required/>
                     <div className='errorText'>{this.props.error}</div>
                 </Modal.Body>
                 <Modal.Footer>
                     <GnButton label='Cancel'
-                        onClick={this.onLeftButtonClicked.bind(this)} disabled={this.props.submitting}/>
+                        onClick={this.props.onCancel} disabled={this.props.submitting}/>
                     <GnButton icon='check' label='Submit'
-                        onClick={this.onRightButtonClicked.bind(this)} gnStyle='primary'
+                        onClick={this.onSubmit.bind(this)} gnStyle='primary'
                         disabled={this.props.submitting} active={this.props.submitting}/>
                 </Modal.Footer>
             </Modal>

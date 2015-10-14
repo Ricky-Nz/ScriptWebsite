@@ -1,19 +1,44 @@
 import React, { Component, PropTypes } from 'react';
 import { Panel, Row, Col, Fade } from 'react-bootstrap';
 import { GnAsyncPanel, GnSearchbar, GnList, GnListItem, GnIndexItem,
-	GnIcon, GnButton, GnIconItem, GnChart, GnAccordionList } from './elements2';
+	GnIcon, GnButton, GnIconItem, GnChart, GnAccordionList } from './elements';
+import _ from 'underscore';
 
 class ReportSection extends Component {
 	render() {
 		const itemStyle = { border: 'none' };
-		const reportItems = props.array.map((item, index) => (
+		const reportItems = this.props.array.map((item, index) => (
 			<GnListItem key={index} style={itemStyle} leftView={<GnIcon icon='flag-o'/>}
 				primary={item.date} secondary={item.title}
 				rightView={<GnButton gnStyle='link' icon='remove'
-					onClick={() => props.onChangeItem(item, true)}/>}/>
+					onClick={() => this.props.onLoadItem(item)}/>}/>
 		));
 
-		const report = props.select;
+		return (
+			<Row className='fillHeight'>
+				<Col xs={4} md={3} mdOffset={1}>
+					<Panel>
+						<GnSearchbar ref='search' placeholder='search for parameter title or date'
+							searching={this.props.querying} onSearch={this.props.onLoadDatas}/>
+						<GnList total={this.props.total} skip={this.props.skip} header='Test Reports'
+							loading={this.props.querying} onLoadMore={() =>
+								this.props.onLoadDatas(this.refs.search.getValue(), true)}>
+							{reportItems}
+						</GnList>
+					</Panel>
+				</Col>
+				<Col xs={8} md={7} className='fillHeightScroll'>
+					{this.renderReport()}
+				</Col>
+			</Row>
+		);
+	}
+	renderReport() {
+		const report = this.props.select;
+		if (!report) {
+			return null;
+		}
+
 		let count = _.countBy(report.scripts, script => script.err ? 'failed' : 'success');
 		count.failed = count.failed ? count.failed : 0;
 		count.success = count.success ? count.success : 0;
@@ -37,40 +62,24 @@ class ReportSection extends Component {
 		});
 
 		return (
-			<Row className={fillHeight}>
-				<Col xs={4} md={3} mdOffset={1}>
-					<Panel>
-						<GnSearchbar ref='search' placeholder='search for parameter title or date'
-							searching={props.querying} onSearch={this.loadData.bind(this)}/>
-						<GnAsyncPanel loading={props.querying}>
-							<GnList total={props.total} skip={props.skip}
-								loading={props.querying} onLoadMore={() => this.loadData(this.refs.search.getValue(), true)}>
-								{reportItems}
-							</GnList>
-						</GnAsyncPanel>
-					</Panel>
-				</Col>
-				<Col xs={8} md={7} style={fillHeightScroll}>
-					<GnAsyncPanel>
-						<Panel className='horizontalVerCenter'>
-							<div>
-								<GnIconItem icon='tablet'
-									content={<span>Platform: <GnIcon icon={report.platform.toLowerCase()}/></span>}/>
-								<GnIconItem icon='code-fork'
-									content={`Version: ${report.platformVersion}`}/>
-								<GnIconItem icon='bug'
-									content={<span>Package: <a href={report.packagePath} target='_blank'>{report.packageName}</a></span>}/>
-								<GnIconItem icon='tags'
-									content={`Run Tags: ${report.tags}`}/>
-								<GnIconItem icon='clock-o'
-									content={`${Duration}: ${report.startDate} ~ ${report.endDate}`}/>
-							</div>
-							<GnChart width={200} height={200} datas={pieData}/>
-						</Panel>
-						<GnAccordionList items={scriptReports}/>
-					</GnAsyncPanel>
-				</Col>
-			</Row>
+			<GnAsyncPanel>
+				<Panel className='horizontalVerCenter'>
+					<div>
+						<GnIconItem icon='tablet'
+							content={<span>Platform: <GnIcon icon={report.platform.toLowerCase()}/></span>}/>
+						<GnIconItem icon='code-fork'
+							content={`Version: ${report.platformVersion}`}/>
+						<GnIconItem icon='bug'
+							content={<span>Package: <a href={report.packagePath} target='_blank'>{report.packageName}</a></span>}/>
+						<GnIconItem icon='tags'
+							content={`Run Tags: ${report.tags}`}/>
+						<GnIconItem icon='clock-o'
+							content={`${Duration}: ${report.startDate} ~ ${report.endDate}`}/>
+					</div>
+					<GnChart width={200} height={200} datas={pieData}/>
+				</Panel>
+				<GnAccordionList items={scriptReports}/>
+			</GnAsyncPanel>
 		);
 	}
 }
@@ -84,8 +93,7 @@ ReportSection.propTypes = {
 	error: PropTypes.string,
 	select: PropTypes.object,
 	onLoadDatas: PropTypes.func.isRequired,
-	onLoadItem: PropTypes.func.isRequired,
-	onChangeItem: PropTypes.func.isRequired
+	onLoadItem: PropTypes.func.isRequired
 };
 
 export default ReportSection;

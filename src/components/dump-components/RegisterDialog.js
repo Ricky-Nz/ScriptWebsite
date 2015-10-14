@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Modal } from 'react-bootstrap';
-import { GnInput, GnButton } from './elements2';
+import { GnInput, GnButton } from './elements';
 
 class RegisterDialog extends Component {
 	render() {

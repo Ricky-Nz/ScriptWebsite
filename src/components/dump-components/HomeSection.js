@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Row, Col, PageHeader, SplitButton, MenuItem } from 'react-bootstrap';
-import { GnIcon } from './elements2';
+import { GnIcon } from './elements';
 
 let HomeSection = props => {
 	const subTitleMargin = {

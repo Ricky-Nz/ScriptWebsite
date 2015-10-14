@@ -71,6 +71,7 @@
 
 .errorText {
 	color: #e51c23;
+	min-height: 20px;
 }
 
 .successText {

@@ -4,20 +4,21 @@ import GnIcon from './GnIcon';
 import _ from 'underscore';
 
 const GnDropdownButton = props => {
-	const { split, options, title, onSelect, ...buttonProps } = props;
+	const { split, options, title, onSelect, gnSize, ...buttonProps } = props;
 	const onSelectItem = (e, eventKey) => onSelect(eventKey);
 	const menuItems = options.map((option, index) => (
-		<MenuItem key={index} eventKey={option.ref}>
+		<MenuItem key={index} eventKey={option.ref ? option.ref : option.name}>
 			{option.icon ? <span><GnIcon icon={option.icon}/>{option.name}</span> : option.name}
 		</MenuItem>
 	));
 
 	if (props.split) {
 		return (
-			<SplitButton {...buttonProps} title={title}
+			<SplitButton {...buttonProps} bsSize={gnSize} title={title}
 				onSelect={onSelectItem} onClick={() => {
 					if (options && options.length > 0) {
-						onItemSelect(options[0].ref);
+						const firstItem = options[0];
+						onSelect(firstItem.ref ? firstItem.ref : firstItem.name);
 					}
 				}}>
 				{menuItems}
@@ -25,7 +26,7 @@ const GnDropdownButton = props => {
 		);
 	} else {
 		return (
-			<DropdownButton {...buttonProps} title={title} onSelect={onSelectItem}>
+			<DropdownButton id='dropdown' {...buttonProps} bsSize={gnSize} title={title} onSelect={onSelectItem}>
 				{menuItems}
 			</DropdownButton>
 		);
@@ -35,12 +36,17 @@ const GnDropdownButton = props => {
 GnDropdownButton.propTypes = {
 	split: PropTypes.bool,
 	title: PropTypes.node,
+	gnSize: PropTypes.string,
 	options: PropTypes.arrayOf(PropTypes.shape({
 		name: PropTypes.string.isRequired,
-		ref: PropTypes.string.isRequired,
+		ref: PropTypes.string,
 		icon: PropTypes.string
 	})).isRequired,
 	onSelect: PropTypes.func.isRequired
+};
+
+GnDropdownButton.defaultProps = {
+	gnSize: 'small'
 };
 
 export default GnDropdownButton;

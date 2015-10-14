@@ -17,6 +17,8 @@ import GnLabel from './GnLabel';
 import GnAccordionList from './GnAccordionList';
 import GnIndexItem from './GnIndexItem';
 import GnTagsbar from './GnTagsbar';
+import GnDynamicList from './GnDynamicList';
+import GnSelectInput from './GnSelectInput';
 
 export {
 	GnIcon,
@@ -36,5 +38,7 @@ export {
 	GnLabel,
 	GnAccordionList,
 	GnIndexItem,
-	GnTagsbar
+	GnTagsbar,
+	GnDynamicList,
+	GnSelectInput
 };

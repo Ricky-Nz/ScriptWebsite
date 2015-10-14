@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Panel, Row, Col } from 'react-bootstrap';
-import { GnAsyncPanel, GnSearchbar, GnList, GnListItem, GnIcon, GnButton } from './elements2';
+import { GnAsyncPanel, GnSearchbar, GnList, GnListItem, GnIcon, GnButton } from './elements';
 
 class ParameterSection extends Component {
 	render() {
@@ -21,15 +21,16 @@ class ParameterSection extends Component {
 		return (
 			<Row className='fillHeight'>
 				<Col xs={12} sm={10} smOffset={1} md={8} mdOffset={2} lg={6} lgOffset={3} className='fillHeightScroll'>
+					<br/><br/><br/><br/>
 					<Panel>
 						<GnSearchbar ref='search' placeholder='search for parameter key or value'
-							searching={this.props.querying} onSearch={this.onLoadDatas}/>
-						<GnAsyncPanel loading={this.props.querying}>
-							<GnList total={this.props.total} skip={this.props.skip}
-								loading={this.props.querying} onLoadMore={() => this.onLoadDatas(this.refs.search.getValue(), true)}>
-								{listItems}
-							</GnList>
-						</GnAsyncPanel>
+							searching={this.props.querying} onSearch={this.props.onLoadDatas}/>
+						<GnList total={this.props.total} skip={this.props.skip} header='Global Parameters'
+							loading={this.props.querying} onLoadMore={() =>
+								this.props.onLoadDatas(this.refs.search.getValue(), true)}
+							onAddItem={() => this.props.onChangeItem({})}>
+							{listItems}
+						</GnList>
 					</Panel>
 				</Col>
 			</Row>
