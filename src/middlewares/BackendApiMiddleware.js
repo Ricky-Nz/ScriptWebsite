@@ -17,7 +17,7 @@ export default store => next => action => {
     if (parmIndex > 0) {
         apiCall.url = apiCall.url.slice(0, parmIndex) + user.userId + apiCall.url.slice(parmIndex + 7);
     }
-    let request = agent(apiCall.method, 'http://localhost:3000/api' + apiCall.url)
+    let request = agent(apiCall.method, '/api' + apiCall.url)
     	.accept('json');
 
     if (apiCall.body) request.send(apiCall.body);

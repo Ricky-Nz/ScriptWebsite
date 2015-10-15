@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Panel, Row, Col } from 'react-bootstrap';
 import { GnSelectList, GnAsyncPanel, GnSearchbar, GnList, GnSelectInput,
-	GnListItem, GnIcon, GnTagsbar, GnInput, GnButton, GnDynamicList } from './elements';
+	GnListItem, GnIcon, GnTagsbar, GnInput, GnButton, GnDynamicList, GnPromptPanel } from './elements';
 import _ from 'underscore';
 
 class ScriptEditorSection extends Component {
@@ -45,7 +45,7 @@ class ScriptEditorSection extends Component {
 						<GnSearchbar ref='search' placeholder='search for script by title' searching={this.props.loading}
 							onSearch={searchText => this.props.onLoadDatas(searchText)}/>
 						<GnList total={this.props.total} skip={this.props.skip}
-							loading={this.props.querying} header='Test Scripts'
+							loading={this.props.querying} header='Test Scripts' scrollHeight={400}
 							onAddItem={() => this.props.onLoadItem()}
 							onLoadMore={() => this.props.onLoadDatas(this.refs.search.getValue(), true)}>
 							{listItems}
@@ -73,8 +73,10 @@ class ScriptEditorSection extends Component {
 						optionHelp='please select an action you want to mock'
 						placeholder={actionType ? actionType.hint : null} value={action.actionArgs}
 						regex={actionType ? actionType.regex : null} help={actionType ? actionType.help : null}
-						onSelect={newType => this.setState({actions: [...actions.slice(0, index), Object.assign({}, action, {actionType: newType}), ...actions.slice(index + 1)]})}
-						onChange={newArgs => this.setState({actions: [...actions.slice(0, index), Object.assign({}, action, {actionArgs: newArgs}), ...actions.slice(index + 1)]})}/>
+						onSelect={newType => this.setState({actions: [...actions.slice(0, index),
+							Object.assign({}, action, {actionType: newType, actionArgs: null, findType: null, findArgs: null}), ...actions.slice(index + 1)]})}
+						onChange={newArgs => this.setState({actions: [...actions.slice(0, index),
+							Object.assign({}, action, {actionArgs: newArgs}), ...actions.slice(index + 1)]})}/>
 					{actionType && actionType.element ?
 						<GnSelectInput ref={`findtype-${index}`} type='text' disabled={!action.findType}
 							optionDiaplay={findOptionDisplay} options={this.props.findTypes} select={action.findType}
@@ -88,36 +90,48 @@ class ScriptEditorSection extends Component {
 		});
 
 		return (
-			<GnAsyncPanel loading={this.props.getting}>
-				<Panel>
-					<GnInput ref='title' required label='Script Title' type='text'
-						value={title} placeholder='test script title' icon='file-text-o'
-						help='Script title can not be empty'
-						onInput={e => this.setState({title: e.target.value})}/>
-					<GnTagsbar ref='tags' tags={tags} required help='Please add at least one tag in order to make this script selectable'
-						onDeleteItem={index => this.setState({tags: [...tags.slice(0, index), ...tags.slice(index + 1)]})}
-						onAddItem={newTag => this.setState({tags: [...tags, newTag]})}/>
-					<GnDynamicList header='Actions' onUpdate={(index, remove) => {
-							remove ? this.setState({actions: [...actions.slice(0, index), ...actions.slice(index + 1)]})
-								: this.setState({actions: [...actions.slice(0, index), {}, ...actions.slice(index)]})
-						}}>
-						{actionItems}
-					</GnDynamicList>
-					<p className='errorText'>{this.props.error}</p>
-					<div className='horizontalVerCenterRight'>
-						{(this.props.select && this.props.select.id) ?
-							<GnButton gnStyle='danger' icon='trash' label='Delete' disabled={this.props.submitting}
-								onClick={() => this.props.onChangeItem({id: this.props.select.id, title: this.props.select.title}, true)}/>
-							: null}
-						<GnButton gnStyle='primary' icon='save' style={{marginLeft: 10}} 
-							active={this.props.submitting} disabled={this.props.submitting}
-							label={this.props.select && this.props.select.id ? 'Save' : 'Create'} onClick={this.onSubmitClicked.bind(this)}/>
+			<Panel>
+				<GnAsyncPanel loading={this.props.getting}>
+					<div>
+						<GnInput ref='title' required label='Script Title' type='text'
+							value={title} placeholder='test script title' icon='file-text-o'
+							help='Script title can not be empty'
+							onInput={e => this.setState({title: e.target.value})}/>
+						<GnTagsbar ref='tags' tags={tags} required help='Please add at least one tag in order to make this script selectable'
+							onDeleteItem={index => this.setState({tags: [...tags.slice(0, index), ...tags.slice(index + 1)]})}
+							onAddItem={newTag => this.setState({tags: [...tags, newTag]})}/>
+						<GnPromptPanel help='Script action can not be empty' show={this.state.showActionError}>
+							<GnDynamicList header='Actions' onUpdate={(index, remove) => {
+									if (this.state.showActionError) {
+										this.setState({showActionError: false});
+									}
+									remove ? this.setState({actions: [...actions.slice(0, index), ...actions.slice(index + 1)]})
+										: this.setState({actions: [...actions.slice(0, index), {}, ...actions.slice(index)]})
+								}}>
+								{actionItems}
+							</GnDynamicList>
+						</GnPromptPanel>
+						<p className='errorText'>{this.props.error}</p>
+						<div className='horizontalVerCenterRight'>
+							{(this.props.select && this.props.select.id) ?
+								<GnButton gnStyle='danger' icon='trash' label='Delete' disabled={this.props.submitting}
+									onClick={() => this.props.onChangeItem({id: this.props.select.id, title: this.props.select.title}, true)}/>
+								: null}
+							{(this.props.select && this.props.select.id) ?
+								<GnButton gnStyle='primary' icon='clone' label='Clone' disabled={this.props.submitting}
+									onClick={() => this.onSubmitClicked(true)} style={{marginLeft: 10}}/>
+								: null}
+							<GnButton gnStyle='primary' icon='save' style={{marginLeft: 10}} 
+								active={this.props.submitting} disabled={this.props.submitting}
+								label={this.props.select && this.props.select.id ? 'Save' : 'Create'}
+								onClick={() => this.onSubmitClicked()}/>
+						</div>
 					</div>
-				</Panel>
-			</GnAsyncPanel>
+				</GnAsyncPanel>
+			</Panel>
 		);
 	}
-	onSubmitClicked() {
+	onSubmitClicked(copy) {
 		const allValide = _.every(_.keys(this.refs), ref => {
 			const field = this.refs[ref];
 			if (field.validate) {
@@ -131,8 +145,13 @@ class ScriptEditorSection extends Component {
 			return;
 		}
 
+		if (this.state.actions.length == 0) {
+			this.setState({showActionError: true});
+			return;
+		}
+
 		this.props.onChangeItem({
-			id: this.props.select ? this.props.select.id : null,
+			id: (copy || !this.props.select) ? null : this.props.select.id,
 			title: this.state.title,
 			tags: this.state.tags,
 			actions: this.state.actions

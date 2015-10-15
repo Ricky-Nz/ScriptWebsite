@@ -9,7 +9,7 @@ let GnAsyncPanel = props => {
 			</div>
 		);
 	} else {
-		return props.children;
+		return props.children ? props.children : <div/>;
 	}
 }
 

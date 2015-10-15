@@ -28,7 +28,8 @@ let HomeSection = props => {
 		<Row className='fillHeight'>
 			<Col xs={10} xsOffset={1} md={8} mdOffset={2} className='fillHeightScroll'>
 				<br/><br/><br/><br/>
-				<PageHeader><p>Get Gear<small style={subTitleMargin}>Download application</small></p></PageHeader>
+				<h4>Get Gear<small style={subTitleMargin}>Download application</small></h4>
+				<br/>
 				<div className='horizontalCenter'>
 					{firstItem ?
 						<SplitButton id='version-button' style={center} bsStyle='primary'
@@ -45,7 +46,9 @@ let HomeSection = props => {
 						</SplitButton> : null
 					}
 				</div>
-				<PageHeader><p>Environment preparation<small style={subTitleMargin}>Mac / Windows</small></p></PageHeader>
+				<br/>
+				<h4>Environment preparation<small style={subTitleMargin}>Mac / Windows</small></h4>
+				<br/>
 				<p>Gear test automation is basing on Node.js®, in order to run Gear, you need to install Node.js®.</p>
 				<p><GnIcon icon='chrome' style={padding}/><a href='https://nodejs.org' target='_blank'>Install NodeJS</a></p>
 				<p>Run command below to verify your installation</p>
@@ -64,7 +67,9 @@ let HomeSection = props => {
 				<span style={{paddingLeft: 33}}><img src='/res/install-3.png' style={{width: 600}}/></span>
 				<br/><br/>
 				<p><GnIcon icon='apple' style={padding}/>For iOS you must <a href='https://developer.apple.com/xcode/download/' target='_blank'>Install xCode</a></p>
-				<PageHeader><p>You Are Good to Go<small style={subTitleMargin}>Run it!</small></p></PageHeader>
+				<br/>
+				<h4>You Are Good to Go<small style={subTitleMargin}>Run it!</small></h4>
+				<br/>
 				<p><GnIcon icon='windows' style={padding}/>For windows, run run.bat.</p>
 				<p><GnIcon icon='apple' style={padding}/>For Mac, run run.command.</p>
 				<img src='/res/install-2.png' style={{width: 600}}/>
@@ -91,8 +96,8 @@ let HomeSection = props => {
 HomeSection.propTypes = {
 	versions: PropTypes.arrayOf(PropTypes.shape({
 		name: PropTypes.string.isRequired,
-		downlaod: PropTypes.string.isRequired
-	})).isRequired
+		downlaod: PropTypes.string
+	}))
 };
 
 export default HomeSection;

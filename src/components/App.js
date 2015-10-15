@@ -47,19 +47,19 @@ class Application extends Component {
             case 'package':
             	return <PackageDialog {...commonProps} onSubmit={this.onCommitPackage.bind(this)}/>
             case 'del-parameter':
-            	return <GnAlertDialog {...commonProps} args={select.id} title='Confirm'
+            	return <GnAlertDialog {...commonProps} args={select ? select.id : null} title='Confirm'
                 	message={`Are you sure you want to delete parameter ${select ? select.key : ''}(${select ? select.value : ''})?`}
                     onSubmit={this.onDeleteParameter.bind(this)}/>;
             case 'del-package':
-            	return <GnAlertDialog {...commonProps} args={select.id} title='Confirm'
+            	return <GnAlertDialog {...commonProps} args={select ? select.id : null} title='Confirm'
                 	message={`Are you sure you want to delete package ${select ? select.title : ''}?`}
                     onSubmit={this.onDeletePackage.bind(this)}/>;
             case 'del-report':
-            	return <GnAlertDialog {...commonProps} args={select.id} title='Confirm'
+            	return <GnAlertDialog {...commonProps} args={select ? select.id : null} title='Confirm'
                 	message={`Are you sure you want to delete report ${select ? select.tags : ''}-${select ? select.date : ''}?`}
                     onSubmit={this.onDeleteReport.bind(this)}/>;
             case 'del-script':
-                return <GnAlertDialog {...commonProps} args={select.id} title='Confirm'
+                return <GnAlertDialog {...commonProps} args={select ? select.id : null} title='Confirm'
                 	message={`Are you sure you want to delete script ${select ? select.title : ''}?`}
                     onSubmit={this.onDeleteScript.bind(this)}/>;
             default:

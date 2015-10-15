@@ -20,7 +20,7 @@ class ScriptSection extends Component {
 							onSelectChange={selectTags => this.props.onLoadDatas(this.refs.search.getValue(), false, this.getTagSelection(selectTags))}/>
 					</Panel>
 				</Col>
-				<Col xs={7} sm={8} md={7}>
+				<Col xs={7} sm={8} md={7} className='fillHeightScroll'>
 					<br/><br/><br/><br/>
 					<Panel>
 						<GnSearchbar ref='search' placeholder='search for script by title' searching={this.props.loading}

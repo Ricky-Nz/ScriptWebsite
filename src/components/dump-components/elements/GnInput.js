@@ -1,35 +1,29 @@
 import React, { Component, PropTypes } from 'react';
-import ReactDOM from 'react-dom';
-import { Overlay, Popover, Input } from 'react-bootstrap';
+import { Input } from 'react-bootstrap';
+import GnPromptPanel from './GnPromptPanel';
 import GnIcon from './GnIcon';
 
 class GnInput extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			showHelp: false
-		};
+		this.state = {showHelp: false};
 	}
 	componentWillReceiveProps(nextProps) {
-		this.setState({ showHelp: false });
+		if (this.state.showHelp) {
+			this.setState({showHelp: false});
+		}
 	}
 	render() {
 		const { regex, help, icon, ...inputProps } = this.props;
 
 		return (
-			<div style={{ position: 'relative' }}>
+			<GnPromptPanel help={help} show={this.state.showHelp}>
 				<Input ref='input' bsStyle={this.state.showHelp ? 'error' : null}
 					addonBefore={icon ? <GnIcon icon={icon}/> : null}
 					onBlur={e => this.validate(e.target.validity.valid)}
 					onChange={this.props.type == 'file' ? e => this.setState({file: e.target.files[0]}) : null}
 					{...inputProps}/>
-				<Overlay show={this.state.showHelp} placement='top' container={this}
-					target={() => ReactDOM.findDOMNode(this.refs.input)}>
-					<Popover id='input-popup'>
-						<span style={{color: 'red'}}>{this.props.help}</span>
-					</Popover>
-				</Overlay>
-			</div>
+			</GnPromptPanel>
 		);
 	}
 	validate() {
@@ -58,7 +52,7 @@ class GnInput extends Component {
 		return true;
 	}
 	showError() {
-		this.setState({ showHelp: true });
+		this.setState({showHelp: true});
 	}
 	getValue() {
 		if (this.props.type == 'file') {

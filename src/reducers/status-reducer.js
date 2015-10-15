@@ -35,6 +35,11 @@ export default function (status = {}, action) {
 						|| action.type == DELETE_PARAMETER) {
 					newStatus.skip = status.skip - 1;
 					newStatus.total = status.total - 1;
+				} else if (action.type == CREATE_SCRIPT
+						|| action.type == CREATE_PACKAGE
+						|| action.type == CREATE_PARAMETER) {
+					newStatus.skip = status.skip + 1;
+					newStatus.total = status.total + 1;
 				}
 			}
 

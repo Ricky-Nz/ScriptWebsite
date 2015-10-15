@@ -14,7 +14,7 @@ GnIndexItem.propTypes = {
 	index: PropTypes.number.isRequired,
 	indexStyle: PropTypes.string,
 	primary: PropTypes.node.isRequired,
-	secondary: PropTypes.node.isRequired
+	secondary: PropTypes.node
 };
 
 export default GnIndexItem;

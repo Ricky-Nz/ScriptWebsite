@@ -9,8 +9,16 @@ class PackageSection extends Component {
 			<GnListItem key={index} style={itemStyle} leftView={<GnIcon icon='android'/>}
 				primary={item.title} secondary={item.description}
 				rightView={
-					<GnButton gnStyle='link' icon='remove'
-						onClick={() => this.props.onChangeItem(item, true)}/>
+					<span>
+						<GnButton gnStyle='link' icon='download'
+							onClick={() => {
+								var dl = document.createElement('a');
+								dl.setAttribute('href', `/storage/${item.testerId}/${item.fileName}`);
+								dl.click();
+							}}/>
+						<GnButton gnStyle='link' icon='remove'
+							onClick={() => this.props.onChangeItem(item, true)}/>
+					</span>
 				}/>
 		));
 

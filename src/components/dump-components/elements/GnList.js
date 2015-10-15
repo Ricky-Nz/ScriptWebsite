@@ -14,7 +14,7 @@ const GnList = props => {
 	} else if (props.skip < props.total) {
 		bottomView = (
 			<div className='horizontalVerCenterRight'>
-				<GnButton icon='angle-double-down' label='load more' gnStyle='link'
+				<GnButton icon='angle-double-down' label={`(${props.skip}/${props.total}) Load more`} gnStyle='link'
 					onClick={props.onLoadMore}/>
 			</div>
 		);
@@ -23,16 +23,19 @@ const GnList = props => {
 	return (
 		<ListGroup>
 			<div className='horizontalVerCenterSpaceBetween' style={{padding: '10px 0px'}}>
-				<span>{props.header}</span>
+				<span>{`${props.header} (${props.skip})`}</span>
 				{props.onAddItem ? <GnButton icon='plus' label='Add' gnStyle='primary' onClick={props.onAddItem}/> : null}
 			</div>
-			{props.children}
-			{bottomView}
+			<div style={props.scrollHeight ? {maxHeight: props.scrollHeight, overflow: 'auto'} : null}>
+				{props.children}
+				{bottomView}
+			</div>
 		</ListGroup>
 	);
 }
 
 GnList.propTypes = {
+	scrollHeight: PropTypes.number,
 	header: PropTypes.string,
 	total: PropTypes.number,
 	skip: PropTypes.number,

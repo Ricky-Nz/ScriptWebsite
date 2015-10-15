@@ -42,7 +42,7 @@ class GnSelectList extends Component {
 		const listItems = items.map((item, index) => (
 			<GnListItem style={itemStyle} key={index} leftView={item.icon ? <GnIcon icon={item.icon}/> : null}
 				primary={item.label} rightView={<Input type={this.state.multiSelect ? 'checkbox' : 'radio'}
-				checked={this.state[item.key]}/>} onClick={() => this.onItemClicked(item)} />
+				checked={this.state[item.key]}/>} onChange={() => this.onItemClicked(item)} />
 		));
 
 		return (

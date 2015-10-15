@@ -7,8 +7,8 @@ const GnTitlebar = props => {
 
 	return (
 		<Navbar fixedTop style={{margin: 0}} {...narbarProps} toggleNavKey='collapsable-menu'>
-			<NavBrand onClick={onBrandClicked}>
-				<GnIcon icon={brandIcon} style={{marginRight: 10}}/>{brandLabel}
+			<NavBrand>
+				<a href='#' onClick={onBrandClicked}><GnIcon icon={brandIcon} style={{marginRight: 10}}/>{brandLabel}</a>
 			</NavBrand>
 			<CollapsibleNav eventKey='collapsable-menu'>
 				{children}

@@ -21,7 +21,7 @@ class GnNavbar extends Component {
 		});
 
 		return (
-			<Nav navbar {...navProps} onSelect={onSelect}>
+			<Nav navbar {...navProps} onSelect={(arg1, arg2) => onSelect(arg2 ? arg2 : arg1)}>
 				{sectionItems}
 			</Nav>
 		);

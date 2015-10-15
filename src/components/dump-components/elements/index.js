@@ -14,11 +14,13 @@ import GnSelectList from './GnSelectList';
 import GnAsyncPanel from './GnAsyncPanel';
 import GnIconItem from './GnIconItem';
 import GnLabel from './GnLabel';
-import GnAccordionList from './GnAccordionList';
+import GnDrawerList from './GnDrawerList';
 import GnIndexItem from './GnIndexItem';
 import GnTagsbar from './GnTagsbar';
 import GnDynamicList from './GnDynamicList';
 import GnSelectInput from './GnSelectInput';
+import GnChart from './GnChart';
+import GnPromptPanel from './GnPromptPanel';
 
 export {
 	GnIcon,
@@ -36,9 +38,11 @@ export {
 	GnAsyncPanel,
 	GnIconItem,
 	GnLabel,
-	GnAccordionList,
+	GnDrawerList,
 	GnIndexItem,
 	GnTagsbar,
 	GnDynamicList,
-	GnSelectInput
+	GnSelectInput,
+	GnChart,
+	GnPromptPanel
 };
