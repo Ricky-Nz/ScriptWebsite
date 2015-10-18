@@ -19,8 +19,8 @@ class ParameterSection extends Component {
 		));
 
 		return (
-			<Row className='fillHeight'>
-				<Col xs={12} sm={10} smOffset={1} md={8} mdOffset={2} lg={6} lgOffset={3} className='fillHeightScroll'>
+			<Row className='fillHeightScroll'>
+				<Col xs={12} sm={10} smOffset={1} md={8} mdOffset={2} lg={6} lgOffset={3}>
 					<br/><br/><br/><br/>
 					<Panel>
 						<GnSearchbar ref='search' placeholder='search for parameter key or value'

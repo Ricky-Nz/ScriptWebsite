@@ -23,7 +23,7 @@ class PackageSection extends Component {
 		));
 
 		return (
-			<Row>
+			<Row className='fillHeightScroll'>
 				<Col xs={12} sm={10} smOffset={1} md={8} mdOffset={2} lg={6} lgOffset={3}>
 					<br/><br/><br/><br/>
 					<Panel>

@@ -5,8 +5,8 @@ import { GnIcon } from './elements';
 class GuideSection extends Component {
 	render() {
 		return (
-			<Row className='fillHeight'>
-				<Col xs={10} xsOffset={1} className='fillHeightScroll'>
+			<Row className='fillHeightScroll'>
+				<Col xs={10} xsOffset={1}>
 					<br/><br/><br/><br/>
 					<Tabs defaultActiveKey={1} position="left" tabWidth={3} bsStyle='tabs'>
 						<Tab eventKey={1} title='Write a script'>{this.renderScriptGuide()}</Tab>

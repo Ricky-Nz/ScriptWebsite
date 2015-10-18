@@ -25,8 +25,8 @@ let HomeSection = props => {
 	const firstItem = props.versions.length > 0 ? props.versions[0].name : null;
 
 	return (
-		<Row className='fillHeight'>
-			<Col xs={10} xsOffset={1} md={8} mdOffset={2} className='fillHeightScroll'>
+		<Row className='fillHeightScroll'>
+			<Col xs={10} xsOffset={1} md={8} mdOffset={2}>
 				<br/><br/><br/><br/>
 				<h4>Get Gear<small style={subTitleMargin}>Download application</small></h4>
 				<br/>
