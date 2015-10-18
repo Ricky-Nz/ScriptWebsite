@@ -12,7 +12,7 @@ import _ from 'underscore';
 export default function (status = {}, action) {
 	switch(action.type) {
 		case SHOW_DIALOG:
-			return Object.assign({}, status, { dialogShow: true, dialogLabel: action.label });
+			return Object.assign({}, status, { dialogShow: true, dialogLabel: action.label, error: null });
 		case DISMISS_DIALOG:
 			return Object.assign({}, status, { dialogShow: false });
 		case CREATE_PARAMETER:
@@ -26,9 +26,13 @@ export default function (status = {}, action) {
 		case DELETE_SCRIPT:
 		case LOGIN:
 		case REGISTER:
-			let newStatus = { submitting: !action.finished, error: action.error };
+			let newStatus = { submitting: !action.finished, error: action.error ? action.error.message : null };
 			if (action.finished && !action.error) {
-				newStatus.dialogShow = false;
+				if (action.type == REGISTER) {
+					newStatus.dialogLabel = 'login';
+				} else {
+					newStatus.dialogShow = false;
+				}
 				if (action.type == DELETE_SCRIPT
 						|| action.type == DELETE_REPORT
 						|| action.type == DELETE_PACKAGE
@@ -55,7 +59,7 @@ export default function (status = {}, action) {
 				return Object.assign({}, status, { querying: false,
 					total: action.result.total, skip: action.result.skip + action.result.data.length, error: null });
 			} else {
-				return Object.assign({}, status, { querying: !action.finished, error: action.error })
+				return Object.assign({}, status, { querying: !action.finished, error: action.error ? action.error.message : null })
 			}
 		case CHANGE_SECTION:
 			return Object.assign({}, status, { section: action.data });

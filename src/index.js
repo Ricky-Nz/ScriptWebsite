@@ -17,13 +17,12 @@ import { Provider } from 'react-redux';
 import rootReducer from './reducers';
 // Redux middleware
 import thunk from 'redux-thunk';
-import createLogger from 'redux-logger';
+//import createLogger from 'redux-logger';
 import backendApiMiddleware from './middlewares/backendApiMiddleware';
 
 const createStoreWithMiddleware = applyMiddleware(
     thunk,
-    backendApiMiddleware,
-    createLogger()
+    backendApiMiddleware
 )(createStore);
 
 const history = createBrowserHistory();

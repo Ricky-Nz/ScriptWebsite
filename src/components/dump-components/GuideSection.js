@@ -36,28 +36,29 @@ class GuideSection extends Component {
 						<tr>
 							<td>1</td>
 							<td>Title</td>
-							<td>Script title, use for identify a script, multiple script may have a
-								same title, but can not be empty.</td>
+							<td>Script title, use for visually identify a script, multiple script may have a
+								same title, can not be empty.</td>
 						</tr>
 						<tr>
 							<td>2</td>
 							<td>Tags</td>
-							<td>A test script must have at least one tag, tag is using for group script.
-								In the Gear client application, you use tag to tell Gear which script you
-								want to run.</td>
+							<td>Tag is using for group scripts.
+								In Gear terminal application, you use tag to tell Gear which script you
+								want to run. A valid test script must have at least one tag.</td>
 						</tr>
 						<tr>
 							<td>3</td>
 							<td>Actions</td>
-							<td>A test script consisted of an sequence of actions, each action simulate a
-								single user action, like 'click', 'input', 'flip', etc. to define a action,
-								first Click on the left button to select one action type you want to run, and then
-								if the action you choose need target on a view element, your need to select a
+							<td>Basicly a test script is consisted of an sequence of actions, each action simulate a
+								single user action, like 'click', 'input', 'flip', etc. to mock a action,
+								first Click on the selectable button to select one of the many action types you want to run. and then
+								if the action you choose need target on specific view element, another selectable button will appear,
+								this time your need to select a
 								method to tell Gear how to find the target element. Each element find method support
-								two form of argument, single and plural. for example, if you choose find by 'Name'
+								two form of arguments, single and plural. for example, if you choose find by 'Name'
 								and enter argument 'Yes', Gear will try to find you the first view element with content
 								text equal to 'Yes'. or you can enter argument 'Yes[X]', X is a integer number, which
-								in turn, Gear will try to find the Xth element with content 'Yes' in the reading order.</td>
+								in turn, Gear will try to find the Xth element with content 'Yes' in reading order.</td>
 						</tr>
 					</tbody>
 				</Table>
@@ -81,9 +82,10 @@ class GuideSection extends Component {
 						<tr>
 							<td>1</td>
 							<td>Key</td>
-							<td>Parameter key, to use parameter in script, put parameter key in curly brace,
-								for example {'{PHONE_NUMBER}'}, at the time script get execute, fileds with parameter
-								key in curly brase will replced by the respect parameter value.</td>
+							<td>To use parameter when writing script, put parameter key in curly brace and put it in
+								any input fields you want make it dynamic.
+								for example if we put {'{PHONE_NUMBER}'} in action input fields, at the time script get execute,
+								this fileds will be replaced with the parameter value accordingly.</td>
 						</tr>
 						<tr>
 							<td>2</td>
@@ -112,8 +114,8 @@ class GuideSection extends Component {
 						<tr>
 							<td>1</td>
 							<td>Title</td>
-							<td>Package title, use for identify a package, multiple package may have a
-								same title, but can not be empty.</td>
+							<td>Package title, use to visually identify a package, multiple package may have a
+								same title, can not be empty.</td>
 						</tr>
 						<tr>
 							<td>2</td>
@@ -123,7 +125,7 @@ class GuideSection extends Component {
 						<tr>
 							<td>3</td>
 							<td>File</td>
-							<td>Click or drop the package file to upload.</td>
+							<td>Select the package file for uploading.</td>
 						</tr>
 					</tbody>
 				</Table>
@@ -152,7 +154,7 @@ class GuideSection extends Component {
 						<tr>
 							<td>2</td>
 							<td>Versions</td>
-							<td>Which platform version was testing.</td>
+							<td>Which platform version was testing on.</td>
 						</tr>
 						<tr>
 							<td>3</td>
@@ -212,17 +214,18 @@ class GuideSection extends Component {
 						<tr>
 							<td>4</td>
 							<td>Tags</td>
-							<td>Select the script you want to runn by script tags, you can enter multiple tags split by space.</td>
+							<td>Select which scripts you want to run using tags, you can enter multiple tags split by space.</td>
 						</tr>
 						<tr>
 							<td>5</td>
 							<td>Running</td>
-							<td>Application will download all the scripts you selected and start to run.</td>
+							<td>Application will automatically download all the scripts and test package you selected,
+								do auto-installaction on your connect devices and start to run.</td>
 						</tr>
 						<tr>
 							<td>6</td>
 							<td>Report uplaod</td>
-							<td>After all script finished, your test report will going to uplaod to your account automatically.</td>
+							<td>After test finished, your test report will uplaod to your account automatically.</td>
 						</tr>
 					</tbody>
 				</Table>

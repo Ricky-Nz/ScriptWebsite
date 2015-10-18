@@ -16,7 +16,7 @@ class ParameterDialog extends Component {
                         placeholder='parameter key' disabled={select&&select.id} required/>,
                     <GnInput ref='value' icon='edit' defaultValue={select ? select.value : null}
                         placeholder='parameter value' required/>
-                    <div className='errorText'>{this.props.error}</div>
+                    <p className='errorText' style={{padding: '10px 0px 0px 10px'}}>{this.props.error}</p>
                 </Modal.Body>
                 <Modal.Footer>
                     <GnButton label='Cancel'

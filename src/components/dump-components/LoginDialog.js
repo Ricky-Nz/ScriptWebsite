@@ -11,14 +11,14 @@ class LoginDialog extends Component {
 		            <Modal.Title>User Login</Modal.Title>
 		        </Modal.Header>
 		        <Modal.Body>
-		            <GnInput ref='email' icon='user' defaultValue='ruiqi.sg@gmail.com'
+		            <GnInput ref='email' icon='user'
 		                regex='^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$'
 		                help='Username must be a valid email address'
-		                placeholder='login id' type='email' required/>,
-		            <GnInput ref='password' icon='key' defaultValue='123456'
+		                placeholder='email' type='email' required/>,
+		            <GnInput ref='password' icon='key'
 		            	regex='^(?!\s*$).+' help='Password can not be empty'
-		                placeholder='login password' type='password' required/>
-		            <div className='errorText'>{this.props.error}</div>
+		                placeholder='password' type='password' required/>
+		            <p className='errorText' style={{padding: '10px 0px 0px 10px'}}>{this.props.error}</p>
 		        </Modal.Body>
 		        <Modal.Footer>
 		            <GnButton icon='user-plus' label='Register'

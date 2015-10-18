@@ -54,39 +54,18 @@ let HomeSection = props => {
 				<p>Run command below to verify your installation</p>
 				<img src='/res/install-1.png' style={{width: 600}}/>
 				<br/><br/>
-				<p>
-					Gear test automation currently supported platform including:&nbsp;&nbsp;
-					<a href='https://www.android.com/' target='_blank'>Android</a>&nbsp;&nbsp;
-					<a href='http://www.apple.com/sg/ios/' target='_blank'>iOS</a>&nbsp;&nbsp;
-					<a href='http://www.google.com/chrome/' target='_blank'>Chrome</a>&nbsp;&nbsp;
-					<a href='https://www.mozilla.org/en-US/firefox/new/' target='_blank'>Firefox</a>
-				</p>
-				<div><GnIcon icon='android' style={padding}/>For android you must <a href='https://developer.android.com/sdk/installing/index.html?pkg=tools' target='_blank'>Install Android SDK</a></div>
-				<div style={{paddingLeft: 33}}>After install you nedd to <a href='https://spring.io/guides/gs/android/' target='_blank'>Set ANDROID_HOME environment variable and add tools/platform-tools to your system path</a></div>
+				<div><GnIcon icon='android' style={padding}/>For android you need <a href='https://developer.android.com/sdk/installing/index.html?pkg=tools' target='_blank'>Install Android SDK</a></div>
+				<div style={{paddingLeft: 33}}>After the installation complete, you nedd to <a href='https://spring.io/guides/gs/android/' target='_blank'>Set ANDROID_HOME environment variable and add tools/platform-tools to your system path</a></div>
 				<div style={{paddingLeft: 33}}>Run command below to verify your configuration</div>
 				<span style={{paddingLeft: 33}}><img src='/res/install-3.png' style={{width: 600}}/></span>
 				<br/><br/>
-				<p><GnIcon icon='apple' style={padding}/>For iOS you must <a href='https://developer.apple.com/xcode/download/' target='_blank'>Install xCode</a></p>
+				<p><GnIcon icon='apple' style={padding}/>For iOS you need <a href='https://developer.apple.com/xcode/download/' target='_blank'>Install xCode</a></p>
 				<br/>
 				<h4>You Are Good to Go<small style={subTitleMargin}>Run it!</small></h4>
 				<br/>
-				<p><GnIcon icon='windows' style={padding}/>For windows, run run.bat.</p>
-				<p><GnIcon icon='apple' style={padding}/>For Mac, run run.command.</p>
+				<p>Unzip the file you downloaded in step one, open terminal go to unziped folder, run "npm install", then run "node runner.js"</p>
 				<img src='/res/install-2.png' style={{width: 600}}/>
-				<Row style={footer}>
-					<Col sm={4}>
-						<h5>Multi-Platform</h5>
-						<p>Gear Test Automation currently support Android, iOS, Chrome and Firefox.</p>
-					</Col>
-					<Col sm={4}>
-						<h5>Simple</h5>
-						<p>Provide tools including Script editor, Script/Pacakge/Parameter manager, command line runner and more to reduce your testing payload.</p>
-					</Col>
-					<Col sm={4}>
-						<h5>Rich Report</h5>
-						<p>Rich test report including Execution, Networking, Memory and more.</p>
-					</Col>
-				</Row>
+				<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 				<p style={terms}><GnIcon icon='cogs'/>&nbsp;Gear Test Automation © 2015</p>
 			</Col>
 		</Row>

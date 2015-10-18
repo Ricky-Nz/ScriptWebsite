@@ -17,7 +17,7 @@ class PackageDialog extends Component {
                         placeholder='package description'/>,
                     <GnInput ref='file' icon='paperclip' type='file'
                         help='You must select a package file for upload' required/>
-                    <div className='errorText'>{this.props.error}</div>
+                    <p className='errorText' style={{padding: '10px 0px 0px 10px'}}>{this.props.error}</p>
                 </Modal.Body>
                 <Modal.Footer>
                     <GnButton label='Cancel'
