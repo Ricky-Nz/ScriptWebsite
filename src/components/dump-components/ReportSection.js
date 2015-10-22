@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Panel, Row, Col, Fade } from 'react-bootstrap';
+import { Panel, Row, Col, Fade, Modal } from 'react-bootstrap';
 import { GnAsyncPanel, GnSearchbar, GnList, GnListItem, GnIndexItem,
 	GnIcon, GnButton, GnIconItem, GnChart, GnDrawerList } from './elements';
 import _ from 'underscore';
@@ -61,9 +61,11 @@ class ReportSection extends Component {
 			const scriptContents = report.scripts.map((script, index) => {
 				return script.actions.map((action, index) => (
 					<GnIndexItem key={index} index={index + 1} indexStyle={action.err ? 'danger' : 'success'}
-						primary={action.title} secondary={action.err ? <p className='errorText'>{action.err}</p> : null}/>
+						primary={action.title} secondary={action.err ? <p className='errorText'>{action.err}</p> : null}
+						rightIcon={action.screenshoot && 'camera-retro'} onIconClicked={() => this.setState({selectAction: action})}/>
 				));
 			});
+			const selectAction = this.state && this.state.selectAction;
 
 			detailPanel = (
 				<div className='horizontalVerCenter'>
@@ -80,6 +82,15 @@ class ReportSection extends Component {
 							content={`Duration: ${report.startDate} ~ ${report.endDate}`}/>
 					</div>
 					<GnChart width={200} height={200} datas={pieData}/>
+			        <Modal show={selectAction ? true : false} onHide={() => this.setState({selectAction: null})}>
+			            <Modal.Header closeButton>
+			                <Modal.Title>{selectAction&&selectAction.title}</Modal.Title>
+			            </Modal.Header>
+			            <Modal.Body>
+			                <img style={{width: '100%', padding: 10, backgroundColor: 'black', borderRadius: 16}}
+			                	src={selectAction&&`/storage/${report.testerId}/reports/${report.id}/screenshoot/${selectAction.screenshoot}`}/>
+			            </Modal.Body>
+			        </Modal>
 				</div>
 			);
 			actionList = (
